@@ -24,6 +24,28 @@ export const Colors = {
     activityPositive: '#34C759',
     activityNegative: '#FF3B30',
   },
+  primary: '#3629B7',
+  primaryLight: '#7B6FDF',
+  primaryLavender: '#C4B8FF',
+  primaryDark: '#3D35A0',
+  white: '#FFFFFF',
+  inputBorder: 'rgba(255,255,255,0.28)',
+  inputBackground: 'rgba(255,255,255,0.06)',
+  placeholderText: '#CACACA',
+  inputText: '#FFFFFF',
+  bottomSheet: '#FFFFFF',
+  buttonDisabled: '#D4D1E5',
+  buttonDisabledText: '#A5A2B8',
+  signUpLink: '#5B4FCF',
+  signUpText: '#8E8BA2',
+  textBlack: '#343434',
+  textMuted: '#A5A2B8',
+  textDark: '#2D2B55',
+  decorRed: 'rgba(255, 90, 101, 0.7)',
+  decorYellow: 'rgba(255, 209, 102, 0.7)',
+  decorGreen: 'rgba(6, 214, 160, 0.7)',
+  decorBlue: 'rgba(17, 138, 178, 0.7)',
+  heroCircle: 'rgba(196, 184, 255, 0.35)',
 };
 
 export const Fonts = Platform.select({
@@ -46,3 +68,20 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
+};
+
+export const Radius = {
+  sm: 8,
+  md: 16,
+  lg: 24,
+  pill: 50,
+  full: 9999,
+};
