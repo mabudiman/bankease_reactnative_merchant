@@ -1,0 +1,15 @@
+{
+  "cancel": "Cancel",
+  "done": "Done",
+  "close": "Close",
+  "retry": "Try again",
+  "retryLabel": "Retry loading data",
+  "retryHint": "Attempts to reload the data",
+  "error": "Error",
+  "loading": "Loading...",
+  "home": "Home",
+  "accounts": "Accounts",
+  "nothingHere": "Nothing here yet",
+  "nothingHereDescription": "Data will appear once it's available.",
+  "noDataAvailable": "No data available"
+}

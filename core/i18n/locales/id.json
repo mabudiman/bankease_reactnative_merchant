@@ -1,0 +1,15 @@
+{
+  "cancel": "Batal",
+  "done": "Selesai",
+  "close": "Tutup",
+  "retry": "Coba lagi",
+  "retryLabel": "Coba muat ulang data",
+  "retryHint": "Mencoba memuat ulang data",
+  "error": "Kesalahan",
+  "loading": "Memuat...",
+  "home": "Beranda",
+  "accounts": "Rekening",
+  "nothingHere": "Belum ada data",
+  "nothingHereDescription": "Data akan muncul setelah tersedia.",
+  "noDataAvailable": "Tidak ada data tersedia"
+}
