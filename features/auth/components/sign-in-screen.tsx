@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui/themed-text';
 import { ThemedButton } from '@/components/ui/themed-button';
-import { Colors, Spacing, Radius } from '@/constants/theme';
+import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
 
 function handleBiometric() {
   // Placeholder untuk login biometrik
@@ -235,13 +235,13 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     color: 'rgba(255,255,255,0.55)',
     fontSize: 12,
-    fontWeight: '400',
+    fontFamily: Fonts.regular,
     letterSpacing: 0.2,
   },
   headerTitle: {
     color: Colors.white,
     fontSize: 26,
-    fontWeight: '700',
+    fontFamily: Fonts.bold,
     letterSpacing: 0.5,
   },
 
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     color: Colors.inputText,
     fontSize: 14,
     flex: 1,
-    fontWeight: '400',
+    fontFamily: Fonts.regular,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   forgotText: {
     color: Colors.placeholderText,
     fontSize: 10.5,
-    fontWeight: '400',
+    fontFamily: Fonts.regular,
     zIndex: 1,
   },
 
@@ -311,8 +311,8 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   bottomSheet: {
+    flex: 1,
     backgroundColor: Colors.bottomSheet,
-    minHeight: 300,
     borderTopLeftRadius: 88,
     borderTopRightRadius: 0,
     paddingHorizontal: Spacing.lg + Spacing.sm,
@@ -321,7 +321,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.md + Spacing.xs,
     overflow: 'hidden',
-    transform: [{ translateY: -60 }],
   },
   handleBar: {
     width: 42,
@@ -356,7 +355,7 @@ const styles = StyleSheet.create({
   footerText: {
     color: Colors.textBlack,
     fontSize: 12.5,
-    fontWeight: '400',
+    fontFamily: Fonts.regular,
     textAlign: 'center',
   },
   signUpButton: {
@@ -368,5 +367,6 @@ const styles = StyleSheet.create({
   signUpText: {
     textAlign: 'right',
     color: Colors.signUpLink,
+    fontFamily: Fonts.semiBold,
   },
 });
