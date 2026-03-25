@@ -1,5 +1,3 @@
-import { Platform } from 'react-native';
-
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
@@ -48,26 +46,12 @@ export const Colors = {
   heroCircle: 'rgba(196, 184, 255, 0.35)',
 };
 
-export const Fonts = Platform.select({
-  ios: {
-    sans: 'system-ui',
-    serif: 'ui-serif',
-    rounded: 'ui-rounded',
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  },
-});
+export const Fonts = {
+  regular: 'Poppins_400Regular',
+  medium: 'Poppins_500Medium',
+  semiBold: 'Poppins_600SemiBold',
+  bold: 'Poppins_700Bold',
+};
 
 export const Spacing = {
   xs: 4,
