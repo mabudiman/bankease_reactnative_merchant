@@ -70,11 +70,11 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
             >
               {focused ? (
                 <View style={S.pill}>
-                  <Icon width={18} height={18} />
+                  <Icon width={18} height={18} color='#FFFFFF' />
                   <Text style={S.pillLabel}>{label}</Text>
                 </View>
               ) : (
-                <Icon width={24} height={24} />
+                <Icon width={24} height={24} color='#9E9EAE' />
               )}
             </Pressable>
           );
@@ -116,11 +116,13 @@ const S = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     width: '100%',
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.06)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
+    shadowOpacity: 0.10,
     shadowRadius: 16,
-    elevation: 12,
+    elevation: 8,
   },
   tabButton: {
     flex: 1,
