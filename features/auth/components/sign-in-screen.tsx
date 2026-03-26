@@ -131,7 +131,7 @@ export function SignInScreen() {
                   </View>
                   <TouchableOpacity
                     style={styles.forgotPassword}
-                    onPress={() => router.push("/forgot-password")}
+                    onPress={() => router.push("/forgot-password" as any)}
                   >
                     <ThemedText type="caption" style={styles.forgotText}>
                       Forgot your password?
