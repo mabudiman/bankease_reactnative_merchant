@@ -4,92 +4,56 @@ applyTo: '**'
 
 # Active Context
 
-## Status Saat Ini
-Forgot Password flow selesai diimplementasikan (26 Maret 2026). 4 layar baru: OTP entry, Change Password, Success. Semua screen menggunakan i18n (en + id). Sign-in screen di-refactor agar responsif (bottom sheet full height, auto-fit image).
+## Current Work Focus
+Search feature screens implementation — Branch Search, Interest Rate, and Exchange Rate screens built and wired. Working on Google Maps API key injection for the Branch screen.
 
-## Fokus Kerja Saat Ini
-- Fitur Forgot Password baru saja selesai (10 commits)
-- Sign-in screen layout perbaikan responsivitas (bottom sheet, fingerprint spacing)
-- Ilustrasi success screen menggunakan `change-password-success.png`
-- Kandidat fitur berikutnya: Payout Status Polling, Saved Beneficiaries, API integrasi forgot password
+## Recent Changes
+- Installed `react-native-maps` for Branch Search map view
+- Added `ExchangeRate`, `InterestRate`, `Branch` types to `features/search/types.ts`
+- Populated `mocks/data.ts` with 10 exchange rates, 12 interest rates, 5 branches
+- Added MSW handlers for `GET /api/exchange-rates`, `/api/interest-rates`, `/api/branches?q=`
+- Created `features/search/api/index.ts` and `features/search/hooks/index.ts`
+- Extended search translations (`en.json` / `id.json`) with column headers and screen titles
+- Created `app/search/_layout.tsx` route group; registered `search` in root `_layout.tsx`
+- Wired Branch/Interest Rate/Exchange Rate cards to `router.push()`; Exchange keeps "Coming Soon"
+- Built screens: `app/search/exchange-rate.tsx`, `app/search/interest-rate.tsx`, `app/search/branch.tsx`
+- Built components: `ExchangeRateRow.tsx`, `BranchRow.tsx`; fixed `bgColor` prop on `SearchCategoryCard`
+- Created `app.config.js` (replaces `app.json` as Expo config) to read `GOOGLE_MAPS_API_KEY` from `.env`
+- `.env` holds the Google Maps API key (git-ignored)
 
-## Keputusan Aktif & Pertimbangan
+## Current State
+- **Auth**: Mocked (2s delay → `/(tabs)`). No real API.
+- **Home Tab**: Stub — "Welcome to BankEase" text only.
+- **Search Tab**: All 3 working cards navigate to real screens. Exchange card shows "Coming Soon".
+- **Exchange Rate screen**: Functional with MSW mock data — flag emoji + country + buy/sell columns.
+- **Interest Rate screen**: Functional with MSW mock data — kind + deposit + rate (purple) columns.
+- **Branch screen**: Map + bottom search panel built. **Blocked**: Google Maps API key not yet injected into `AndroidManifest.xml` — requires `npx expo prebuild --platform android --clean` followed by `npx expo run:android`.
+- **Messages / Settings Tabs**: Placeholder screens.
+- **Account feature**: Types defined, API/hooks/services stubs only.
 
-### Arsitektur
-- Feature-first layout dengan `app/` sebagai thin routing layer
-- `usePayoutFlow` sebagai single orchestration hook untuk entire payout journey
-- Custom native Expo module (`expo-screen-security`) — tidak boleh menggunakan library biometrik pihak ketiga
+## Next Steps
+1. Run `npx expo prebuild --platform android --clean && npx expo run:android` to inject Maps key
+2. Build out Home tab with account summary cards using `features/account`
+3. Implement MSW handlers for `/api/accounts`
+4. Integrate real authentication API (replace setTimeout mock)
+5. Add biometric auth using `expo-local-authentication`
+6. Messages tab — notification/message list
+7. Settings tab — profile, language toggle
 
-### Konvensi Kode
-- Jumlah uang selalu dalam **minor unit** (pence/cent) di API dan state internal
-- Konversi ke major unit hanya untuk tampilan (`utils/money.ts`)
-- IBAN dinormalisasi (uppercase, tanpa spasi) sebelum submit
-- Error class hierarchy di `core/api/errors.ts` — gunakan ini, jangan string error
+## Active Decisions & Considerations
+- Auth is intentionally mocked; do not add real API calls until auth endpoint is specified
+- `app.config.js` is now the Expo config entry point — `app.json` is a clean fallback with no secrets
+- Google Maps API key lives in `.env` as `GOOGLE_MAPS_API_KEY` — never commit this key
+- After getting a permanent key, replace `.env` value and run `expo prebuild` again
+- Currency Exchange (4th card) intentionally kept as "Coming Soon" — no design provided yet
+- `features/auth/types.ts` duplicates `Account` type from `features/account/types.ts` — still needs cleanup
+- All logging must go through `utils/log.ts` (respects `LOG_ENABLED` flag)
+- Typed routes (`experiments.typedRoutes`) require `as any` cast for new `app/search/*` routes until Expo regenerates the type manifest
 
-### Pola Testing
-- Unit test untuk logic murni dan component render
-- MSW untuk integration test API
-- Maestro untuk E2E flow
-
-## Pola Penting yang Perlu Diingat
-
-### Saat Menambah Filter / Query Parameter Baru ke useInfiniteQuery
-- Masukkan parameter ke `queryKey` agar TanStack Query auto-refetch & reset pagination saat nilai berubah
-- Pattern: `queryKey: ["activity", dateFrom ?? null, dateTo ?? null]`
-- Helper date range di `utils/date.ts` — `getDateRangeForFilter(filter)` return `{ dateFrom, dateTo } | null`
-- `null` berarti "All" (tidak kirim params ke API)
-
-### Saat Menambah Filter Bar Horizontal
-- Gunakan `ScrollView horizontal` dengan `flexGrow: 0, flexShrink: 0` di `style` — **WAJIB**, tanpa ini `ScrollView` akan memenuhi seluruh tinggi layar
-- Chips menggunakan `Pressable` + `accessibilityState={{ selected: isActive }}`
-- Active chip: background `Colors.light.tint` + text putih; inactive chip: border `#C7C7CC` + text `#687076`
-
-### Saat Menambah Modal Baru (pola dari ActivityDetailModal)
-- Gunakan `React Native Modal` dengan `transparent` + `animationType="fade"` + overlay `rgba(0,0,0,0.45)`
-- Container: `borderRadius: 16`, `padding: 20`, `gap: 20`
-- Pola `Row` helper component (label + value) untuk menampilkan detail field
-- Selalu tambah `onRequestClose` dan `accessibilityViewIsModal` untuk aksesibilitas Android
-- State management: `useState<T | null>` lokal di screen — tidak perlu hook terpisah untuk UI state murni
-- `memo()` pada komponen modal untuk cegah re-render berlebih
-
-### Saat Menambah Fitur Baru
-1. Buat folder di `features/<nama-fitur>/` dengan struktur: `api/`, `components/`, `hooks/`, `services/`, `locales/`, `types.ts`
-2. Gunakan `core/api/client.ts` untuk HTTP request
-3. Extend `core/api/errors.ts` jika ada error baru
-4. Tambahkan query key baru di TanStack Query
-
-### Saat Mengedit Payout Flow
-- Logic utama ada di `features/payout/hooks/usePayoutFlow.ts`
-- Jangan tambahkan business logic di `app/(tabs)/payouts.tsx`
-- Idempotency key di-generate sekali di `start()`, jangan di `confirm()`
-
-### Saat Mengedit Komponen
-- Gunakan `ThemedText` / `ThemedView` dari `components/ui/` untuk dukungan dark mode otomatis
-- Teks user-facing harus via i18n (`useTranslation` hook)
-
-### Saat Menambah Layar Auth Baru
-- Buat screen component di `features/auth/components/`
-- Export via barrel `features/auth/components/index.ts` — **WAJIB** pertahankan `export default` untuk `SignInScreen` (dipakai `app/index.tsx`)
-- Route file di `app/<nama>.tsx`: hanya re-export default dari barrel
-- Register `Stack.Screen` di `app/_layout.tsx` RootNavigator
-- Tambahkan key terjemahan di `features/auth/locales/{en,id}.json` dan gunakan `useTranslation('auth')`
-
-### Saat Menggunakan Bottom Sheet Pattern (dari Sign In)
-- Bottom sheet: `position: 'absolute'`, `borderTopLeftRadius` besar, SafeAreaView dengan `edges={['top']}` saja (bukan `['top', 'bottom']`) agar bottom sheet bisa menjangkau ujung bawah layar
-- Gunakan `useWindowDimensions` untuk ukuran responsif
-- Fingerprint/biometric button perlu `marginVertical` untuk breathing room
-
-## Insights & Pelajaran
-- `requestAnimationFrame` diperlukan saat transisi dari confirm modal ke result modal untuk menghindari state conflict React
-- Biometric threshold check terjadi di flow hook (bukan di API layer) — 100000 minor units = £1,000
-- Double-submit guard menggunakan `ref` bukan `state` agar tidak trigger re-render
-- Prop `onPress?: () => void` yang opsional di `ActivityRow` memungkinkan reuse tanpa onPress (backward-compatible)
-- `Pressable` lebih fleksibel dari `TouchableOpacity` — digunakan sebagai standar di proyek ini untuk tap handler
-- Warning ESLint "mark props as read-only" adalah pre-existing di seluruh codebase — bukan error baru, tidak perlu diperbaiki
-- `ScrollView` horizontal **harus** diberi `flexGrow: 0, flexShrink: 0` di `style` — tanpanya akan memenuhi seluruh tinggi layar
-- Filter chip aktif di-reset scroll ke atas via `flatListRef.current?.scrollToOffset({ offset: 0, animated: false })` dalam `useEffect([activeFilter])`
-- Test date range (`getDateRangeForFilter`) gunakan `.getDate()/.getMonth()` (local time) bukan `.getUTCDate()` — timezone CI berbeda dengan lokal
-- Barrel export `index.ts` harus punya KEDUA: `export default` (untuk route file) DAN named export (untuk import di tempat lain)
-- `SafeAreaView edges={['top']}` saja (tanpa `'bottom'`) saat ada bottom sheet agar tidak ada gap di bawah
-- Password input perlu `secureTextEntry` toggle via state + icon `eye`/`eye-off`
-- `router.replace` (bukan `push`) untuk navigasi ke success screen agar user tidak bisa back ke form
+## Important Patterns
+- Always wrap test renders with `createWrapper` from `test-utils/`
+- Feature translations use prefixed keys: `common.*`, `account.*`, `searchScreen.*`
+- New features should follow the `features/<name>/{types, api, components, hooks, services, locales}` structure
+- Use `Colors`, `Fonts`, `Spacing`, `Radius` from `constants/theme.ts` — no magic values
+- New search sub-screens: back button via `router.back()` with `Ionicons chevron-back`, `SafeAreaView` + white bg
+- Branch screen bottom panel: fixed (non-draggable), `height: "45%"`, `borderTopLeftRadius: Radius.lg`

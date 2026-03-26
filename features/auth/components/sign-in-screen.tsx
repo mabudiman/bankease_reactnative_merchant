@@ -40,8 +40,10 @@ export function SignInScreen() {
   function handleSignIn() {
     if (!isFormValid) return;
     setIsLoading(true);
-    // Simulasi login — ganti dengan API call yang sebenarnya
-    setTimeout(() => setIsLoading(false), 2000);
+    setTimeout(() => {
+      setIsLoading(false);
+      router.replace('/(tabs)');
+    }, 2000);
   }
 
   return (
@@ -129,7 +131,7 @@ export function SignInScreen() {
                   </View>
                   <TouchableOpacity
                     style={styles.forgotPassword}
-                    onPress={() => router.push("/forgot-password")}
+                    onPress={() => router.push("/forgot-password" as any)}
                   >
                     <ThemedText type="caption" style={styles.forgotText}>
                       Forgot your password?

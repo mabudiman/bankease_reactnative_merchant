@@ -5,8 +5,10 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
+import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Poppins_400Regular,
@@ -18,8 +20,11 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useMSW } from "../mocks/useMSW";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { I18nProvider } from "@/core/i18n";
-import { translations } from "./i18n";
+import { translations } from "@/core/i18n/translations";
 import { LogBox } from "react-native";
+
+// Keep the splash screen visible while we load resources
+SplashScreen.preventAutoHideAsync();
 
 if (__DEV__) {
   LogBox.ignoreAllLogs(true);
@@ -46,6 +51,7 @@ function RootNavigator() {
       <Stack.Screen name="change-password" />
       <Stack.Screen name="change-password-success" />
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="search" />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
     </Stack>
   );
@@ -53,7 +59,7 @@ function RootNavigator() {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
@@ -63,8 +69,23 @@ export default function RootLayout() {
   // Initialize MSW in development mode and wait for it to be ready
   const isMSWReady = useMSW();
 
+  const isReady = (fontsLoaded || !!fontError) && isMSWReady;
+
+  // Hide splash screen once everything is ready
+  useEffect(() => {
+    if (isReady) {
+      SplashScreen.hideAsync().catch((e) => {
+        if (__DEV__) console.warn('[RootLayout] SplashScreen.hideAsync failed:', e);
+      });
+    }
+  }, [isReady]);
+
+  if (__DEV__) {
+    console.log('[RootLayout] fontsLoaded:', fontsLoaded, 'fontError:', fontError, 'isMSWReady:', isMSWReady);
+  }
+
   // Don't render the app until fonts and MSW are ready.
-  if (!fontsLoaded || !isMSWReady) {
+  if (!isReady) {
     return null;
   }
 

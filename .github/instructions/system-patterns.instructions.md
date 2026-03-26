@@ -4,159 +4,74 @@ applyTo: '**'
 
 # System Patterns
 
-## Arsitektur Tingkat Tinggi
+## Architecture
+Feature-based folder structure under `features/`. Each feature is self-contained with:
+- `types.ts` — TypeScript interfaces
+- `api/index.ts` — API call functions using `core/api/client.ts`
+- `components/index.ts` — Feature UI components (barrel export)
+- `hooks/index.ts` — Custom React hooks
+- `services/index.ts` — Business logic / service layer
+- `locales/en.json` + `locales/id.json` — Feature-scoped translations
 
-### Feature-First Layout
-```
-app/                    # Expo Router: routes dan layout saja (thin layer)
-core/                   # Cross-cutting: API client, error types, security
-features/               # Domain slices terpisah
-  auth/                 # Sign in, forgot password, change password
-  merchant/             # Balance, activity, infinite scroll
-  payout/               # Form, confirm, result, flow orchestration, idempotency
-components/             # Shared UI (feedback, ui primitives)
-utils/                  # Pure utility functions (money, date, iban)
-constants/              # Theme dan shared constants
-hooks/                  # Shared React hooks
-mocks/                  # MSW mock handlers dan data
-modules/                # Custom Expo native module
-test-utils/             # Shared test helpers
-```
+Current features: `auth`, `account`, `search`
 
-### Prinsip Desain
-- **Thin app layer**: `app/` hanya routing dan layout. Tidak ada business logic di route files.
-- **Feature ownership**: Setiap feature memiliki `api/`, `components/`, `hooks/`, `services/`, `locales/`, `types.ts` sendiri.
-- **Core untuk shared infra**: `core/` untuk HTTP client, domain errors, security — digunakan lebih dari satu feature.
+## Routing
+Expo Router (file-based). Key routes:
+- `app/index.tsx` — Entry point (redirects to sign-in or tabs)
+- `app/_layout.tsx` — Root layout: providers, fonts, MSW init, splash control
+- `app/(tabs)/_layout.tsx` — Tab shell using `AnimatedTabBar`
+- `app/(tabs)/index.tsx` — Home tab (stub)
+- `app/(tabs)/search.tsx` — Search tab with `SearchCategoryCard` grid
+- `app/(tabs)/messages.tsx` — Placeholder
+- `app/(tabs)/settings.tsx` — Placeholder
+- `app/modal.tsx` — Modal route
+- `app/search/_layout.tsx` — Search sub-screen Stack group (`headerShown: false`)
+- `app/search/exchange-rate.tsx` — Exchange Rate screen
+- `app/search/interest-rate.tsx` — Interest Rate screen
+- `app/search/branch.tsx` — Branch Search screen (map + list)
 
----
+## State Management
+- Server state: `@tanstack/react-query` (QueryClient configured in `app/_layout.tsx`)
+  - `retry: 2`, `staleTime: 30s`, `refetchOnReconnect: true`
+  - Mutations: `retry: false`
+- Local/form state: `react-hook-form`
+- No global client state library (no Redux/Zustand)
 
-## Pola-Pola Utama
+## API Layer
+`core/api/client.ts` — `request<T>(endpoint, options)` wraps fetch with:
+- AbortController timeout (`API_TIMEOUT_MS = 10000ms`)
+- Typed error parsing (`ApiError`, `NetworkError`, `InsufficientFundsError`, `ServiceUnavailableError`)
+- Base URL from `constants/index.ts` (`API_BASE_URL = "http://localhost:3000"`)
 
-### 1. Server State: TanStack Query (React Query)
-- `useMerchant()` dan `useActivityInfinite()` untuk data read-only dengan caching otomatis
-- `useCreatePayout()` sebagai mutation — on success invalidates `["merchant"]` dan `["activity"]`
-- Query keys: `["merchant"]`, `["activity"]` — explicit dan mudah di-invalidate
-- Tidak ada global store (Redux/Zustand) karena scope read-heavy + satu mutation
+## Internationalisation (i18n)
+`core/i18n/` — Custom i18n system:
+- `translations.ts` merges common + feature locales using dot-prefixed keys (`common.*`, `account.*`, `searchScreen.*`)
+- `context.tsx` — `I18nProvider` with locale state
+- `useTranslation.ts` — `useTranslation()` hook returning `{ t, locale, setLocale }`
+- Supported locales: `en`, `id`
 
-### 2. Payout Flow Orchestration: `usePayoutFlow`
-Hook tunggal yang mengatur seluruh alur payout:
-```
-form → start(payout) → confirm modal → confirm() → biometric? → API → outcome
-```
-**Responsibilities:**
-- Menyimpan `pendingPayout` (dengan idempotency key) dan `outcome`
-- Generate idempotency key UUID sekali saat `start()`, reuse pada retry
-- Guard double-submit via `isAlreadyProcessingRef`
-- Panggil device ID, biometric (jika > threshold), lalu mutate
-- Map outcome: clear pending jika non-recoverable, keep untuk recoverable
-- `requestAnimationFrame` saat update outcome (cegah state conflict antara confirm modal dan result modal)
+## Theming
+`constants/theme.ts` exports:
+- `Colors` — light/dark palettes + brand tokens (`primary: '#3629B7'`)
+- `Fonts` — Poppins weight map
+- `Spacing` / `Radius` — design system tokens
+`hooks/use-color-scheme.ts` (+ `.web.ts`) — detects system color scheme
 
-### 3. Error Hierarchy
-`core/api/errors.ts` mendefinisikan:
-```
-ApiError (base)
-├── InsufficientFundsError   (recoverable: false, HTTP 400)
-├── ServiceUnavailableError  (recoverable: true,  HTTP 503)
-├── NetworkError             (recoverable: true)
-├── BiometricCancelledError  (recoverable: true)
-└── BiometricUnavailableError(recoverable: false)
-```
-- Flag `recoverable` menentukan apakah UI menampilkan "Try Again" atau hanya "Close"
-- `mapErrorMessage()` di feature payout memetakan error ke user-friendly message
-
-### 4. Idempotency
-- Client-generated UUID via `expo-crypto` saat user pertama confirm
-- Key disimpan dalam `pendingPayout` — reused pada setiap retry
-- Dikirim sebagai header `Idempotency-Key` ke API
-
-### 5. API Layer (3 lapisan)
-```
-core/api/client.ts          ← Generic request() dengan timeout, JSON headers, error parsing
-features/X/api/X-api.ts     ← Feature-specific endpoint + header (e.g., Idempotency-Key)
-features/X/services/Xservice.ts ← Typed wrapper; digunakan oleh hooks; mockable di tests
-```
-
-### 6. Form: React Hook Form
-- `PayoutForm` menggunakan `Controller` untuk setiap field
-- Validasi inline (required, numeric, IBAN format)
-- `forwardRef` + `useImperativeHandle` untuk expose `reset()` ke parent
-- Amount dikonversi ke minor unit sebelum `onSubmit`
-
-### 7. Native Module: `expo-screen-security`
-Custom Expo module di `modules/expo-screen-security/`:
-- **`getDeviceId()`** — Device fingerprint unik
-- **`authenticateWithBiometrics(reason)`** — FaceID/TouchID/Fingerprint
-- **`addScreenshotListener(callback)`** — Event listener deteksi screenshot
-- Bridge JS di `core/security/screenSecurity.native.ts`
-- Error native dipetakan ke `ApiError` hierarchy di `core/security/enforceBiometrics.ts`
-
----
-
-## Komponen Kunci
-
-### Feature Merchant
-| File | Tanggung Jawab |
-|------|----------------|
-| `features/merchant/api/merchantApi.ts` | GET /merchant, GET /activity |
-| `features/merchant/services/merchantService.ts` | Typed wrapper |
-| `features/merchant/hooks/useMerchant.ts` | React Query query |
-| `features/merchant/hooks/useActivityInfinite.ts` | Infinite scroll query |
-| `features/merchant/components/HomeCard` | Tampilan saldo |
-| `features/merchant/components/ActivityRow` | Item transaksi |
-| `features/merchant/components/ActivityPreview` | Preview 15 transaksi |
-
-### Feature Payout
-| File | Tanggung Jawab |
-|------|----------------|
-| `features/payout/api/payoutApi.ts` | POST /payouts |
-| `features/payout/services/payoutService.ts` | Typed wrapper + idempotency |
-| `features/payout/hooks/useCreatePayout.ts` | React Query mutation |
-| `features/payout/hooks/usePayoutFlow.ts` | **Orchestration hook (core logic)** |
-| `features/payout/components/PayoutForm` | Form input (RHF) |
-| `features/payout/components/PayoutConfirmModal` | Confirm sebelum kirim |
-| `features/payout/components/PayoutResultModal` | Success/error result |
-| `features/payout/utils/mapErrorMessage.ts` | Error → user message |
-
-### Feature Auth
-| File | Tanggung Jawab |
-|------|----------------|
-| `features/auth/components/sign-in-screen.tsx` | Layar login dengan bottom sheet |
-| `features/auth/components/forgot-password-screen.tsx` | OTP entry + resend |
-| `features/auth/components/change-password-screen.tsx` | Form password baru + validasi |
-| `features/auth/components/change-password-success-screen.tsx` | Konfirmasi sukses |
-| `features/auth/components/index.ts` | Barrel exports (default + named) |
-| `features/auth/types.ts` | ForgotPasswordRequest, VerifyOtpRequest, ChangePasswordRequest |
-| `features/auth/locales/en.json` | Terjemahan English |
-| `features/auth/locales/id.json` | Terjemahan Indonesian |
-
----
-
-## Data Flow
-
-### Merchant/Activity
-```
-Screen → useMerchant()/useActivityInfinite() → service → request() → MSW mock
-```
-
-### Payout
-```
-User submit form
-  → usePayoutFlow.start(payout)     [generate idempotency key, store pendingPayout]
-  → Confirm modal tampil
-  → usePayoutFlow.confirm()
-     → getDeviceId()
-     → authenticateWithBiometrics() [jika amount > £1,000]
-     → useCreatePayout.mutateAsync({body, idempotencyKey})
-     → Success: clear pending, set outcome.success, invalidate queries
-     → Error recov: keep pending, set outcome.error (retry akan pakai key sama)
-     → Error non-recov: clear pending, set outcome.error
-```
-
----
+## UI Components (`components/`)
+- `ui/themed-text.tsx`, `ui/themed-view.tsx`, `ui/themed-button.tsx` — base themed primitives
+- `ui/animated-tab-bar.tsx` — custom animated bottom tab bar
+- `ui/pill-tab-button.tsx` — pill-style tab button used in animated bar
+- `feedback/loadingState.tsx`, `errorState.tsx`, `emptyState.tsx` — standard feedback states
 
 ## Testing Patterns
-- **Unit tests**: Jest + `@testing-library/react-native`
-- **E2E tests**: Maestro (`e2e/*.yaml`)
-- **MSW**: Mock API di development dan beberapa integration tests
-- `test-utils/createWrapper.tsx` — QueryClientProvider wrapper untuk component tests
-- Mock biometric/device ID via Jest mocks di `__mocks__/`
+- Jest + `jest-expo` + `@testing-library/react-native`
+- Test wrappers: `test-utils/createWrapper.tsx` (wraps with QueryClient + I18nProvider)
+- Query client factory: `test-utils/createTestQueryClient.ts`
+- Test files colocated in `__tests__/` subdirectories
+
+## Mock Service Worker
+`mocks/` — MSW v2:
+- `handlers.ts` — request handlers (currently empty, ready to add)
+- `server.node.ts` — Node server for Jest
+- `server.ts` — browser/native server
+- `useMSW.ts` — hook used in `app/_layout.tsx` to wait for MSW readiness before hiding splash
