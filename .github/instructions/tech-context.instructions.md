@@ -4,89 +4,59 @@ applyTo: '**'
 
 # Tech Context
 
-## Tech Stack
+## Core Stack
+| Layer | Technology |
+|---|---|
+| Framework | React Native 0.81.5 + Expo SDK 54 |
+| Language | TypeScript ~5.9 (strict) |
+| Routing | Expo Router ~6.0 (file-based, typed routes) |
+| State / Server | @tanstack/react-query v5 |
+| Forms | react-hook-form v7 |
+| Styling | StyleSheet (React Native built-in) |
+| Fonts | @expo-google-fonts/poppins |
+| Icons | @expo/vector-icons (Ionicons) |
+| Animation | react-native-reanimated v4 |
+| Gestures | react-native-gesture-handler |
+| Storage | @react-native-async-storage/async-storage |
+| Mocking | MSW v2 |
+| Testing | Jest 29 + jest-expo + @testing-library/react-native |
 
-| Layer | Teknologi | Versi |
-|-------|-----------|-------|
-| Framework | Expo | ~54.0.32 |
-| Runtime | React Native | 0.81.5 |
-| UI Library | React | 19.1.0 |
-| Language | TypeScript | ~5.9.2 |
-| Navigation | Expo Router (file-based) | ~6.0.22 |
-| Server State | TanStack Query (React Query) | ^5.90.20 |
-| Form | React Hook Form | ^7.71.1 |
-| Mocking | MSW (Mock Service Worker) | ^2.12.9 |
-| Testing (Unit) | Jest + @testing-library/react-native | ^29.7.0 |
-| Testing (E2E) | Maestro | (CLI tool) |
-| UUID | expo-crypto | ~15.0.8 |
-| Storage | @react-native-async-storage/async-storage | ^2.2.0 |
+## React Native Architecture
+- New Architecture enabled (`newArchEnabled: true` in app.json)
+- Expo managed workflow with custom native builds (android/ folder present)
+- Web output: static (`expo-web`)
 
-## Cara Menjalankan
-
+## Development Commands
 ```bash
-# Install dependencies
-npm i
-
-# Jalankan di iOS
-npx expo run:ios
-
-# Jalankan di Android
-npx expo run:android
-
-# Unit tests
-npm test -- --verbose
-
-# Watch mode
-npm run test:watch
-
-# E2E tests
-maestro test e2e/
+npx expo start          # Start dev server
+npx expo run:android    # Run on Android
+npx expo run:ios        # Run on iOS
+npx expo start --web    # Run on Web
+npm test                # Run Jest tests
+npm run test:watch      # Jest watch mode
+npm run typecheck       # tsc --noEmit
+npm run lint            # expo lint (ESLint)
 ```
 
-## Struktur Konfigurasi
+## TypeScript Configuration
+- Path alias `@/` maps to workspace root (configured in `tsconfig.json`)
+- Typed routes enabled via `experiments.typedRoutes: true`
 
-| File | Keterangan |
-|------|------------|
-| `app.json` | Expo config (nama, slug, icon, scheme) |
-| `tsconfig.json` | TypeScript config dengan path alias `@/` |
-| `jest.config.js` | Jest config dengan `jest-expo` preset |
-| `jest.setup.js` | Setup MSW server untuk test environment |
-| `eslint.config.js` | ESLint dengan `eslint-config-expo` |
+## Testing Setup
+- `jest.config.js` — preset: `jest-expo`, module name mapper for `@/`
+- `jest.setup.js` — MSW node server setup, global test utilities
+- `test-utils/createWrapper.tsx` — renders with QueryClient + I18nProvider
+- `test-utils/createTestQueryClient.ts` — factory for isolated query clients
 
-## Path Aliases
-- `@/` → root project (dikonfigurasi via tsconfig.json)
-- Contoh: `import { formatMoney } from '@/utils/money'`
+## Environment / Constants
+- `constants/index.ts`:
+  - `API_BASE_URL = "http://localhost:3000"`
+  - `API_TIMEOUT_MS = 10000`
+  - `LOG_ENABLED = false`
 
-## Native Module
-- Local Expo module: `modules/expo-screen-security`
-- Workspace npm package (via `"workspaces": ["modules/*"]`)
-- Platforms: Android (Kotlin), iOS (Swift)
-- Tidak ada dependency biometrik pihak ketiga
-
-## Environment & Mocking
-- Backend: MSW di `http://localhost:3000`
-- Mock data di `mocks/data.ts`
-- Mock handlers di `mocks/handlers.ts`
-- Server config Node (test): `mocks/server.node.ts`
-- Server config native/web: `mocks/server.ts`
-
-## Dependency Key
-
-### Production
-- `expo-crypto` — UUID generation (idempotency key)
-- `react-hook-form` — Form state & validation
-- `@tanstack/react-query` — Server state management
-- `expo-router` — File-based navigation
-- `@react-native-async-storage/async-storage` — Persistent storage
-
-### Dev/Test
-- `msw` — API mocking
-- `jest-expo` — Jest preset untuk Expo
-- `@testing-library/react-native` — Component testing utilities
-
-## Konstanta Penting
-- Biometric threshold: `£1,000` (100000 minor units)
-- API timeout: 10,000 ms (10 detik)
-- Activity page size: 15 items per page
-- Warna positif: `#34C759` (hijau)
-- Warna negatif: `#FF3B30` (merah)
+## Key Constraints
+- No Redux or Zustand — keep state local or in React Query
+- No class components — functional components only
+- Auth is currently mocked (2-second timeout → navigate to tabs)
+- MSW handlers are empty; add handlers in `mocks/handlers.ts`
+- `LOG_ENABLED` defaults to `false` — use `utils/log.ts` for conditional logging

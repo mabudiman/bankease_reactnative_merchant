@@ -4,74 +4,37 @@ applyTo: '**'
 
 # Active Context
 
-## Status Saat Ini
-Date Filter untuk Transaction List selesai diimplementasikan (17 Maret 2026). Semua 109 unit test lolos. Proyek siap untuk fitur berikutnya.
+## Current Work Focus
+Memory bank initialization — establishing baseline documentation from the current codebase state.
 
-## Fokus Kerja Saat Ini
-- Fitur Date Filter (quick chips: All / Today / Last 7 Days / Last 30 Days) baru saja selesai
-- Kandidat fitur berikutnya: Payout Status Polling, Saved Beneficiaries
+## Recent Changes
+- Populated all memory bank instruction files from codebase inspection
+- Codebase is in early-stage scaffolding: auth, account, and search features are stubbed out
 
-## Keputusan Aktif & Pertimbangan
+## Current State
+- **Auth**: `SignInScreen` is implemented with email/password form, biometric placeholder, and a mocked 2-second login delay that routes to `/(tabs)`.
+- **Home Tab** (`app/(tabs)/index.tsx`): Stub showing "Welcome to BankEase" text.
+- **Search Tab** (`app/(tabs)/search.tsx`): Four `SearchCategoryCard` entries (Branch Search, Interest Rate, Exchange Rate, Currency Exchange) all wired to a "Coming Soon" alert.
+- **Messages / Settings Tabs**: Placeholder screens.
+- **MSW handlers** (`mocks/handlers.ts`): Empty — no API endpoints mocked yet.
+- **Account feature**: Types defined (`Account`, `AccountStatus`), API/hooks/services stubs only.
 
-### Arsitektur
-- Feature-first layout dengan `app/` sebagai thin routing layer
-- `usePayoutFlow` sebagai single orchestration hook untuk entire payout journey
-- Custom native Expo module (`expo-screen-security`) — tidak boleh menggunakan library biometrik pihak ketiga
+## Next Steps
+1. Build out Home tab with account summary cards using `features/account`
+2. Implement MSW handlers for `/api/accounts` and other endpoints
+3. Wire Search categories to real navigation routes instead of alerts
+4. Implement Branch Search, Interest Rate, Exchange Rate, and Currency Exchange flows
+5. Integrate real authentication API (replace setTimeout mock)
+6. Add biometric auth using `expo-local-authentication`
 
-### Konvensi Kode
-- Jumlah uang selalu dalam **minor unit** (pence/cent) di API dan state internal
-- Konversi ke major unit hanya untuk tampilan (`utils/money.ts`)
-- IBAN dinormalisasi (uppercase, tanpa spasi) sebelum submit
-- Error class hierarchy di `core/api/errors.ts` — gunakan ini, jangan string error
+## Active Decisions & Considerations
+- Auth is intentionally mocked; do not add real API calls until auth endpoint is specified
+- `SearchCategoryCard` currently receives `bgColor` prop but the component itself doesn't render a background color — this is a known gap
+- `features/auth/types.ts` and `features/account/types.ts` contain identical `Account` type — likely a copy/paste artifact; auth types should be cleaned up
+- All logging must go through `utils/log.ts` (respects `LOG_ENABLED` flag)
 
-### Pola Testing
-- Unit test untuk logic murni dan component render
-- MSW untuk integration test API
-- Maestro untuk E2E flow
-
-## Pola Penting yang Perlu Diingat
-
-### Saat Menambah Filter / Query Parameter Baru ke useInfiniteQuery
-- Masukkan parameter ke `queryKey` agar TanStack Query auto-refetch & reset pagination saat nilai berubah
-- Pattern: `queryKey: ["activity", dateFrom ?? null, dateTo ?? null]`
-- Helper date range di `utils/date.ts` — `getDateRangeForFilter(filter)` return `{ dateFrom, dateTo } | null`
-- `null` berarti "All" (tidak kirim params ke API)
-
-### Saat Menambah Filter Bar Horizontal
-- Gunakan `ScrollView horizontal` dengan `flexGrow: 0, flexShrink: 0` di `style` — **WAJIB**, tanpa ini `ScrollView` akan memenuhi seluruh tinggi layar
-- Chips menggunakan `Pressable` + `accessibilityState={{ selected: isActive }}`
-- Active chip: background `Colors.light.tint` + text putih; inactive chip: border `#C7C7CC` + text `#687076`
-
-### Saat Menambah Modal Baru (pola dari ActivityDetailModal)
-- Gunakan `React Native Modal` dengan `transparent` + `animationType="fade"` + overlay `rgba(0,0,0,0.45)`
-- Container: `borderRadius: 16`, `padding: 20`, `gap: 20`
-- Pola `Row` helper component (label + value) untuk menampilkan detail field
-- Selalu tambah `onRequestClose` dan `accessibilityViewIsModal` untuk aksesibilitas Android
-- State management: `useState<T | null>` lokal di screen — tidak perlu hook terpisah untuk UI state murni
-- `memo()` pada komponen modal untuk cegah re-render berlebih
-
-### Saat Menambah Fitur Baru
-1. Buat folder di `features/<nama-fitur>/` dengan struktur: `api/`, `components/`, `hooks/`, `services/`, `locales/`, `types.ts`
-2. Gunakan `core/api/client.ts` untuk HTTP request
-3. Extend `core/api/errors.ts` jika ada error baru
-4. Tambahkan query key baru di TanStack Query
-
-### Saat Mengedit Payout Flow
-- Logic utama ada di `features/payout/hooks/usePayoutFlow.ts`
-- Jangan tambahkan business logic di `app/(tabs)/payouts.tsx`
-- Idempotency key di-generate sekali di `start()`, jangan di `confirm()`
-
-### Saat Mengedit Komponen
-- Gunakan `ThemedText` / `ThemedView` dari `components/ui/` untuk dukungan dark mode otomatis
-- Teks user-facing harus via i18n (`useTranslation` hook)
-
-## Insights & Pelajaran
-- `requestAnimationFrame` diperlukan saat transisi dari confirm modal ke result modal untuk menghindari state conflict React
-- Biometric threshold check terjadi di flow hook (bukan di API layer) — 100000 minor units = £1,000
-- Double-submit guard menggunakan `ref` bukan `state` agar tidak trigger re-render
-- Prop `onPress?: () => void` yang opsional di `ActivityRow` memungkinkan reuse tanpa onPress (backward-compatible)
-- `Pressable` lebih fleksibel dari `TouchableOpacity` — digunakan sebagai standar di proyek ini untuk tap handler
-- Warning ESLint "mark props as read-only" adalah pre-existing di seluruh codebase — bukan error baru, tidak perlu diperbaiki
-- `ScrollView` horizontal **harus** diberi `flexGrow: 0, flexShrink: 0` di `style` — tanpanya akan memenuhi seluruh tinggi layar
-- Filter chip aktif di-reset scroll ke atas via `flatListRef.current?.scrollToOffset({ offset: 0, animated: false })` dalam `useEffect([activeFilter])`
-- Test date range (`getDateRangeForFilter`) gunakan `.getDate()/.getMonth()` (local time) bukan `.getUTCDate()` — timezone CI berbeda dengan lokal
+## Important Patterns
+- Always wrap test renders with `createWrapper` from `test-utils/`
+- Feature translations use prefixed keys: `common.*`, `account.*`, `searchScreen.*`
+- New features should follow the `features/<name>/{types, api, components, hooks, services, locales}` structure
+- Use `Colors`, `Fonts`, `Spacing`, `Radius` from `constants/theme.ts` — no magic values
