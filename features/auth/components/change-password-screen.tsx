@@ -14,9 +14,11 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ui/themed-text';
 import { ThemedButton } from '@/components/ui/themed-button';
 import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
+import { useTranslation } from '@/core/i18n';
 
 export function ChangePasswordScreen() {
   const router = useRouter();
+  const { t } = useTranslation('auth');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -63,14 +65,14 @@ export function ChangePasswordScreen() {
               >
                 <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
               </Pressable>
-              <ThemedText style={styles.headerTitle}>Change password</ThemedText>
+              <ThemedText style={styles.headerTitle}>{t('changePassword')}</ThemedText>
             </View>
 
             {/* Form Card */}
             <View style={styles.card}>
               {/* New Password */}
               <View style={styles.inputGroup}>
-                <ThemedText style={styles.label}>Type your new password</ThemedText>
+                <ThemedText style={styles.label}>{t('typeNewPassword')}</ThemedText>
                 <View style={styles.inputWrapper}>
                   <TextInput
                     style={styles.input}
@@ -97,7 +99,7 @@ export function ChangePasswordScreen() {
 
               {/* Confirm Password */}
               <View style={styles.inputGroup}>
-                <ThemedText style={styles.label}>Confirm password</ThemedText>
+                <ThemedText style={styles.label}>{t('confirmPassword')}</ThemedText>
                 <View style={[
                   styles.inputWrapper,
                   showMismatchError && styles.inputError,
@@ -126,7 +128,7 @@ export function ChangePasswordScreen() {
                 </View>
                 {showMismatchError && (
                   <ThemedText style={styles.errorText}>
-                    Passwords do not match
+                    {t('passwordsDoNotMatch')}
                   </ThemedText>
                 )}
               </View>
@@ -135,7 +137,7 @@ export function ChangePasswordScreen() {
             {/* Submit Button */}
             <View style={styles.buttonContainer}>
               <ThemedButton
-                title="Change password"
+                title={t('changePassword')}
                 variant="primary"
                 disabled={!isFormValid}
                 loading={isLoading}

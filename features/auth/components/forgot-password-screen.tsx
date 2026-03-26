@@ -14,9 +14,11 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ui/themed-text';
 import { ThemedButton } from '@/components/ui/themed-button';
 import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
+import { useTranslation } from '@/core/i18n';
 
 export function ForgotPasswordScreen() {
   const router = useRouter();
+  const { t } = useTranslation('auth');
   const [code, setCode] = useState('');
 
   const isCodeValid = code.trim().length >= 4;
@@ -52,17 +54,17 @@ export function ForgotPasswordScreen() {
               >
                 <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
               </Pressable>
-              <ThemedText style={styles.headerTitle}>Forgot password</ThemedText>
+              <ThemedText style={styles.headerTitle}>{t('forgotPassword')}</ThemedText>
             </View>
 
             {/* OTP Card */}
             <View style={styles.card}>
-              <ThemedText style={styles.label}>Type a code</ThemedText>
+              <ThemedText style={styles.label}>{t('typeACode')}</ThemedText>
 
               <View style={styles.otpRow}>
                 <TextInput
                   style={styles.codeInput}
-                  placeholder="Code"
+                  placeholder={t('codePlaceholder')}
                   placeholderTextColor={Colors.placeholderText}
                   keyboardType="number-pad"
                   maxLength={6}
@@ -77,24 +79,24 @@ export function ForgotPasswordScreen() {
                   accessibilityRole="button"
                   accessibilityLabel="Resend code"
                 >
-                  <ThemedText style={styles.resendText}>Resend</ThemedText>
+                  <ThemedText style={styles.resendText}>{t('resend')}</ThemedText>
                 </Pressable>
               </View>
 
               <ThemedText style={styles.helperText}>
-                We texted you a code to verify your phone number{' '}
+                {t('otpHelperPrefix')}
                 <ThemedText style={styles.phoneHighlight}>(+84) 0398829xxx</ThemedText>
               </ThemedText>
 
               <ThemedText style={styles.expiryText}>
-                This code will expired 10 minutes after this message. If you don't get a message.
+                {t('otpExpiry')}
               </ThemedText>
             </View>
 
             {/* Change Password Button */}
             <View style={styles.buttonContainer}>
               <ThemedButton
-                title="Change password"
+                title={t('changePassword')}
                 variant="primary"
                 disabled={!isCodeValid}
                 onPress={handleChangePassword}

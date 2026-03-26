@@ -6,9 +6,11 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ui/themed-text';
 import { ThemedButton } from '@/components/ui/themed-button';
 import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
+import { useTranslation } from '@/core/i18n';
 
 export function ChangePasswordSuccessScreen() {
   const router = useRouter();
+  const { t } = useTranslation('auth');
 
   function handleOk() {
     router.replace('/');
@@ -39,19 +41,18 @@ export function ChangePasswordSuccessScreen() {
           />
 
           <ThemedText style={styles.successTitle}>
-            Change password successfully!
+            {t('changePasswordSuccess')}
           </ThemedText>
 
           <ThemedText style={styles.successDescription}>
-            You have successfully change password.{'\n'}
-            Please use the new password when Sign in.
+            {t('changePasswordSuccessDesc')}
           </ThemedText>
         </View>
 
         {/* Ok Button */}
         <View style={styles.buttonContainer}>
           <ThemedButton
-            title="Ok"
+            title={t('ok')}
             variant="primary"
             onPress={handleOk}
             style={styles.okButton}
