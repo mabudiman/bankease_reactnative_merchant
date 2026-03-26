@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,25 +7,25 @@ import {
   Platform,
   ScrollView,
   Pressable,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { ThemedText } from '@/components/ui/themed-text';
-import { ThemedButton } from '@/components/ui/themed-button';
-import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
-import { useTranslation } from '@/core/i18n';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { ThemedText } from "@/components/ui/themed-text";
+import { ThemedButton } from "@/components/ui/themed-button";
+import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
+import { useTranslation } from "@/core/i18n";
 
 export function ForgotPasswordScreen() {
   const router = useRouter();
-  const { t } = useTranslation('auth');
-  const [code, setCode] = useState('');
+  const { t } = useTranslation("auth");
+  const [code, setCode] = useState("");
 
   const isCodeValid = code.trim().length >= 4;
 
   function handleChangePassword() {
     if (!isCodeValid) return;
-    router.push('/change-password');
+    router.push("/change-password");
   }
 
   function handleResend() {
@@ -34,10 +34,10 @@ export function ForgotPasswordScreen() {
 
   return (
     <View style={styles.root}>
-      <SafeAreaView style={styles.flex} edges={['top']}>
+      <SafeAreaView style={styles.flex} edges={["top"]}>
         <KeyboardAvoidingView
           style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <ScrollView
             contentContainerStyle={styles.scrollContent}
@@ -54,17 +54,17 @@ export function ForgotPasswordScreen() {
               >
                 <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
               </Pressable>
-              <ThemedText style={styles.headerTitle}>{t('forgotPassword')}</ThemedText>
+              <ThemedText style={styles.headerTitle}>{t("forgotPassword")}</ThemedText>
             </View>
 
             {/* OTP Card */}
             <View style={styles.card}>
-              <ThemedText style={styles.label}>{t('typeACode')}</ThemedText>
+              <ThemedText style={styles.label}>{t("typeACode")}</ThemedText>
 
               <View style={styles.otpRow}>
                 <TextInput
                   style={styles.codeInput}
-                  placeholder={t('codePlaceholder')}
+                  placeholder={t("codePlaceholder")}
                   placeholderTextColor={Colors.placeholderText}
                   keyboardType="number-pad"
                   maxLength={6}
@@ -79,24 +79,22 @@ export function ForgotPasswordScreen() {
                   accessibilityRole="button"
                   accessibilityLabel="Resend code"
                 >
-                  <ThemedText style={styles.resendText}>{t('resend')}</ThemedText>
+                  <ThemedText style={styles.resendText}>{t("resend")}</ThemedText>
                 </Pressable>
               </View>
 
               <ThemedText style={styles.helperText}>
-                {t('otpHelperPrefix')}
+                {t("otpHelperPrefix")}
                 <ThemedText style={styles.phoneHighlight}>(+84) 0398829xxx</ThemedText>
               </ThemedText>
 
-              <ThemedText style={styles.expiryText}>
-                {t('otpExpiry')}
-              </ThemedText>
+              <ThemedText style={styles.expiryText}>{t("otpExpiry")}</ThemedText>
             </View>
 
             {/* Change Password Button */}
             <View style={styles.buttonContainer}>
               <ThemedButton
-                title={t('changePassword')}
+                title={t("changePassword")}
                 variant="primary"
                 disabled={!isCodeValid}
                 onPress={handleChangePassword}
@@ -130,16 +128,16 @@ const styles = StyleSheet.create({
 
   // Header
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: Spacing.md,
     gap: Spacing.sm,
   },
   backButton: {
     width: 36,
     height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
     fontSize: 20,
@@ -163,7 +161,7 @@ const styles = StyleSheet.create({
 
   // OTP Row
   otpRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: Spacing.md,
     marginBottom: Spacing.md,
   },
@@ -183,8 +181,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: Radius.sm,
     paddingHorizontal: Spacing.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     height: 52,
   },
   resendText: {
@@ -218,7 +216,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.lg,
   },
   submitButton: {
-    width: '100%',
+    width: "100%",
     borderRadius: Radius.md,
     minHeight: 52,
   },
