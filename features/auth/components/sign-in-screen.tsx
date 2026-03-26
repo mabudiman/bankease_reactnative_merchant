@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,180 +7,233 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image,
-  Pressable,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui/themed-text';
-import { ThemedButton } from '@/components/ui/themed-button';
-import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
+  Pressable
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ui/themed-text";
+import { ThemedButton } from "@/components/ui/themed-button";
+import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
+import { authService } from "../services/auth-service";
+import LockIcon from "@/assets/svgs/illustration.svg";
+import FingerprintIcon from "@/assets/svgs/fingerprint.svg";
+
+const HERO_SIZE = 155;
+const FINGERPRINT_SIZE = 14.27;
+const SHEET_INPUT_BORDER = "rgba(0,0,0,0.12)";
+const SHEET_INPUT_BG = "rgba(0,0,0,0.03)";
+const SHEET_PLACEHOLDER = "#AAAAAA";
 
 function handleBiometric() {
   // Placeholder untuk login biometrik
 }
 
 export function SignInScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter();
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const isFormValid = email.trim().length > 0 && password.trim().length > 0;
+  const isFormValid = phone.trim().length > 0 && password.trim().length > 0;
 
-  function handleSignIn() {
-    if (!isFormValid) return;
+  async function handleSignIn() {
+    if (!isFormValid || isLoading) return;
     setIsLoading(true);
-    // Simulasi login — ganti dengan API call yang sebenarnya
-    setTimeout(() => setIsLoading(false), 2000);
+    setError(null);
+    try {
+      await authService.signIn(phone, password);
+      router.replace("/(tabs)");
+    } catch (err) {
+      const msg =
+        err instanceof Error && err.message === "INVALID_CREDENTIALS"
+          ? "Phone number or password is incorrect."
+          : "Something went wrong. Please try again.";
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <View style={styles.root}>
-      {/* Background ungu mengisi seluruh layar */}
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
         <KeyboardAvoidingView
           style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            {/* ── Header ── */}
-            <View style={styles.headerContainer}>
-              <View style={styles.headerRow}>
-                <Pressable
-                  style={styles.backButton}
-                  accessibilityRole="button"
-                  accessibilityLabel="Go back"
-                >
-                  <Ionicons name="chevron-back" size={20} color={Colors.white} />
-                </Pressable>
-                <ThemedText type="title" style={styles.headerTitle}>
-                  Sign in
-                </ThemedText>
+          <View style={styles.flex}>
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps='handled'
+              showsVerticalScrollIndicator={false}
+            >
+              {/* ── Header (purple) ── */}
+              <View style={styles.headerContainer}>
+                <View style={styles.headerRow}>
+                  <Pressable
+                    style={styles.backButton}
+                    accessibilityRole='button'
+                    accessibilityLabel='Go back'
+                  >
+                    <Ionicons
+                      name='chevron-back'
+                      size={20}
+                      color={Colors.white}
+                    />
+                  </Pressable>
+                  <ThemedText type='title' style={styles.headerTitle}>
+                    Sign in
+                  </ThemedText>
+                </View>
+                <View style={styles.headerTextContainer}>
+                  <ThemedText type='caption' style={styles.headerSubtitle}>
+                    Hello there, sign in to continue
+                  </ThemedText>
+                </View>
               </View>
-              <View style={styles.headerTextContainer}>
-                <ThemedText type="caption" style={styles.headerSubtitle}>
-                  Hello there, sign in to continue
-                </ThemedText>
-              </View>
-            </View>
 
-            {/* ── Hero / Illustration ── */}
-            <View style={styles.heroSection}>
-              {/* Lingkaran Lavender besar */}
-                <Image
-                  source={require('@/assets/images/illustration.png')}
-                  style={styles.heroImage}
-                  resizeMode="contain"
-                  accessibilityLabel="Security illustration"
-                />
-
-            </View>
-
-            {/* ── Form Input ── */}
-            <View style={styles.formSection}>
-              {/* Email */}
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Text Input"
-                  placeholderTextColor={Colors.placeholderText}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  value={email}
-                  onChangeText={setEmail}
-                  accessibilityLabel="Email input"
-                  returnKeyType="next"
+              {/* ── Hero (purple) ── */}
+              <View style={styles.heroSection}>
+                <LockIcon
+                  width={HERO_SIZE * 1.5}
+                  height={HERO_SIZE * 1.5}
+                  accessibilityLabel='Security illustration'
                 />
               </View>
 
-              {/* Password Container */}
-              <View style={styles.passwordContainer}>
-                <View style={styles.inputWrapper}>
+              {/* ── Phone + Password input (purple area) ── */}
+              <View style={styles.phoneSection}>
+                <View style={styles.purpleInputWrapper}>
                   <TextInput
-                    style={styles.input}
-                    placeholder="Password"
+                    style={styles.purpleInput}
+                    placeholder='Phone number'
                     placeholderTextColor={Colors.placeholderText}
-                    secureTextEntry
-                    value={password}
-                    onChangeText={setPassword}
-                    accessibilityLabel="Password input"
-                    returnKeyType="done"
-                    onSubmitEditing={handleSignIn}
+                    keyboardType='phone-pad'
+                    value={phone}
+                    onChangeText={(v) => {
+                      setPhone(v);
+                      setError(null);
+                    }}
+                    accessibilityLabel='Phone number input'
+                    returnKeyType='next'
                   />
                 </View>
+                <View style={styles.passwordFloating}>
+                  <View
+                    style={[
+                      styles.purpleInputWrapper,
+                      styles.passwordRow,
+                      { marginTop: Spacing.md }
+                    ]}
+                  >
+                    <TextInput
+                      style={[styles.purpleInput, styles.passwordInput]}
+                      placeholder='Password'
+                      placeholderTextColor={Colors.placeholderText}
+                      secureTextEntry={!showPassword}
+                      value={password}
+                      onChangeText={(v) => {
+                        setPassword(v);
+                        setError(null);
+                      }}
+                      autoCapitalize='none'
+                      autoCorrect={false}
+                      accessibilityLabel='Password input'
+                      returnKeyType='done'
+                      onSubmitEditing={handleSignIn}
+                    />
+                    <Pressable
+                      onPress={() => setShowPassword((prev) => !prev)}
+                      style={styles.passwordToggle}
+                      accessibilityRole='button'
+                      accessibilityLabel={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      <Ionicons
+                        name={showPassword ? "eye-outline" : "chevron-down"}
+                        size={18}
+                        color={Colors.placeholderText}
+                      />
+                    </Pressable>
+                  </View>
+                </View>
+              </View>
+
+              {/* ── White Panel — starts halfway through password input ── */}
+              <View style={styles.whitePanel}>
+                {/* Forgot password */}
                 <TouchableOpacity style={styles.forgotPassword}>
-                  <ThemedText type="caption" style={styles.forgotText}>
+                  <ThemedText type='caption' style={styles.forgotText}>
                     Forgot your password?
                   </ThemedText>
                 </TouchableOpacity>
-              </View>
-            </View>
 
-            {/* Spacer agar bottom sheet tidak terlalu mepet */}
-            <View style={styles.spacer} />
-          </ScrollView>
-
-          {/* ── Bottom Sheet dengan Wave ── */}
-          <View style={styles.bottomSheetContainer}>
-            {/* <WaveShape color={Colors.bottomSheet} height={120} /> */}
-            <View style={styles.bottomSheet}>
-              {/* Handle bar */}
-              <View style={styles.handleBar} />
-
-              {/* Sign In Button */}
-              <ThemedButton
-                title="Sign in"
-                variant="primary"
-                loading={isLoading}
-                disabled={!isFormValid}
-                onPress={handleSignIn}
-                style={[styles.signInButton, { borderRadius: Radius.md }]}
-                accessibilityLabel="Sign in"
-                lightColor={isFormValid ? '#3629B7' : '#D1D5DB'}
-                darkColor={isFormValid ? '#3629B7' : '#4B5563'}
-                lightTextColor="#FFFFFF"
-                darkTextColor="#FFFFFF"
-              />
-
-              {/* Fingerprint / Biometric */}
-              <TouchableOpacity
-                style={styles.biometricButton}
-                onPress={handleBiometric}
-                accessibilityRole="button"
-                accessibilityLabel="Login with biometric"
-              >
-                 <Image
-                  source={require('@/assets/images/fingerprint.png')}
-                  style={styles.fingerprintImage}
-                  resizeMode="contain"
-                  accessibilityLabel="Fingerprint icon"
-                />
-              </TouchableOpacity>
-
-              {/* Footer: Don't have account? */}
-              <View style={styles.footer}>
-                <ThemedText
-                  type="caption"
-                  style={styles.footerText}
-                >
-                  Don't have an account?
-                </ThemedText>
-                <Pressable
-                  accessibilityRole="link"
-                  accessibilityLabel="Sign up"
-                  style={styles.signUpButton}
-                >
-                  <ThemedText type="caption" style={styles.signUpText}>
-                    Sign Up
+                {/* Error */}
+                {error !== null && (
+                  <ThemedText
+                    type='caption'
+                    lightColor='#FF3B30'
+                    style={styles.errorText}
+                  >
+                    {error}
                   </ThemedText>
-                </Pressable>
+                )}
+
+                {/* Sign In Button */}
+                <ThemedButton
+                  title='Sign in'
+                  variant='primary'
+                  loading={isLoading}
+                  disabled={!isFormValid}
+                  onPress={handleSignIn}
+                  style={[styles.signInButton, { borderRadius: Radius.md }]}
+                  accessibilityLabel='Sign in'
+                  lightColor={isFormValid ? "#3629B7" : "#D1D5DB"}
+                  darkColor={isFormValid ? "#3629B7" : "#4B5563"}
+                  lightTextColor='#FFFFFF'
+                  darkTextColor='#FFFFFF'
+                />
+
+                {/* Fingerprint / Biometric */}
+                <TouchableOpacity
+                  style={styles.biometricButton}
+                  onPress={handleBiometric}
+                  accessibilityRole='button'
+                  accessibilityLabel='Login with biometric'
+                >
+                  <FingerprintIcon
+                    width={FINGERPRINT_SIZE * 6}
+                    height={FINGERPRINT_SIZE * 6}
+                    accessibilityLabel='Fingerprint icon'
+                  />
+                </TouchableOpacity>
+
+                {/* Footer */}
+                <View style={styles.footer}>
+                  <View style={styles.footerTopRow}>
+                    <ThemedText type='caption' style={styles.footerText}>
+                      Don't have an account?
+                    </ThemedText>
+                  </View>
+
+                  <View style={styles.footerBottomRow}>
+                    <Pressable
+                      accessibilityRole='link'
+                      accessibilityLabel='Sign up'
+                      onPress={() => router.push("/sign-up")}
+                    >
+                      <ThemedText type='caption' style={styles.signUpText}>
+                        Sign Up
+                      </ThemedText>
+                    </Pressable>
+                  </View>
+                </View>
               </View>
-            </View>
+            </ScrollView>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -188,185 +241,201 @@ export function SignInScreen() {
   );
 }
 
-const HERO_CIRCLE_SIZE = 155;
-const FINGERPRINT_SIZE = 14.27;
-const DECOR_SIZE_LG = 12;
-const DECOR_SIZE_SM = 8;
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.primary
   },
   safeArea: {
-    flex: 1,
+    flex: 1
   },
   flex: {
-    flex: 1,
+    flex: 1
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: 260,
+    minHeight: "100%",
   },
 
   // ── Header ──
   headerContainer: {
     marginTop: Spacing.md,
-    marginBottom: Spacing.xl + Spacing.sm,
-    gap: Spacing.lg,
+    paddingHorizontal: Spacing.lg
   },
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center"
   },
   backButton: {
     width: 36,
     height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: Radius.full,
-    marginRight: Spacing.sm,
-  },
-  headerTextContainer: {
-    gap: Spacing.xs,
-    marginTop : Spacing.md,
-  },
-  headerSubtitle: {
-    color: 'rgba(255,255,255,0.55)',
-    fontSize: 12,
-    fontFamily: Fonts.regular,
-    letterSpacing: 0.2,
+    marginRight: Spacing.sm
   },
   headerTitle: {
     color: Colors.white,
     fontSize: 26,
-    fontFamily: Fonts.bold,
-    letterSpacing: 0.5,
+    fontFamily: Fonts.medium,
+    letterSpacing: 0.5
+  },
+  headerTextContainer: {
+    marginTop: Spacing.xxl
+  },
+  headerSubtitle: {
+    color: Colors.textBlack,
+    fontSize: 12,
+    fontFamily: Fonts.regular,
+    letterSpacing: 0.2
   },
 
   // ── Hero ──
   heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.xl * 1.5,
-    marginTop: Spacing.sm,
-    height: HERO_CIRCLE_SIZE + 45,
-  },
-  heroImage: {
-    width: HERO_CIRCLE_SIZE * 1.5,
-    height: HERO_CIRCLE_SIZE * 1.5,
-    opacity: 0.85,
+    alignItems: "center",
+    justifyContent: "center",
+    height: HERO_SIZE + 45,
+    marginTop: Spacing.sm
   },
 
-  fingerprintImage: {
-    width: FINGERPRINT_SIZE * 6,
-    height: FINGERPRINT_SIZE * 6,
-    opacity: 0.85,
+  // ── Phone (purple area) ──
+  phoneSection: {
+    position: "relative",
+    paddingHorizontal: Spacing.lg,
+    marginTop: Spacing.xxl,
+    zIndex: 20
   },
-
-  // ── Form ──
-  formSection: {
-    gap: Spacing.md + Spacing.xs,
-    paddingHorizontal: Spacing.xs,
+  passwordFloating: {
+    position: "relative",
+    zIndex: 20,
+    elevation: 20
   },
-  passwordContainer: {
-    gap: Spacing.xs + 2,
-  },
-  inputWrapper: {
-    borderWidth: 0.8,
-    borderColor: Colors.inputBorder,
+  purpleInputWrapper: {
+    borderWidth: 1,
+    borderColor: Colors.placeholderText,
     borderRadius: Radius.md,
     backgroundColor: Colors.inputBackground,
     height: 52,
-    justifyContent: 'center',
-    paddingHorizontal: Spacing.lg,
+    justifyContent: "center",
+    paddingHorizontal: Spacing.lg
   },
-  input: {
-    color: Colors.inputText,
-    fontSize: 14,
+  purpleInput: {
+    color: Colors.placeholderText,
+    fontSize: 16,
     flex: 1,
     fontFamily: Fonts.regular,
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    paddingRight: Spacing.sm,
-    zIndex: 30,
-  },
-  forgotText: {
-    color: Colors.placeholderText,
-    fontSize: 10.5,
-    fontFamily: Fonts.regular,
-    zIndex: 1,
   },
 
-  spacer: {
-    minHeight: 28,
-  },
-// ── Bottom Sheet ──
-  bottomSheetContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  bottomSheet: {
+  // ── White Panel ──
+  whitePanel: {
     flex: 1,
+    // position: "relative",
     backgroundColor: Colors.bottomSheet,
-    borderTopLeftRadius: 88,
-    borderTopRightRadius: 0,
+    borderTopLeftRadius: 120,
+    marginTop: -26,
     paddingHorizontal: Spacing.lg + Spacing.sm,
-    paddingTop: Spacing.md + 2,
-    paddingBottom: Platform.OS === 'ios' ? 28 : Spacing.lg + Spacing.sm,
-    alignItems: 'center',
-    gap: Spacing.md + Spacing.xs,
-    overflow: 'hidden',
+    paddingTop: 44,
+    paddingBottom: Platform.OS === "ios" ? 28 : Spacing.md + Spacing.sm,
+    alignItems: "center",
+    zIndex: 1
   },
-  handleBar: {
-    width: 42,
-    height: 5,
-    borderRadius: 999,
-    backgroundColor: '#D9D9D9',
-    marginBottom: Spacing.sm + 2,
+
+  // ── Sheet inputs ──
+  sheetInputWrapper: {
+    width: "100%",
+    borderWidth: 0.8,
+    borderColor: SHEET_INPUT_BORDER,
+    borderRadius: Radius.md,
+    backgroundColor: SHEET_INPUT_BG,
+    height: 52,
+    justifyContent: "center",
+    paddingHorizontal: Spacing.lg
   },
+  sheetInput: {
+    color: Colors.textBlack,
+    fontSize: 14,
+    flex: 1,
+    fontFamily: Fonts.regular
+  },
+  passwordRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 0
+  },
+  passwordInput: {
+    paddingLeft: Spacing.lg
+  },
+  passwordToggle: {
+    paddingHorizontal: Spacing.md,
+    alignSelf: "stretch",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  forgotPassword: {
+    alignSelf: "flex-end",
+    paddingRight: Spacing.sm,
+    // marginTop: Spacing.xs,
+    marginBottom: Spacing.md
+  },
+  forgotText: {
+    color: Colors.textMuted,
+    fontSize: 14,
+    fontFamily: Fonts.regular
+  },
+
+  // ── Error ──
+  errorText: {
+    width: "100%",
+    fontSize: 12,
+    fontFamily: Fonts.regular,
+    textAlign: "center",
+    marginBottom: Spacing.xs
+  },
+
+  // ── Buttons ──
   signInButton: {
-    width: '100%',
-    marginTop: Spacing.xs,
+    width: "100%",
+    marginTop: Spacing.lg
   },
   biometricButton: {
     width: 58,
     height: 58,
     borderRadius: Radius.full,
-    backgroundColor: 'rgba(91, 79, 207, 0.06)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Spacing.xs + 2,
+    backgroundColor: "rgba(91, 79, 207, 0.06)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: Spacing.xxl,
+    marginBottom: Spacing.lg
   },
+
   // ── Footer ──
   footer: {
-    marginTop: 'auto',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: Spacing.sm,
-    paddingBottom: 6,
-    position: 'relative',
+    width: "100%",
+    marginTop: 12
   },
+
+  footerTopRow: {
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  footerBottomRow: {
+    marginTop: 6,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    paddingRight: Spacing.xs
+  },
+
   footerText: {
     color: Colors.textBlack,
     fontSize: 12.5,
     fontFamily: Fonts.regular,
-    textAlign: 'center',
-  },
-  signUpButton: {
-    position: 'absolute',
-    right: 0,
-    bottom: 6,
+    textAlign: "center"
   },
 
   signUpText: {
-    textAlign: 'right',
     color: Colors.signUpLink,
     fontFamily: Fonts.semiBold,
-  },
+    fontSize: 12.5
+  }
 });

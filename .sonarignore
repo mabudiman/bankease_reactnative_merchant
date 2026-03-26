@@ -1,0 +1,12 @@
+node_modules/**
+android/**
+ios/**
+.expo/**
+coverage/**
+dist/**
+.git/**
+modules/**
+mocks/**
+e2e/**
+**/*.test.ts
+**/*.test.tsx

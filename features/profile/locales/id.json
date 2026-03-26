@@ -1,0 +1,10 @@
+{
+  "profile.title": "Profil",
+  "profile.chooseBank": "Pilih bank",
+  "profile.chooseBranch": "Pilih cabang",
+  "profile.transactionName": "Nama transaksi",
+  "profile.cardNumber": "Nomor kartu",
+  "profile.confirm": "Konfirmasi",
+  "profile.saveSuccess": "Profil berhasil disimpan.",
+  "profile.saveFailed": "Gagal menyimpan profil. Silakan coba lagi."
+}

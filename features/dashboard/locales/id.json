@@ -1,0 +1,9 @@
+{
+  "header.greeting": "Halo, {{name}}",
+  "header.notificationA11y": "Notifikasi",
+  "comingSoon.title": "Segera Hadir",
+  "comingSoon.message": "Fitur ini belum tersedia.",
+  "section.menu": "Menu Fitur",
+  "card.balance": "Saldo",
+  "loading": "Memuat dashboard..."
+}

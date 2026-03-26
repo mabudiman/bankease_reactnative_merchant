@@ -1,0 +1,10 @@
+{
+  "profile.title": "Profile",
+  "profile.chooseBank": "Choose bank",
+  "profile.chooseBranch": "Choose branch",
+  "profile.transactionName": "Transaction name",
+  "profile.cardNumber": "Card number",
+  "profile.confirm": "Confirm",
+  "profile.saveSuccess": "Profile saved successfully.",
+  "profile.saveFailed": "Failed to save profile. Please try again."
+}
