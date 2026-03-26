@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui/themed-text';
 import { ThemedButton } from '@/components/ui/themed-button';
 import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
+import { useRouter } from 'expo-router';
 
 function handleBiometric() {
   // Placeholder untuk login biometrik
@@ -24,6 +25,7 @@ export function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const isFormValid = email.trim().length > 0 && password.trim().length > 0;
 
@@ -113,7 +115,10 @@ export function SignInScreen() {
                     onSubmitEditing={handleSignIn}
                   />
                 </View>
-                <TouchableOpacity style={styles.forgotPassword}>
+                <TouchableOpacity
+                  style={styles.forgotPassword}
+                  onPress={() => router.push('/forgot-password')}
+                >
                   <ThemedText type="caption" style={styles.forgotText}>
                     Forgot your password?
                   </ThemedText>
