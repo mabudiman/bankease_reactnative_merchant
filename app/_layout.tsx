@@ -47,6 +47,9 @@ function RootNavigator() {
   return (
     <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
+      <Stack.Screen name="forgot-password" />
+      <Stack.Screen name="change-password" />
+      <Stack.Screen name="change-password-success" />
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="search" />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />

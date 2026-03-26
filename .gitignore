@@ -53,3 +53,5 @@ desktop.ini
 *.njsproj
 *.sln
 *.sw?
+.claude
+docs/superpowers

@@ -34,6 +34,9 @@ export const Colors = {
   bottomSheet: '#FFFFFF',
   buttonDisabled: '#D4D1E5',
   buttonDisabledText: '#A5A2B8',
+  // Light background input/card tokens (for forgot password & change password screens)
+  inputBorderLight: '#E5E7EB',
+  cardBackground: '#F9FAFB',
   signUpLink: '#5B4FCF',
   signUpText: '#8E8BA2',
   textBlack: '#343434',
