@@ -10,6 +10,20 @@ export interface Account {
   status: AccountStatus;
 }
 
+// Local dummy auth types
+export interface LocalAuthAccount {
+  id: string;
+  name: string;
+  phone: string;
+  password: string;
+  createdAt: string;
+}
+
+export interface LocalAuthSession {
+  accountId: string;
+  createdAt: string;
+}
+
 export interface ForgotPasswordRequest {
   phoneNumber: string;
 }

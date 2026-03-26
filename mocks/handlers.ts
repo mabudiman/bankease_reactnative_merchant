@@ -3,6 +3,8 @@ import type { RequestHandler } from "msw";
 import { API_BASE_URL } from "@/constants";
 import { MOCK_BRANCHES, MOCK_EXCHANGE_RATES, MOCK_INTEREST_RATES } from "./data";
 
+// TODO: Add profile API stubs here when backend is live.
+
 export const handlers: RequestHandler[] = [
   http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
     return HttpResponse.json(MOCK_EXCHANGE_RATES);

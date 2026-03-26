@@ -1,0 +1,9 @@
+{
+  "header.greeting": "Hi, {{name}}",
+  "header.notificationA11y": "Notifications",
+  "comingSoon.title": "Coming Soon",
+  "comingSoon.message": "This feature is not available yet.",
+  "section.menu": "Feature Menu",
+  "card.balance": "Balance",
+  "loading": "Loading dashboard..."
+}

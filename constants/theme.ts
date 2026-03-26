@@ -47,6 +47,7 @@ export const Colors = {
   decorGreen: 'rgba(6, 214, 160, 0.7)',
   decorBlue: 'rgba(17, 138, 178, 0.7)',
   heroCircle: 'rgba(196, 184, 255, 0.35)',
+  heroSubititle: 'rgba(255,255,255,0.55)',
 };
 
 export const Fonts = {
