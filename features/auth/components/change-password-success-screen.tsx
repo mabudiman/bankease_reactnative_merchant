@@ -34,7 +34,7 @@ export function ChangePasswordSuccessScreen() {
         {/* Content */}
         <View style={styles.content}>
           <Image
-            source={require('@/assets/images/illustration.png')}
+            source={require('@/assets/images/change-password-success.png')}
             style={styles.illustration}
             resizeMode="contain"
             accessibilityLabel="Password changed successfully illustration"

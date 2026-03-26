@@ -47,7 +47,15 @@ Merchant membutuhkan akses mobile yang mudah dan aman ke informasi keuangan bisn
 - Tampilkan selalu dalam **major unit** dengan 2 desimal
 - Warna: positif = hijau `#34C759`, negatif = merah `#FF3B30`
 
+## Alur Autentikasi (Sign In → Forgot Password)
+1. User di halaman Sign In, klik "Forgot your password?"
+2. Layar Forgot Password: input kode OTP + tombol Resend
+3. Setelah OTP valid, navigasi ke layar Change Password
+4. Input password baru + konfirmasi password (dengan toggle visibility)
+5. Sukses → layar konfirmasi dengan ilustrasi + tombol "Ok" kembali ke Sign In
+
 ## Internasionalisasi
 - Default: English
-- Tersedia: Español
+- Tersedia: Indonesian (Bahasa Indonesia)
 - Dikelola via `core/i18n/` dengan context React
+- Locale per-feature: `features/<nama>/locales/{en,id}.json` dengan prefix namespace
