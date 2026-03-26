@@ -1,39 +1,25 @@
-/**
- * MSW Request Handlers
- * Add handlers here to mock API endpoints during development and testing.
- *
- * Example:
- *   import { http, HttpResponse } from "msw";
- *   import { API_BASE_URL } from "../constants";
- *
- *   export const handlers = [
- *     http.get(`${API_BASE_URL}/api/accounts`, () => {
- *       return HttpResponse.json({ accounts: [] });
- *     }),
- *   ];
- */
+import { http, HttpResponse } from "msw";
 import type { RequestHandler } from "msw";
+import { API_BASE_URL } from "@/constants";
+import { MOCK_BRANCHES, MOCK_EXCHANGE_RATES, MOCK_INTEREST_RATES } from "./data";
 
-// TODO: Uncomment and implement when the backend profile API is live.
-// import { http, HttpResponse } from "msw";
-//
-// Profile API stubs — swap profile-service.ts AsyncStorage calls with profileApi.*:
-//
-// http.get('http://localhost:3000/api/profile/:accountId', ({ params }) => {
-//   const { accountId } = params;
-//   return HttpResponse.json({
-//     accountId,
-//     bankName: 'Citibank',
-//     branchName: 'New York',
-//     transactionName: 'Demo User',
-//     cardNumber: '1234 5678 9901',
-//   });
-// }),
-//
-// http.put('http://localhost:3000/api/profile/:accountId', async ({ params, request }) => {
-//   const { accountId } = params;
-//   const body = await request.json();
-//   return HttpResponse.json({ accountId, ...body });
-// }),
+// TODO: Add profile API stubs here when backend is live.
 
-export const handlers: RequestHandler[] = [];
+export const handlers: RequestHandler[] = [
+  http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
+    return HttpResponse.json(MOCK_EXCHANGE_RATES);
+  }),
+
+  http.get(`${API_BASE_URL}/api/interest-rates`, () => {
+    return HttpResponse.json(MOCK_INTEREST_RATES);
+  }),
+
+  http.get(`${API_BASE_URL}/api/branches`, ({ request }) => {
+    const url = new URL(request.url);
+    const q = url.searchParams.get("q")?.toLowerCase() ?? "";
+    const results = q
+      ? MOCK_BRANCHES.filter((b) => b.name.toLowerCase().includes(q))
+      : MOCK_BRANCHES;
+    return HttpResponse.json(results);
+  }),
+];

@@ -20,5 +20,18 @@
   "signUp.hasAccount": "Sudah punya akun?",
   "signUp.signInLink": "Masuk",
   "signUp.errorPhoneTaken": "Nomor telepon sudah terdaftar.",
-  "signUp.errorGeneric": "Terjadi kesalahan. Silakan coba lagi."
+  "signUp.errorGeneric": "Terjadi kesalahan. Silakan coba lagi.",
+  "forgotPassword": "Lupa kata sandi",
+  "typeACode": "Masukkan kode",
+  "codePlaceholder": "Kode",
+  "resend": "Kirim ulang",
+  "otpHelperPrefix": "Kami mengirimkan kode ke nomor telepon Anda ",
+  "otpExpiry": "Kode ini akan kedaluwarsa 10 menit setelah pesan ini. Jika Anda tidak menerima pesan.",
+  "changePassword": "Ubah kata sandi",
+  "typeNewPassword": "Ketik kata sandi baru Anda",
+  "confirmPassword": "Konfirmasi kata sandi",
+  "changePasswordSuccess": "Kata sandi berhasil diubah!",
+  "changePasswordSuccessDesc": "Anda telah berhasil mengubah kata sandi. Silakan gunakan kata sandi baru saat masuk.",
+  "ok": "Ok",
+  "passwordsDoNotMatch": "Kata sandi tidak cocok"
 }

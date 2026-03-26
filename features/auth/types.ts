@@ -23,3 +23,18 @@ export interface LocalAuthSession {
   accountId: string;
   createdAt: string;
 }
+
+export interface ForgotPasswordRequest {
+  phoneNumber: string;
+}
+
+export interface VerifyOtpRequest {
+  phoneNumber: string;
+  code: string;
+}
+
+export interface ChangePasswordRequest {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}

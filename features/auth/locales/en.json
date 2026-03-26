@@ -20,5 +20,18 @@
   "signUp.hasAccount": "Have an account?",
   "signUp.signInLink": "Sign In",
   "signUp.errorPhoneTaken": "This phone number is already registered.",
-  "signUp.errorGeneric": "Something went wrong. Please try again."
+  "signUp.errorGeneric": "Something went wrong. Please try again.",
+  "forgotPassword": "Forgot password",
+  "typeACode": "Type a code",
+  "codePlaceholder": "Code",
+  "resend": "Resend",
+  "otpHelperPrefix": "We texted you a code to verify your phone number ",
+  "otpExpiry": "This code will expired 10 minutes after this message. If you don't get a message.",
+  "changePassword": "Change password",
+  "typeNewPassword": "Type your new password",
+  "confirmPassword": "Confirm password",
+  "changePasswordSuccess": "Change password successfully!",
+  "changePasswordSuccessDesc": "You have successfully change password. Please use the new password when Sign in.",
+  "ok": "Ok",
+  "passwordsDoNotMatch": "Passwords do not match"
 }

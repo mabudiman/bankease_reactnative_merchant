@@ -78,7 +78,8 @@ if (typeof global.Event === 'undefined') {
 
 // Polyfill MessageEvent for React Native (required by MSW WebSocket/BroadcastChannel)
 if (typeof global.MessageEvent === 'undefined') {
-  (global as any).MessageEvent = class MessageEvent extends (global as any).Event {
+  const _Event = (global as any).Event;
+  class MessageEventPolyfill extends _Event {
     data: any;
     origin: string;
     lastEventId: string;
@@ -93,14 +94,16 @@ if (typeof global.MessageEvent === 'undefined') {
       this.source = eventInitDict?.source || null;
       this.ports = eventInitDict?.ports || [];
     }
-  };
+  }
+  (global as any).MessageEvent = MessageEventPolyfill;
 }
 
 // Polyfill BroadcastChannel for React Native (required by MSW WebSocket management)
 if (typeof global.BroadcastChannel === 'undefined') {
   const channels = new Map<string, Set<any>>();
+  const _EventTarget = (global as any).EventTarget;
 
-  (global as any).BroadcastChannel = class BroadcastChannel extends (global as any).EventTarget {
+  class BroadcastChannelPolyfill extends _EventTarget {
     private name: string;
 
     constructor(name: string) {
@@ -120,7 +123,7 @@ if (typeof global.BroadcastChannel === 'undefined') {
           data: message,
           origin: '',
         });
-        channelSet.forEach((channel) => {
+        channelSet.forEach((channel: any) => {
           if (channel !== this) {
             channel.dispatchEvent(event);
           }
@@ -137,5 +140,6 @@ if (typeof global.BroadcastChannel === 'undefined') {
         }
       }
     }
-  };
+  }
+  (global as any).BroadcastChannel = BroadcastChannelPolyfill;
 }
