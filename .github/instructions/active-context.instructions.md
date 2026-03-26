@@ -5,11 +5,13 @@ applyTo: '**'
 # Active Context
 
 ## Status Saat Ini
-Date Filter untuk Transaction List selesai diimplementasikan (17 Maret 2026). Semua 109 unit test lolos. Proyek siap untuk fitur berikutnya.
+Forgot Password flow selesai diimplementasikan (26 Maret 2026). 4 layar baru: OTP entry, Change Password, Success. Semua screen menggunakan i18n (en + id). Sign-in screen di-refactor agar responsif (bottom sheet full height, auto-fit image).
 
 ## Fokus Kerja Saat Ini
-- Fitur Date Filter (quick chips: All / Today / Last 7 Days / Last 30 Days) baru saja selesai
-- Kandidat fitur berikutnya: Payout Status Polling, Saved Beneficiaries
+- Fitur Forgot Password baru saja selesai (10 commits)
+- Sign-in screen layout perbaikan responsivitas (bottom sheet, fingerprint spacing)
+- Ilustrasi success screen menggunakan `change-password-success.png`
+- Kandidat fitur berikutnya: Payout Status Polling, Saved Beneficiaries, API integrasi forgot password
 
 ## Keputusan Aktif & Pertimbangan
 
@@ -65,6 +67,18 @@ Date Filter untuk Transaction List selesai diimplementasikan (17 Maret 2026). Se
 - Gunakan `ThemedText` / `ThemedView` dari `components/ui/` untuk dukungan dark mode otomatis
 - Teks user-facing harus via i18n (`useTranslation` hook)
 
+### Saat Menambah Layar Auth Baru
+- Buat screen component di `features/auth/components/`
+- Export via barrel `features/auth/components/index.ts` — **WAJIB** pertahankan `export default` untuk `SignInScreen` (dipakai `app/index.tsx`)
+- Route file di `app/<nama>.tsx`: hanya re-export default dari barrel
+- Register `Stack.Screen` di `app/_layout.tsx` RootNavigator
+- Tambahkan key terjemahan di `features/auth/locales/{en,id}.json` dan gunakan `useTranslation('auth')`
+
+### Saat Menggunakan Bottom Sheet Pattern (dari Sign In)
+- Bottom sheet: `position: 'absolute'`, `borderTopLeftRadius` besar, SafeAreaView dengan `edges={['top']}` saja (bukan `['top', 'bottom']`) agar bottom sheet bisa menjangkau ujung bawah layar
+- Gunakan `useWindowDimensions` untuk ukuran responsif
+- Fingerprint/biometric button perlu `marginVertical` untuk breathing room
+
 ## Insights & Pelajaran
 - `requestAnimationFrame` diperlukan saat transisi dari confirm modal ke result modal untuk menghindari state conflict React
 - Biometric threshold check terjadi di flow hook (bukan di API layer) — 100000 minor units = £1,000
@@ -75,3 +89,7 @@ Date Filter untuk Transaction List selesai diimplementasikan (17 Maret 2026). Se
 - `ScrollView` horizontal **harus** diberi `flexGrow: 0, flexShrink: 0` di `style` — tanpanya akan memenuhi seluruh tinggi layar
 - Filter chip aktif di-reset scroll ke atas via `flatListRef.current?.scrollToOffset({ offset: 0, animated: false })` dalam `useEffect([activeFilter])`
 - Test date range (`getDateRangeForFilter`) gunakan `.getDate()/.getMonth()` (local time) bukan `.getUTCDate()` — timezone CI berbeda dengan lokal
+- Barrel export `index.ts` harus punya KEDUA: `export default` (untuk route file) DAN named export (untuk import di tempat lain)
+- `SafeAreaView edges={['top']}` saja (tanpa `'bottom'`) saat ada bottom sheet agar tidak ada gap di bawah
+- Password input perlu `secureTextEntry` toggle via state + icon `eye`/`eye-off`
+- `router.replace` (bukan `push`) untuk navigasi ke success screen agar user tidak bisa back ke form
