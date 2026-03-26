@@ -1,5 +1,6 @@
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 import { useTranslation } from "@/core/i18n";
 import { ThemedText } from "@/components/ui/themed-text";
 import { SearchCategoryCard } from "@/features/search/components/SearchCategoryCard";
@@ -41,18 +42,21 @@ export default function SearchScreen() {
           subtitle={ts("branchSubtitle")}
           illustration={illustrations.branch}
           bgColor={CATEGORY_BG.branch}
+          onPress={() => router.push("/search/branch" as any)}
         />
         <SearchCategoryCard
           title={ts("interestRate")}
           subtitle={ts("interestRateSubtitle")}
           illustration={illustrations.interestRate}
           bgColor={CATEGORY_BG.interestRate}
+          onPress={() => router.push("/search/interest-rate" as any)}
         />
         <SearchCategoryCard
           title={ts("exchangeRate")}
           subtitle={ts("exchangeRateSubtitle")}
           illustration={illustrations.exchangeRate}
           bgColor={CATEGORY_BG.exchangeRate}
+          onPress={() => router.push("/search/exchange-rate" as any)}
         />
         <SearchCategoryCard
           title={ts("exchange")}

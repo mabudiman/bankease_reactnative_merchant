@@ -48,6 +48,7 @@ function RootNavigator() {
     <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="search" />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
     </Stack>
   );

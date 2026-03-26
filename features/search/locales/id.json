@@ -8,5 +8,17 @@
   "exchange": "Penukaran",
   "exchangeSubtitle": "Tukar jumlah uang",
   "comingSoon": "Segera hadir",
-  "comingSoonMessage": "Fitur ini belum tersedia."
+  "comingSoonMessage": "Fitur ini belum tersedia.",
+  "exchangeRateTitle": "Kurs tukar",
+  "interestRateTitle": "Suku bunga",
+  "branchTitle": "Cabang",
+  "countryColumn": "Negara",
+  "buyColumn": "Beli",
+  "sellColumn": "Jual",
+  "interestKindColumn": "Jenis bunga",
+  "depositColumn": "Deposito",
+  "rateColumn": "Tingkat",
+  "searchBranchPlaceholder": "Bank",
+  "individualCustomers": "Nasabah individu",
+  "corporateCustomers": "Nasabah korporat"
 }

@@ -25,6 +25,10 @@ Expo Router (file-based). Key routes:
 - `app/(tabs)/messages.tsx` — Placeholder
 - `app/(tabs)/settings.tsx` — Placeholder
 - `app/modal.tsx` — Modal route
+- `app/search/_layout.tsx` — Search sub-screen Stack group (`headerShown: false`)
+- `app/search/exchange-rate.tsx` — Exchange Rate screen
+- `app/search/interest-rate.tsx` — Interest Rate screen
+- `app/search/branch.tsx` — Branch Search screen (map + list)
 
 ## State Management
 - Server state: `@tanstack/react-query` (QueryClient configured in `app/_layout.tsx`)

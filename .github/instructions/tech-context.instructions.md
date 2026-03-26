@@ -18,6 +18,7 @@ applyTo: '**'
 | Animation | react-native-reanimated v4 |
 | Gestures | react-native-gesture-handler |
 | Storage | @react-native-async-storage/async-storage |
+| Maps | react-native-maps (requires Google Maps API key + native rebuild) |
 | Mocking | MSW v2 |
 | Testing | Jest 29 + jest-expo + @testing-library/react-native |
 
