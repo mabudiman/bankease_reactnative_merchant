@@ -9,6 +9,9 @@
   "loading": "Loading...",
   "home": "Home",
   "accounts": "Accounts",
+  "search": "Search",
+  "messages": "Messages",
+  "settings": "Settings",
   "nothingHere": "Nothing here yet",
   "nothingHereDescription": "Data will appear once it's available.",
   "noDataAvailable": "No data available"

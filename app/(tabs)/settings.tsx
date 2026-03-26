@@ -4,16 +4,16 @@ import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedView } from "@/components/ui/themed-view";
 import { useTranslation } from "@/core/i18n";
 
-export default function AccountsScreen() {
+export default function SettingsScreen() {
   const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.content}>
         <ThemedText type="title" style={styles.title}>
-          {t("common.accounts")}
+          {t("common.settings")}
         </ThemedText>
-        <ThemedText>Your accounts will appear here.</ThemedText>
+        <ThemedText>Coming soon</ThemedText>
       </ThemedView>
     </SafeAreaView>
   );

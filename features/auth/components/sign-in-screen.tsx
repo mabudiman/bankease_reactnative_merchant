@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui/themed-text';
 import { ThemedButton } from '@/components/ui/themed-button';
 import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
+import { router } from 'expo-router';
 
 function handleBiometric() {
   // Placeholder untuk login biometrik
@@ -30,8 +31,10 @@ export function SignInScreen() {
   function handleSignIn() {
     if (!isFormValid) return;
     setIsLoading(true);
-    // Simulasi login — ganti dengan API call yang sebenarnya
-    setTimeout(() => setIsLoading(false), 2000);
+    setTimeout(() => {
+      setIsLoading(false);
+      router.replace('/(tabs)');
+    }, 2000);
   }
 
   return (

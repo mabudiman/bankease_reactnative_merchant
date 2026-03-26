@@ -1,0 +1,12 @@
+{
+  "branch": "Cabang",
+  "branchSubtitle": "Cari cabang terdekat",
+  "interestRate": "Suku bunga",
+  "interestRateSubtitle": "Cari suku bunga",
+  "exchangeRate": "Kurs tukar",
+  "exchangeRateSubtitle": "Cari kurs tukar",
+  "exchange": "Penukaran",
+  "exchangeSubtitle": "Tukar jumlah uang",
+  "comingSoon": "Segera hadir",
+  "comingSoonMessage": "Fitur ini belum tersedia."
+}
