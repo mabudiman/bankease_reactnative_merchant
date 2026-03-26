@@ -47,6 +47,7 @@ function RootNavigator() {
   return (
     <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
+      <Stack.Screen name="sign-up" />
       <Stack.Screen name="forgot-password" />
       <Stack.Screen name="change-password" />
       <Stack.Screen name="change-password-success" />
