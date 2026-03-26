@@ -11,6 +11,7 @@ applyTo: '**'
 app/                    # Expo Router: routes dan layout saja (thin layer)
 core/                   # Cross-cutting: API client, error types, security
 features/               # Domain slices terpisah
+  auth/                 # Sign in, forgot password, change password
   merchant/             # Balance, activity, infinite scroll
   payout/               # Form, confirm, result, flow orchestration, idempotency
 components/             # Shared UI (feedback, ui primitives)
@@ -115,6 +116,18 @@ Custom Expo module di `modules/expo-screen-security/`:
 | `features/payout/components/PayoutConfirmModal` | Confirm sebelum kirim |
 | `features/payout/components/PayoutResultModal` | Success/error result |
 | `features/payout/utils/mapErrorMessage.ts` | Error → user message |
+
+### Feature Auth
+| File | Tanggung Jawab |
+|------|----------------|
+| `features/auth/components/sign-in-screen.tsx` | Layar login dengan bottom sheet |
+| `features/auth/components/forgot-password-screen.tsx` | OTP entry + resend |
+| `features/auth/components/change-password-screen.tsx` | Form password baru + validasi |
+| `features/auth/components/change-password-success-screen.tsx` | Konfirmasi sukses |
+| `features/auth/components/index.ts` | Barrel exports (default + named) |
+| `features/auth/types.ts` | ForgotPasswordRequest, VerifyOtpRequest, ChangePasswordRequest |
+| `features/auth/locales/en.json` | Terjemahan English |
+| `features/auth/locales/id.json` | Terjemahan Indonesian |
 
 ---
 
