@@ -5,7 +5,7 @@ applyTo: '**'
 # Progress
 
 ## Status Keseluruhan
-**IMPLEMENTED + UI POLISH + PROFILE EDIT** — Semua fitur utama + visual refinement selesai. Profile Edit screen dengan real API (GET/PUT), profile image di Home & Profile. useFocusEffect untuk auto-refresh Home. 90 unit test lolos.
+**IMPLEMENTED + UI POLISH + PROFILE EDIT + SEARCH TESTS** — Semua fitur utama + visual refinement selesai. Profile Edit screen dengan real API (GET/PUT), profile image di Home & Profile. useFocusEffect untuk auto-refresh Home. Search feature unit tests lengkap (API + hooks + components). 127 unit test lolos.
 
 ---
 
@@ -94,15 +94,21 @@ applyTo: '**'
 - [x] Unit tests untuk: API client, errors, utils, components
 - [x] Unit tests: auth-service (signIn, signUp, getSession, clearSession, getSessionAccount)
 - [x] Unit tests: dashboard-service (loadCards, getPrivileges, getNotificationCount)
+- [x] Unit tests: search feature — `features/search/api/__tests__/search-api.test.ts` (10 tests)
+- [x] Unit tests: search hooks — `features/search/hooks/__tests__/search-hooks.test.ts` (8 tests)
+- [x] Unit tests: SearchCategoryCard — `features/search/components/__tests__/SearchCategoryCard.test.tsx` (6 tests)
+- [x] Unit tests: ExchangeRateRow — `features/search/components/__tests__/ExchangeRateRow.test.tsx` (6 tests)
+- [x] Unit tests: BranchRow — `features/search/components/__tests__/BranchRow.test.tsx` (5 tests)
 - [x] E2E tests (Maestro): 8 flow scenarios
 - [x] MSW handlers untuk semua endpoint
 - [x] 90 unit test lolos (25 Mar 2026)
+- [x] 127 unit test lolos (27 Mar 2026) — +37 dari search feature tests
 
 ---
 
 ## Yang Belum / Perlu Dicek ⚠️
 
-- [x] ~~Verifikasi semua unit test lolos~~ — 90/90 pass (25 Mar 2026)
+- [x] ~~Verifikasi semua unit test lolos~~ — 127/127 pass (27 Mar 2026)
 - [ ] Verifikasi build Android & iOS berjalan
 - [ ] Payout Status Polling — endpoint `GET /api/payouts/:id` sudah ada di mock, belum digunakan
 - [ ] Saved Beneficiaries — simpan IBAN favorit via AsyncStorage
@@ -161,3 +167,5 @@ applyTo: '**'
 | 26 Mar 2026 | `displayName` state lokal di ProfileScreen | Nama langsung berubah saat save sukses tanpa perlu re-fetch profile object |
 | 26 Mar 2026 | `useDashboard` ganti `useEffect` → `useFocusEffect` | `useEffect([])` hanya run sekali saat mount; kembali dari profile screen tidak trigger refresh |
 | 26 Mar 2026 | Profile image di `DashboardHeader` via prop `avatarUri` | Konsisten dengan ProfileScreen; fallback ke Ionicons jika null |
+| 27 Mar 2026 | Search feature unit tests — 5 file, 37 tests (API + hooks + components) | Test API via MSW intercept tanpa setup tambahan; hook test via `renderHook`+`waitFor`; component test via `render`+`screen` |
+| 27 Mar 2026 | Import `MOCK_*` dari `mocks/data.ts` di semua test API & hook untuk assertion | Hindari magic number; test tetap valid jika seed data berubah |
