@@ -12,7 +12,7 @@
   "signIn.errorGeneric": "Terjadi kesalahan. Silakan coba lagi.",
   "signUp.title": "Daftar",
   "signUp.subtitle": "Halo, buat akun baru",
-  "signUp.namePlaceholder": "Nama",
+  "signUp.namePlaceholder": "Nama Pengguna",
   "signUp.emailPlaceholder": "Alamat email",
   "signUp.phonePlaceholder": "Nomor telepon",
   "signUp.passwordPlaceholder": "Kata sandi",

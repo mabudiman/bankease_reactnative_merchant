@@ -12,7 +12,7 @@
   "signIn.errorGeneric": "Something went wrong. Please try again.",
   "signUp.title": "Sign up",
   "signUp.subtitle": "Hello there, create New account",
-  "signUp.namePlaceholder": "Name",
+  "signUp.namePlaceholder": "Username",
   "signUp.emailPlaceholder": "Email address",
   "signUp.phonePlaceholder": "Phone number",
   "signUp.passwordPlaceholder": "Password",
