@@ -5,18 +5,20 @@ applyTo: '**'
 # Active Context
 
 ## Status Saat Ini
-Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile Edit screen selesai dengan full CRUD ke real API (26 Maret 2026). useFocusEffect untuk refresh Home saat kembali dari profile. 90 unit test lolos.
+Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile Edit screen selesai dengan full CRUD ke real API (26 Maret 2026). Sign Up screen terhubung ke real API. Sign In screen terhubung ke real API `POST http://4.193.104.245:3031/api/auth/signin` dengan field username (26 Maret 2026). Token JWT disimpan ke AsyncStorage `@auth:token` + in-memory cache via `tokenManager`, di-inject otomatis ke semua API call via `core/api/client.ts`. Sign Up menampilkan Alert sukses sebelum kembali ke Sign In. `user_id` dari response sign-in dipakai langsung sebagai `accountId` session + UUID profile API. Input validation ditambahkan di ProfileScreen & SignUpScreen. SignIn screen pakai i18n + navigasi ke forgot-password. 99 unit test lolos.
 
 ## Fokus Kerja Saat Ini
-- **Profile Edit selesai**: GET profile dari `http://4.193.104.245:8080/api/profile/{uuid}`, form pre-fill, PUT update, alert success/failed, tombol disabled kalau belum semua field terisi
-- **Profile image**: ditampilkan di ProfileScreen (avatar atas) dan DashboardHeader (Home) — fallback ke Ionicons person kalau `image` null/empty
-- **Dashboard Home refresh**: `useDashboard` sekarang pakai `useFocusEffect` — data di-fetch ulang setiap kali tab Home aktif/fokus
-- **Dashboard Home selesai (refinement)**: Floating card navbar, stacked card visual, 3-color gradient kartu, PNG asset navbar + notification, FeatureMenuGrid plain-View
-- **Privilege-based menu**: demo-001 → 3 menu; demo-002 → semua 9 menu; akun baru → hanya Account and Card
-- **demo-001**: 2 kartu (VISA navy-blue, MC purple); **demo-002**: 2 kartu (VISA green, MC dark navy)
-- Auth backend (MSW/API) masih ditunda ke fase berikutnya
-- Auth session restoration (cold-start) masih ditunda
-- Kandidat fitur berikutnya: Payout Status Polling, Saved Beneficiaries, Screenshot Warning UI
+- **Sign In Real API selesai**: `POST http://4.193.104.245:3031/api/auth/signin`, body: `{ username, password }`, on success → simpan token + session → navigate `/(tabs)`, on error → `Alert.alert('Failed', msg)`
+- **`user_id` dari SignIn response**: disimpan sebagai `accountId` di session (`@auth:session`); dipakai langsung sebagai UUID ke `GET/PUT /api/profile/{user_id}` — tidak perlu mapping lagi
+- **`PROFILE_ID_MAP` dihapus**: `profileService` langsung pass `accountId` ke API tanpa resolusi
+- **Token Manager** (`core/api/token-manager.ts`): `setToken/getToken/clearToken/loadToken` — in-memory + AsyncStorage `@auth:token`; di-inject ke semua `request()` via `Authorization: Bearer`
+- **Sign Up success Alert**: `Alert.alert('Sign Up Successful', ..., [{ text: 'OK', onPress: () => router.back() }])` — user tap OK baru berpindah ke sign-in
+- **Sign Up Real API selesai**: `POST http://4.193.104.245:3031/api/auth/signup`, body: `{ username, phone, password }`, on success → Alert success, on error → tampil pesan error
+- **authApi** di `features/auth/api/index.ts`: `fetch` langsung ke `http://4.193.104.245:3031`; `signIn` error: 401/403 → `INVALID_CREDENTIALS`, network → `NETWORK_ERROR`; `signUp` error: 409/422 → `PHONE_TAKEN`; network → `NETWORK_ERROR`
+- **Input validation ProfileScreen**: card number → digits + spaces only; invalid char stripped silently + inline error; `isAllFilled` blocks submit if `cardNumberError !== null`
+- **Input validation SignUpScreen**: username → no spaces; phone → digits + optional leading `+`; password → min 6 chars; all shown as inline `fieldError` text below input; `isFormValid` blocks submit
+- **SignIn screen i18n**: `useTranslation("auth")` — title, subtitle, username placeholder, forgot password text semua dari locale keys
+- **Forgot password navigation**: `TouchableOpacity` forgot password di sign-in screen kini `onPress={() => router.push('/forgot-password')}` → `ForgotPasswordScreen`
 
 ## Keputusan Aktif & Pertimbangan
 
@@ -77,6 +79,9 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - Screen Sign Up di `app/sign-up.tsx` — route terpisah, bukan overlay/modal
 - Navigasi antar auth screen: `router.push('/sign-up')` dari sign-in, `router.back()` dari sign-up
 - Setelah login sukses: `router.replace('/(tabs)')` untuk menggantikan stack auth
+- **Sign Up Real API**: `authApi.signUp` di `features/auth/api/index.ts` — `fetch` langsung ke `http://4.193.104.245:3031`, body: `{ email, password, full_name, phone }`
+- **Error handling sign-up**: on error `setError(msg)` only — **jangan clear field apapun** — user bisa retry tanpa re-ketik; `finally` restore `isLoading(false)`
+- **Local AsyncStorage signUp dihapus** — `authService.signUp` hanya delegasi ke `authApi.signUp`; seed demo accounts masih ada untuk `signIn` path
 - **ROOT CAUSE BUG yang harus dihindari**: bottom sheet `position:'absolute'` + `flex:1` tanpa fixed height selalu membuat overlap form pada layar berbeda ukuran
 - Komposisi dua lapis yang benar: section ungu (header + hero) + white sheet (`flex:1`) keduanya adalah **normal layout child** dalam `ScrollView` dengan `contentContainerStyle={{ flexGrow:1 }}`
 - `flex:1` pada white sheet + `flexGrow:1` pada `contentContainerStyle` = white sheet selalu mengisi sisa vertical space tanpa posisi absolut
@@ -127,9 +132,25 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - **Selalu `.trim()` password** sebelum simpan di `signUp` dan sebelum compare di `signIn` — keyboard Android bisa menambah trailing space/newline diam-diam
 - **Jangan pakai prefix visual (+62) di phone field** tanpa juga menyimpannya ke storage — inkonsistensi format antara sign-up (visual prefix) dan sign-in (tanpa prefix) adalah root cause login gagal
 - Validasi duplikasi phone sebelum write, bukan setelah
-- Setelah sign-up sukses: kembali ke sign-in dengan `router.back()` — user login eksplisit
+- Setelah sign-up sukses: tampilkan `Alert.alert('Sign Up Successful', ..., [{ text: 'OK', onPress: () => router.back() }])` — user tap OK baru berpindah ke sign-in
 - `features/auth/locales/en.json` dan `id.json` menggunakan flat dotted keys (`"signUp.title": "Sign up"`) agar kompatibel dengan `flattenWithPrefix` di `app/i18n.ts`
 - Setiap feature baru yang menambah locale harus juga mendaftarkan import di `app/i18n.ts`
+
+### Saat Membangun Token Manager / Auth Token
+- `core/api/token-manager.ts` — module-level `let _token: string | null` untuk synchronous access di `request()` headers; juga persist ke `AsyncStorage '@auth:token'` untuk cold-start session restoration
+- `loadToken()` dipanggil sekali di `app/_layout.tsx` `useEffect` saat `isReady` true — sebelum user membuka halaman apapun yang butuh auth
+- `getToken()` synchronous — dipakai di `core/api/client.ts` saat build request headers
+- `clearToken()` dipanggil di `authService.clearSession()` saat logout
+- Test file yang mengimport `client.ts` (atau modul apapun yang transitif import `token-manager.ts`) harus menambahkan `jest.mock('@/core/api/token-manager', ...)` agar tidak crash karena AsyncStorage NativeModule null
+
+### Saat Menambah Input Validation (pola dari ProfileScreen & SignUpScreen)
+- **Card number / digit-only field**: pakai `v.replace(/[^\d\s]/g, '')` untuk strip silently; set `fieldError` state jika ada char yang di-strip; `isAllFilled`/`isFormValid` harus cek `fieldError === null`
+- **No-space field (username)**: cek `/\s/.test(v)` → set `nameError`; strip tidak dilakukan (user harus hapus manual — lebih jelas)
+- **Phone field** (`+` + digits only): `v.replace(/(?!^\+)[^\d]/g, '')` — pertahankan `+` hanya di posisi 0; strip selain itu
+- **Password min length**: `v.length > 0 && v.length < 6` → set `passwordError`; tidak tampilkan error saat field masih kosong
+- **`FormField` component** di ProfileScreen punya prop `error?: string | null` — tampilkan border merah (`fieldInputError`) + teks error di bawah field
+- **Inline error style**: `fontSize: 11`, `color: '#FF3B30'` (atau `'#FF453A'`), `marginTop: 4` — di bawah input, bukan di atas
+- **`isFormValid` / `isAllFilled`** harus include semua error state: `cardNumberError === null && nameError === null && phoneError === null && passwordError === null`
 
 ## Insights & Pelajaran
 - **`useFocusEffect` bukan `useEffect`** untuk hook yang perlu refresh saat navigasi kembali ke screen (e.g. `useDashboard`) — `useEffect([], [])` hanya jalan sekali saat mount, tidak re-run saat tab kembali aktif
@@ -163,3 +184,10 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - **Shell backtick escaping** di `node -e` dapat membuang baris yang mengandung `!` (bash history expansion) — solusi: gunakan `node -p` atau tulis file via script JS terpisah
 - **`AccountCard` gunakan `width: '100%'`** bukan pixel fixed — agar wrapper layer (stacked carousel) yang mengontrol lebar, bukan card itu sendiri
 - **Stacked card carousel**: render `[...layers].reverse()` agar kartu belakang di-render pertama (z-order lebih rendah); gunakan `logicalIdx` (0=depan) untuk offset & opacity; `position:absolute` + `left/right inset` untuk efek tumpukan
+- **`core/api/token-manager.ts` import AsyncStorage langsung** — setiap test file yang transitif mengimport `client.ts` HARUS menambahkan `jest.mock('@/core/api/token-manager', ...)` agar tidak crash dengan `NativeModule: AsyncStorage is null` di Jest
+- **Sign In real API**: sign-in screen pakai field `username` (bukan `phone`); `keyboardType='default'`; error ditampilkan via `Alert.alert('Failed', msg)` bukan inline text — lebih konsisten dengan pola layar lain
+- **`authService.signIn` returns `void`** (tidak lagi `LocalAuthAccount`) — caller tidak perlu return value; token + session tersimpan sebagai side effect
+- **`user_id` dari SignIn response adalah UUID profile** — simpan sebagai `accountId` di session; `profileService` langsung pakai `accountId` tanpa mapping; `PROFILE_ID_MAP` sudah dihapus
+- **`SignInResponse.user_id` wajib** (tidak optional) — API selalu return field ini; tidak perlu fallback ke username
+- **SignIn screen i18n**: tambah `useTranslation("auth")` lalu ganti semua hardcoded string (title/subtitle/placeholder/forgotPassword) dengan `t("signIn.*")` keys — pola sama dengan SignUpScreen
+- **Forgot password link**: `TouchableOpacity` dengan `onPress={() => router.push('/forgot-password')}` di sign-in screen; route `app/forgot-password.tsx` sudah ada, export `ForgotPasswordScreen` langsung

@@ -1,6 +1,7 @@
 {
   "signIn.title": "Sign in",
   "signIn.subtitle": "Hello there, sign in to continue",
+  "signIn.usernamePlaceholder": "Username",
   "signIn.phonePlaceholder": "Phone number",
   "signIn.passwordPlaceholder": "Password",
   "signIn.cta": "Sign in",
@@ -12,6 +13,7 @@
   "signUp.title": "Sign up",
   "signUp.subtitle": "Hello there, create New account",
   "signUp.namePlaceholder": "Name",
+  "signUp.emailPlaceholder": "Email address",
   "signUp.phonePlaceholder": "Phone number",
   "signUp.passwordPlaceholder": "Password",
   "signUp.cta": "Sign up",
@@ -20,6 +22,7 @@
   "signUp.hasAccount": "Have an account?",
   "signUp.signInLink": "Sign In",
   "signUp.errorPhoneTaken": "This phone number is already registered.",
+  "signUp.errorEmailTaken": "This email address is already registered.",
   "signUp.errorGeneric": "Something went wrong. Please try again.",
   "forgotPassword": "Forgot password",
   "typeACode": "Type a code",

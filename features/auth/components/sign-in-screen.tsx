@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Pressable
+  Pressable,
+  Alert
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -16,6 +17,7 @@ import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedButton } from "@/components/ui/themed-button";
 import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
 import { authService } from "../services/auth-service";
+import { useTranslation } from "@/core/i18n/useTranslation";
 import LockIcon from "@/assets/svgs/illustration.svg";
 import FingerprintIcon from "@/assets/svgs/fingerprint.svg";
 
@@ -31,27 +33,26 @@ function handleBiometric() {
 
 export function SignInScreen() {
   const router = useRouter();
-  const [phone, setPhone] = useState("");
+  const { t } = useTranslation("auth");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const isFormValid = phone.trim().length > 0 && password.trim().length > 0;
+  const isFormValid = username.trim().length > 0 && password.trim().length > 0;
 
   async function handleSignIn() {
     if (!isFormValid || isLoading) return;
     setIsLoading(true);
-    setError(null);
     try {
-      await authService.signIn(phone, password);
+      await authService.signIn(username, password);
       router.replace("/(tabs)");
     } catch (err) {
       const msg =
         err instanceof Error && err.message === "INVALID_CREDENTIALS"
-          ? "Phone number or password is incorrect."
+          ? "Username or password is incorrect."
           : "Something went wrong. Please try again.";
-      setError(msg);
+      Alert.alert("Failed", msg);
     } finally {
       setIsLoading(false);
     }
@@ -85,12 +86,12 @@ export function SignInScreen() {
                     />
                   </Pressable>
                   <ThemedText type='title' style={styles.headerTitle}>
-                    Sign in
+                    {t("signIn.title")}
                   </ThemedText>
                 </View>
                 <View style={styles.headerTextContainer}>
                   <ThemedText type='caption' style={styles.headerSubtitle}>
-                    Hello there, sign in to continue
+                    {t("signIn.subtitle")}
                   </ThemedText>
                 </View>
               </View>
@@ -109,15 +110,14 @@ export function SignInScreen() {
                 <View style={styles.purpleInputWrapper}>
                   <TextInput
                     style={styles.purpleInput}
-                    placeholder='Phone number'
+                    placeholder={t("signIn.usernamePlaceholder")}
                     placeholderTextColor={Colors.placeholderText}
-                    keyboardType='phone-pad'
-                    value={phone}
-                    onChangeText={(v) => {
-                      setPhone(v);
-                      setError(null);
-                    }}
-                    accessibilityLabel='Phone number input'
+                    keyboardType='default'
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    value={username}
+                    onChangeText={setUsername}
+                    accessibilityLabel='Username input'
                     returnKeyType='next'
                   />
                 </View>
@@ -135,10 +135,7 @@ export function SignInScreen() {
                       placeholderTextColor={Colors.placeholderText}
                       secureTextEntry={!showPassword}
                       value={password}
-                      onChangeText={(v) => {
-                        setPassword(v);
-                        setError(null);
-                      }}
+                      onChangeText={setPassword}
                       autoCapitalize='none'
                       autoCorrect={false}
                       accessibilityLabel='Password input'
@@ -168,20 +165,9 @@ export function SignInScreen() {
                 {/* Forgot password */}
                 <TouchableOpacity style={styles.forgotPassword}>
                   <ThemedText type='caption' style={styles.forgotText}>
-                    Forgot your password?
+                    {t("signIn.forgotPassword")}
                   </ThemedText>
                 </TouchableOpacity>
-
-                {/* Error */}
-                {error !== null && (
-                  <ThemedText
-                    type='caption'
-                    lightColor='#FF3B30'
-                    style={styles.errorText}
-                  >
-                    {error}
-                  </ThemedText>
-                )}
 
                 {/* Sign In Button */}
                 <ThemedButton
@@ -301,7 +287,7 @@ const styles = StyleSheet.create({
   // ── Phone (purple area) ──
   phoneSection: {
     position: "relative",
-    paddingHorizontal: Spacing.lg,
+    paddingHorizontal: Spacing.md,
     marginTop: Spacing.xxl,
     zIndex: 20
   },
@@ -317,7 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.inputBackground,
     height: 52,
     justifyContent: "center",
-    paddingHorizontal: Spacing.lg
+    paddingHorizontal: Spacing.md
   },
   purpleInput: {
     color: Colors.placeholderText,
@@ -360,10 +346,10 @@ const styles = StyleSheet.create({
   passwordRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 0
+    // paddingHorizontal: Spacing.md
   },
   passwordInput: {
-    paddingLeft: Spacing.lg
+    // paddingLeft: Spacing.lg
   },
   passwordToggle: {
     paddingHorizontal: Spacing.md,

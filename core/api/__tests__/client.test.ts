@@ -6,6 +6,15 @@ import {
   NetworkError,
 } from "@/core/api/errors";
 
+jest.mock('@/core/api/token-manager', () => ({
+  tokenManager: {
+    getToken: jest.fn().mockReturnValue(null),
+    setToken: jest.fn().mockResolvedValue(undefined),
+    clearToken: jest.fn().mockResolvedValue(undefined),
+    loadToken: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
 describe("request (parseError)", () => {
   beforeEach(() => {
     jest.restoreAllMocks();

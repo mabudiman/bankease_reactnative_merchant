@@ -5,6 +5,7 @@ import {
     NetworkError,
     ServiceUnavailableError
 } from "./errors"
+import { tokenManager } from "./token-manager"
 
 // manage specific domain errors
 function parseError(response: Response): ApiError {
@@ -58,6 +59,9 @@ export async function request<T>(
             headers: {
                 "Content-Type": "application/json",
                 ...(options?.headers ?? {}),
+                ...(tokenManager.getToken()
+                    ? { Authorization: `Bearer ${tokenManager.getToken()}` }
+                    : {}),
             },
         }
     )

@@ -5,7 +5,7 @@ applyTo: '**'
 # Progress
 
 ## Status Keseluruhan
-**IMPLEMENTED + UI POLISH + PROFILE EDIT** — Semua fitur utama + visual refinement selesai. Profile Edit screen dengan real API (GET/PUT), profile image di Home & Profile. useFocusEffect untuk auto-refresh Home. 90 unit test lolos.
+**IMPLEMENTED + UI POLISH + PROFILE EDIT + SIGN UP REAL API + SIGN IN REAL API** — Semua fitur utama + visual refinement selesai. Sign In terhubung ke real API, token JWT disimpan dan di-inject otomatis ke semua API call. Sign Up menampilkan alert sukses sebelum kembali ke Sign In. 100 unit test lolos.
 
 ---
 
@@ -20,15 +20,30 @@ applyTo: '**'
 - [x] i18n system (`core/i18n/`) — English + Español
 - [x] Theme system dengan dark/light mode support
 
-### Feature: Auth (Local Dummy)
-- [x] `SignInScreen` — screen sign-in, navigasi ke sign-up, local dummy login via AsyncStorage
+### Feature: Auth (Real API Sign In + Sign Up)
+- [x] `SignInScreen` — screen sign-in, navigasi ke sign-up, **real API sign-in** via `authApi.signIn`
+- [x] `authApi.signIn` — `POST http://4.193.104.245:3031/api/auth/signin`, body: `{ username, password }`, error: 401/403 → `INVALID_CREDENTIALS`, network → `NETWORK_ERROR`
+- [x] `tokenManager` (`core/api/token-manager.ts`) — in-memory + AsyncStorage `@auth:token`; `setToken/getToken/clearToken/loadToken`
+- [x] Token auto-injected in `core/api/client.ts` via `Authorization: Bearer` header on every `request()`
+- [x] `loadToken()` called in `app/_layout.tsx` on app boot for session restoration
+- [x] Sign In on fail: `Alert.alert('Failed', msg)` — no more inline error text
 - [x] `SignUpScreen` — screen sign-up baru, layout iOS dua lapis, route `app/sign-up.tsx`
-- [x] `authService` — `features/auth/services/auth-service.ts`, AsyncStorage-based signIn/signUp/getSession/clearSession/**getSessionAccount**
-- [x] Seed accounts demo: demo-001 (phone `081234567890`, password `demo1234`) dan demo-002 (phone `089876543210`, password `premium1234`)
+- [x] `authApi.signUp` — `features/auth/api/index.ts`, `POST http://4.193.104.245:3031/api/auth/signup`, body: `{ username, phone, password }`, error mapping: 409/422 → `PHONE_TAKEN`; network → `NETWORK_ERROR`
+- [x] `authService.signUp` — delegasi ke `authApi.signUp` (real API); local AsyncStorage write path **dihapus**
+- [x] Error handling sign-up: on error hanya `setError(msg)`, semua field tidak di-reset; `finally` restore `isLoading(false)`
+- [x] Sign Up success: `Alert.alert('Sign Up Successful', ..., [{ text: 'OK', onPress: () => router.back() }])` — user tap OK baru ke sign-in
+- [x] `authService` — `features/auth/services/auth-service.ts`, real-API signIn + delegasi signUp + getSession/clearSession/getSessionAccount
+- [x] `authService.clearSession()` juga memanggil `tokenManager.clearToken()` untuk wipe token saat logout
+- [x] `SignInResponse.user_id` — disimpan sebagai `accountId` di session; dipakai langsung sebagai UUID ke profile API
+- [x] `PROFILE_ID_MAP` dihapus dari `profileService` — `accountId` dari session sudah berupa UUID nyata
+- [x] Input validation ProfileScreen: card number digits+spaces only, `cardNumberError` state, `FormField` dengan prop `error`
+- [x] Input validation SignUpScreen: username no spaces, phone digits/+ only, password min 6 chars — semua inline field errors
+- [x] SignIn screen pakai `useTranslation("auth")` — semua string (title, subtitle, placeholder, forgotpassword) dari locale keys
+- [x] Forgot password button di sign-in → `router.push('/forgot-password')` → `ForgotPasswordScreen`
+- [x] Seed accounts demo (demo-001, demo-002) tetap ada untuk `getSessionAccount` look-up
 - [x] Navigasi dua arah sign-in ↔ sign-up via Expo Router
 - [x] Login sukses redirect ke `/(tabs)` via `router.replace`
-- [x] i18n auth keys di `features/auth/locales/en.json` + `id.json`
-- [ ] Auth backend (MSW/API) — ditunda ke fase berikutnya
+- [x] i18n auth keys di `features/auth/locales/en.json` + `id.json` — flat dotted keys
 - [ ] Session restoration saat app cold-start — ditunda
 
 ### Feature: Dashboard Home
@@ -96,7 +111,7 @@ applyTo: '**'
 - [x] Unit tests: dashboard-service (loadCards, getPrivileges, getNotificationCount)
 - [x] E2E tests (Maestro): 8 flow scenarios
 - [x] MSW handlers untuk semua endpoint
-- [x] 90 unit test lolos (25 Mar 2026)
+- [x] 99 unit test lolos (26 Mar 2026)
 
 ---
 
@@ -161,3 +176,21 @@ applyTo: '**'
 | 26 Mar 2026 | `displayName` state lokal di ProfileScreen | Nama langsung berubah saat save sukses tanpa perlu re-fetch profile object |
 | 26 Mar 2026 | `useDashboard` ganti `useEffect` → `useFocusEffect` | `useEffect([])` hanya run sekali saat mount; kembali dari profile screen tidak trigger refresh |
 | 26 Mar 2026 | Profile image di `DashboardHeader` via prop `avatarUri` | Konsisten dengan ProfileScreen; fallback ke Ionicons jika null |
+| 26 Mar 2026 | Sign Up terhubung ke real API `POST http://4.193.104.245:3031/api/auth/signup` | Merchant perlu daftar via backend nyata; local AsyncStorage write path dihapus |
+| 26 Mar 2026 | Field `email` ditambahkan ke Sign Up form | API membutuhkan `email` selain `full_name`, `phone`, `password` |
+| 26 Mar 2026 | On API error sign-up: hanya `setError`, tidak clear field | User bisa retry tanpa re-ketik semua input — better UX |
+| 26 Mar 2026 | `authApi.signUp` pakai `fetch` langsung ke `http://4.193.104.245:3031` | `core/api/client.ts` hardcode `localhost:3000` sebagai base URL; tidak ingin polute constant |
+| 26 Mar 2026 | Error 409/422 → cek body message untuk bedakan `EMAIL_TAKEN` vs `PHONE_TAKEN` | API bisa return detail di body; default ke `EMAIL_TAKEN` jika tidak ada clue |
+| 26 Mar 2026 | Sign In terhubung ke real API `POST http://4.193.104.245:3031/api/auth/signin` | Local dummy signIn diganti real API; username field menggantikan phone |
+| 26 Mar 2026 | `tokenManager` module (`core/api/token-manager.ts`) | In-memory + AsyncStorage `@auth:token`; synchronous `getToken()` untuk inject header di `request()` |
+| 26 Mar 2026 | Token auto-inject di `core/api/client.ts` via `Authorization: Bearer` | Semua API call otomatis autentikasi tanpa perubahan per-screen |
+| 26 Mar 2026 | `loadToken()` dipanggil di `app/_layout.tsx` on boot | Token restore saat cold-start agar session tetap aktif |
+| 26 Mar 2026 | Sign In fail → `Alert.alert('Failed', msg)` bukan inline error text | UX lebih konsisten dengan pola `Alert` yang sudah dipakai di layar lain |
+| 26 Mar 2026 | Sign Up success → `Alert.alert` + OK button → `router.back()` | User mendapat konfirmasi eksplisit sebelum berpindah ke sign-in |
+| 26 Mar 2026 | Test yang import `client.ts` harus mock `@/core/api/token-manager` | `token-manager` import AsyncStorage langsung; tanpa mock akan crash di Jest environment |
+| 26 Mar 2026 | `SignInResponse.user_id` menggantikan `id` — wajib, tidak optional | API contract menjamin field ini; `profileService` pakai langsung tanpa fallback |
+| 26 Mar 2026 | `PROFILE_ID_MAP` dihapus dari `profileService` | `user_id` dari sign-in IS the profile UUID; mapping statis tidak lagi diperlukan |
+| 26 Mar 2026 | Input validation ProfileScreen (card number digits+spaces, FormField error prop) | Merchant tidak boleh isi huruf di card number; UX jelas dengan inline error |
+| 26 Mar 2026 | Input validation SignUpScreen (username no-space, phone +digits, password min 6) | Cegah invalid data sebelum API call; strip phone silently, tunjukkan error username & password inline |
+| 26 Mar 2026 | SignIn screen pakai `useTranslation("auth")` | Konsisten dengan SignUpScreen; locale key `signIn.*` sudah ada di en.json + id.json |
+| 26 Mar 2026 | `signIn.usernamePlaceholder` ditambahkan ke en.json + id.json | Key baru dibutuhkan karena field berubah dari phone ke username |

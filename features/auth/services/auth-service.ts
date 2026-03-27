@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { randomUUID } from 'expo-crypto';
 import type { LocalAuthAccount, LocalAuthSession } from '../types';
+import { authApi } from '../api';
+import { tokenManager } from '@/core/api/token-manager';
 
 const ACCOUNTS_KEY = '@auth:accounts';
 const SESSION_KEY = '@auth:session';
@@ -48,44 +49,33 @@ async function loadAccounts(): Promise<LocalAuthAccount[]> {
   return updated;
 }
 
-async function signIn(phone: string, password: string): Promise<LocalAuthAccount> {
-  const accounts = await loadAccounts();
-  const account = accounts.find(
-    (a) => a.phone === phone.trim() && a.password === password.trim(),
-  );
-  if (!account) {
-    throw new Error('INVALID_CREDENTIALS');
-  }
+async function signIn(username: string, password: string): Promise<void> {
+  // Delegates to real API — throws 'INVALID_CREDENTIALS', 'NETWORK_ERROR', or 'GENERIC_ERROR'
+  const response = await authApi.signIn({
+    username: username.trim(),
+    password: password.trim(),
+  });
+  // Persist the auth token so all subsequent API calls include it
+  await tokenManager.setToken(response.token);
+  // Persist a lightweight session record so the app knows who is logged in
   const session: LocalAuthSession = {
-    accountId: account.id,
+    accountId: response.user_id,
     createdAt: new Date().toISOString(),
   };
   await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  return account;
 }
 
 async function signUp(
-  name: string,
+  username: string,
   phone: string,
   password: string,
-): Promise<LocalAuthAccount> {
-  const accounts = await loadAccounts();
-  const normalized = phone.trim();
-  if (accounts.some((a) => a.phone === normalized)) {
-    throw new Error('PHONE_TAKEN');
-  }
-  const newAccount: LocalAuthAccount = {
-    id: randomUUID(),
-    name: name.trim(),
-    phone: normalized,
+): Promise<void> {
+  // Delegates to real API — throws 'PHONE_TAKEN', 'NETWORK_ERROR', or 'GENERIC_ERROR'
+  await authApi.signUp({
+    username: username.trim(),
+    phone: phone.trim(),
     password: password.trim(),
-    createdAt: new Date().toISOString(),
-  };
-  await AsyncStorage.setItem(
-    ACCOUNTS_KEY,
-    JSON.stringify([...accounts, newAccount]),
-  );
-  return newAccount;
+  });
 }
 
 async function getSession(): Promise<LocalAuthSession | null> {
@@ -95,6 +85,7 @@ async function getSession(): Promise<LocalAuthSession | null> {
 
 async function clearSession(): Promise<void> {
   await AsyncStorage.removeItem(SESSION_KEY);
+  await tokenManager.clearToken();
 }
 
 async function getSessionAccount(): Promise<LocalAuthAccount | null> {
