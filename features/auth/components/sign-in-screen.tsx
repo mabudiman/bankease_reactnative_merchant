@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useState } from "react";
 import {
   View,
@@ -68,7 +69,7 @@ export function SignInScreen() {
           <View style={styles.flex}>
             <ScrollView
               contentContainerStyle={styles.scrollContent}
-              keyboardShouldPersistTaps='handled'
+              keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
             >
               {/* ── Header (purple) ── */}
@@ -76,11 +77,11 @@ export function SignInScreen() {
                 <View style={styles.headerRow}>
                   <Pressable
                     style={styles.backButton}
-                    accessibilityRole='button'
-                    accessibilityLabel='Go back'
+                    accessibilityRole="button"
+                    accessibilityLabel="Go back"
                   >
                     <Ionicons
-                      name='chevron-back'
+                      name="chevron-back"
                       size={20}
                       color={Colors.white}
                     />
@@ -101,7 +102,7 @@ export function SignInScreen() {
                 <LockIcon
                   width={HERO_SIZE * 1.5}
                   height={HERO_SIZE * 1.5}
-                  accessibilityLabel='Security illustration'
+                  accessibilityLabel="Security illustration"
                 />
               </View>
 
@@ -126,26 +127,26 @@ export function SignInScreen() {
                     style={[
                       styles.purpleInputWrapper,
                       styles.passwordRow,
-                      { marginTop: Spacing.md }
+                      { marginTop: Spacing.md },
                     ]}
                   >
                     <TextInput
                       style={[styles.purpleInput, styles.passwordInput]}
-                      placeholder='Password'
+                      placeholder="Password"
                       placeholderTextColor={Colors.placeholderText}
                       secureTextEntry={!showPassword}
                       value={password}
                       onChangeText={setPassword}
                       autoCapitalize='none'
                       autoCorrect={false}
-                      accessibilityLabel='Password input'
-                      returnKeyType='done'
+                      accessibilityLabel="Password input"
+                      returnKeyType="done"
                       onSubmitEditing={handleSignIn}
                     />
                     <Pressable
                       onPress={() => setShowPassword((prev) => !prev)}
                       style={styles.passwordToggle}
-                      accessibilityRole='button'
+                      accessibilityRole="button"
                       accessibilityLabel={
                         showPassword ? "Hide password" : "Show password"
                       }
@@ -163,56 +164,59 @@ export function SignInScreen() {
               {/* ── White Panel — starts halfway through password input ── */}
               <View style={styles.whitePanel}>
                 {/* Forgot password */}
-                <TouchableOpacity style={styles.forgotPassword}>
-                  <ThemedText type='caption' style={styles.forgotText}>
+                <TouchableOpacity
+                  style={styles.forgotPassword}
+                  onPress={() => router.push("/forgot-password" as any)}
+                >
+                  <ThemedText type="caption" style={styles.forgotText}>
                     {t("signIn.forgotPassword")}
                   </ThemedText>
                 </TouchableOpacity>
 
                 {/* Sign In Button */}
                 <ThemedButton
-                  title='Sign in'
-                  variant='primary'
+                  title="Sign in"
+                  variant="primary"
                   loading={isLoading}
                   disabled={!isFormValid}
                   onPress={handleSignIn}
                   style={[styles.signInButton, { borderRadius: Radius.md }]}
-                  accessibilityLabel='Sign in'
+                  accessibilityLabel="Sign in"
                   lightColor={isFormValid ? "#3629B7" : "#D1D5DB"}
                   darkColor={isFormValid ? "#3629B7" : "#4B5563"}
-                  lightTextColor='#FFFFFF'
-                  darkTextColor='#FFFFFF'
+                  lightTextColor="#FFFFFF"
+                  darkTextColor="#FFFFFF"
                 />
 
                 {/* Fingerprint / Biometric */}
                 <TouchableOpacity
                   style={styles.biometricButton}
                   onPress={handleBiometric}
-                  accessibilityRole='button'
-                  accessibilityLabel='Login with biometric'
+                  accessibilityRole="button"
+                  accessibilityLabel="Login with biometric"
                 >
                   <FingerprintIcon
                     width={FINGERPRINT_SIZE * 6}
                     height={FINGERPRINT_SIZE * 6}
-                    accessibilityLabel='Fingerprint icon'
+                    accessibilityLabel="Fingerprint icon"
                   />
                 </TouchableOpacity>
 
                 {/* Footer */}
                 <View style={styles.footer}>
                   <View style={styles.footerTopRow}>
-                    <ThemedText type='caption' style={styles.footerText}>
+                    <ThemedText type="caption" style={styles.footerText}>
                       Don't have an account?
                     </ThemedText>
                   </View>
 
                   <View style={styles.footerBottomRow}>
                     <Pressable
-                      accessibilityRole='link'
-                      accessibilityLabel='Sign up'
+                      accessibilityRole="link"
+                      accessibilityLabel="Sign up"
                       onPress={() => router.push("/sign-up")}
                     >
-                      <ThemedText type='caption' style={styles.signUpText}>
+                      <ThemedText type="caption" style={styles.signUpText}>
                         Sign Up
                       </ThemedText>
                     </Pressable>
@@ -230,13 +234,13 @@ export function SignInScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.primary
+    backgroundColor: Colors.primary,
   },
   safeArea: {
-    flex: 1
+    flex: 1,
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
@@ -246,11 +250,11 @@ const styles = StyleSheet.create({
   // ── Header ──
   headerContainer: {
     marginTop: Spacing.md,
-    paddingHorizontal: Spacing.lg
+    paddingHorizontal: Spacing.lg,
   },
   headerRow: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   backButton: {
     width: 36,
@@ -258,22 +262,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: Radius.full,
-    marginRight: Spacing.sm
+    marginRight: Spacing.sm,
   },
   headerTitle: {
     color: Colors.white,
     fontSize: 26,
     fontFamily: Fonts.medium,
-    letterSpacing: 0.5
+    letterSpacing: 0.5,
   },
   headerTextContainer: {
-    marginTop: Spacing.xxl
+    marginTop: Spacing.xxl,
   },
   headerSubtitle: {
     color: Colors.textBlack,
     fontSize: 12,
     fontFamily: Fonts.regular,
-    letterSpacing: 0.2
+    letterSpacing: 0.2,
   },
 
   // ── Hero ──
@@ -281,7 +285,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: HERO_SIZE + 45,
-    marginTop: Spacing.sm
+    marginTop: Spacing.sm,
   },
 
   // ── Phone (purple area) ──
@@ -289,12 +293,12 @@ const styles = StyleSheet.create({
     position: "relative",
     paddingHorizontal: Spacing.md,
     marginTop: Spacing.xxl,
-    zIndex: 20
+    zIndex: 20,
   },
   passwordFloating: {
     position: "relative",
     zIndex: 20,
-    elevation: 20
+    elevation: 20,
   },
   purpleInputWrapper: {
     borderWidth: 1,
@@ -323,7 +327,7 @@ const styles = StyleSheet.create({
     paddingTop: 44,
     paddingBottom: Platform.OS === "ios" ? 28 : Spacing.md + Spacing.sm,
     alignItems: "center",
-    zIndex: 1
+    zIndex: 1,
   },
 
   // ── Sheet inputs ──
@@ -335,13 +339,13 @@ const styles = StyleSheet.create({
     backgroundColor: SHEET_INPUT_BG,
     height: 52,
     justifyContent: "center",
-    paddingHorizontal: Spacing.lg
+    paddingHorizontal: Spacing.lg,
   },
   sheetInput: {
     color: Colors.textBlack,
     fontSize: 14,
     flex: 1,
-    fontFamily: Fonts.regular
+    fontFamily: Fonts.regular,
   },
   passwordRow: {
     flexDirection: "row",
@@ -355,18 +359,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     alignSelf: "stretch",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   forgotPassword: {
     alignSelf: "flex-end",
     paddingRight: Spacing.sm,
     // marginTop: Spacing.xs,
-    marginBottom: Spacing.md
+    marginBottom: Spacing.md,
   },
   forgotText: {
     color: Colors.textMuted,
     fontSize: 14,
-    fontFamily: Fonts.regular
+    fontFamily: Fonts.regular,
   },
 
   // ── Error ──
@@ -375,13 +379,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.regular,
     textAlign: "center",
-    marginBottom: Spacing.xs
+    marginBottom: Spacing.xs,
   },
 
   // ── Buttons ──
   signInButton: {
     width: "100%",
-    marginTop: Spacing.lg
+    marginTop: Spacing.lg,
   },
   biometricButton: {
     width: 58,
@@ -391,37 +395,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: Spacing.xxl,
-    marginBottom: Spacing.lg
+    marginBottom: Spacing.lg,
   },
 
   // ── Footer ──
   footer: {
     width: "100%",
-    marginTop: 12
+    marginTop: 12,
   },
 
   footerTopRow: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   footerBottomRow: {
     marginTop: 6,
     alignItems: "flex-end",
     justifyContent: "center",
-    paddingRight: Spacing.xs
+    paddingRight: Spacing.xs,
   },
 
   footerText: {
     color: Colors.textBlack,
     fontSize: 12.5,
     fontFamily: Fonts.regular,
-    textAlign: "center"
+    textAlign: "center",
   },
 
   signUpText: {
     color: Colors.signUpLink,
     fontFamily: Fonts.semiBold,
-    fontSize: 12.5
-  }
+    fontSize: 12.5,
+  },
 });
