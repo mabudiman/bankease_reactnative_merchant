@@ -2,7 +2,7 @@ import React from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createTestQueryClient } from "@/test-utils/createTestQueryClient";
 import { I18nProvider } from "@/core/i18n";
-import { translations } from "@/app/i18n";
+import { translations } from "@/core/i18n/translations";
 
 /**
  * Create a wrapper for the test environment.
