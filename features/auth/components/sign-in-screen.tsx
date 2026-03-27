@@ -18,6 +18,8 @@ import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedButton } from "@/components/ui/themed-button";
 import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
 import { authService } from "../services/auth-service";
+import { profileApi } from "@/features/profile/api/profile-api";
+import { ApiError } from "@/core/api/errors";
 import { useTranslation } from "@/core/i18n/useTranslation";
 import LockIcon from "@/assets/svgs/illustration.svg";
 import FingerprintIcon from "@/assets/svgs/fingerprint.svg";
@@ -47,13 +49,26 @@ export function SignInScreen() {
     setIsLoading(true);
     try {
       await authService.signIn(username, password);
+
+      // Verify profile exists before entering the dashboard
+      const session = await authService.getSession();
+      if (!session) throw new Error('SESSION_ERROR');
+      await profileApi.getProfile(session.accountId);
+
       router.replace("/(tabs)");
     } catch (err) {
-      const msg =
-        err instanceof Error && err.message === "INVALID_CREDENTIALS"
-          ? "Username or password is incorrect."
-          : "Something went wrong. Please try again.";
-      Alert.alert("Failed", msg);
+      if (err instanceof ApiError && err.status === 404) {
+        await authService.clearSession();
+        Alert.alert(
+          'Profile Not Found',
+          'Your profile was not found. Please contact support.',
+        );
+      } else if (err instanceof Error && err.message === 'INVALID_CREDENTIALS') {
+        Alert.alert('Failed', 'Username or password is incorrect.');
+      } else {
+        await authService.clearSession();
+        Alert.alert('Failed', 'Something went wrong. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
