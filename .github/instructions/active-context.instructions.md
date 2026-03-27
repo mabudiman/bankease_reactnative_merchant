@@ -5,7 +5,7 @@ applyTo: '**'
 # Active Context
 
 ## Status Saat Ini
-Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile Edit screen selesai dengan full CRUD ke real API (26 Maret 2026). useFocusEffect untuk refresh Home saat kembali dari profile. 90 unit test lolos.
+Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile Edit screen selesai dengan full CRUD ke real API (26 Maret 2026). useFocusEffect untuk refresh Home saat kembali dari profile. Search feature unit tests ditambahkan (27 Maret 2026) — 5 file, 37 test baru. Total 127 unit test lolos.
 
 ## Fokus Kerja Saat Ini
 - **Profile Edit selesai**: GET profile dari `http://4.193.104.245:8080/api/profile/{uuid}`, form pre-fill, PUT update, alert success/failed, tombol disabled kalau belum semua field terisi
@@ -14,6 +14,7 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - **Dashboard Home selesai (refinement)**: Floating card navbar, stacked card visual, 3-color gradient kartu, PNG asset navbar + notification, FeatureMenuGrid plain-View
 - **Privilege-based menu**: demo-001 → 3 menu; demo-002 → semua 9 menu; akun baru → hanya Account and Card
 - **demo-001**: 2 kartu (VISA navy-blue, MC purple); **demo-002**: 2 kartu (VISA green, MC dark navy)
+- **Search feature unit tests selesai (27 Mar 2026)**: 5 file test, 37 tests — API, hooks, SearchCategoryCard, ExchangeRateRow, BranchRow
 - Auth backend (MSW/API) masih ditunda ke fase berikutnya
 - Auth session restoration (cold-start) masih ditunda
 - Kandidat fitur berikutnya: Payout Status Polling, Saved Beneficiaries, Screenshot Warning UI
@@ -132,6 +133,8 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - Setiap feature baru yang menambah locale harus juga mendaftarkan import di `app/i18n.ts`
 
 ## Insights & Pelajaran
+- **Search feature test pattern**: API test cukup import fungsi dan await langsung — MSW handler di `mocks/handlers.ts` sudah intercept tanpa setup tambahan; hook test pakai `renderHook` + `waitFor(() => isSuccess)` + `createWrapper()`; component test pakai `render` + `screen.getByText/getByRole` + `fireEvent.press`
+- **Import `MOCK_*` dari `mocks/data.ts`** saat assert jumlah/nilai di test API & hook — hindari magic number; pastikan test tetap valid jika seed data berubah
 - **`useFocusEffect` bukan `useEffect`** untuk hook yang perlu refresh saat navigasi kembali ke screen (e.g. `useDashboard`) — `useEffect([], [])` hanya jalan sekali saat mount, tidak re-run saat tab kembali aktif
 - **Form snapshot pattern**: untuk form edit yang harus revert-on-failure, gunakan `useRef snapshot` + `hasPopulated` ref; populate field hanya sekali; saveProfile kembalikan boolean; sukses → update snapshot; gagal → revert ke snapshot
 - **Jangan update profile state di hook saat save sukses** jika itu akan menyebabkan `useEffect([profile])` di screen meng-overwrite form yang sudah diisi user — ini root cause form reset
