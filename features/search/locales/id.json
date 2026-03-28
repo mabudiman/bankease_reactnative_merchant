@@ -20,5 +20,11 @@
   "rateColumn": "Tingkat",
   "searchBranchPlaceholder": "Bank",
   "individualCustomers": "Nasabah individu",
-  "corporateCustomers": "Nasabah korporat"
+  "corporateCustomers": "Nasabah korporat",
+  "exchangeTitle": "Penukaran",
+  "from": "Dari",
+  "to": "Ke",
+  "selectCurrency": "Pilih mata uang",
+  "currencyRate": "Kurs Mata Uang",
+  "exchangeButton": "Tukar"
 }

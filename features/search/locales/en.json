@@ -20,5 +20,11 @@
   "rateColumn": "Rate",
   "searchBranchPlaceholder": "Bank",
   "individualCustomers": "Individual customers",
-  "corporateCustomers": "Corporate customers"
+  "corporateCustomers": "Corporate customers",
+  "exchangeTitle": "Exchange",
+  "from": "From",
+  "to": "To",
+  "selectCurrency": "Select the currency",
+  "currencyRate": "Currency Rate",
+  "exchangeButton": "Exchange"
 }

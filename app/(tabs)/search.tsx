@@ -63,7 +63,7 @@ export default function SearchScreen() {
           subtitle={ts("exchangeSubtitle")}
           illustration={illustrations.exchange}
           bgColor={CATEGORY_BG.exchange}
-          onPress={handleComingSoon}
+          onPress={() => router.push("/search/exchange" as any)}
         />
       </ScrollView>
     </SafeAreaView>

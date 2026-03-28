@@ -9,11 +9,11 @@ import {
   Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/ui/themed-text";
-import { ThemedButton } from "@/components/ui/themed-button";
-import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
+import { ScreenHeader } from "@/components/ui/screen-header";
+import { PrimaryButton } from "@/components/ui/primary-button";
+import { Colors, Spacing, Fonts, Radius } from "@/constants/theme";
 import { useTranslation } from "@/core/i18n";
 
 export function ForgotPasswordScreen() {
@@ -45,17 +45,7 @@ export function ForgotPasswordScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* Header */}
-            <View style={styles.header}>
-              <Pressable
-                onPress={() => router.back()}
-                style={styles.backButton}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
-              </Pressable>
-              <ThemedText style={styles.headerTitle}>{t("forgotPassword")}</ThemedText>
-            </View>
+            <ScreenHeader title={t("forgotPassword")} />
 
             {/* OTP Card */}
             <View style={styles.card}>
@@ -92,20 +82,12 @@ export function ForgotPasswordScreen() {
             </View>
 
             {/* Change Password Button */}
-            <View style={styles.buttonContainer}>
-              <ThemedButton
-                title={t("changePassword")}
-                variant="primary"
-                disabled={!isCodeValid}
-                onPress={handleChangePassword}
-                style={styles.submitButton}
-                lightColor={isCodeValid ? Colors.primary : Colors.buttonDisabled}
-                darkColor={isCodeValid ? Colors.primary : Colors.buttonDisabled}
-                lightTextColor={isCodeValid ? Colors.white : Colors.buttonDisabledText}
-                darkTextColor={isCodeValid ? Colors.white : Colors.buttonDisabledText}
-                accessibilityLabel="Change password"
-              />
-            </View>
+            <PrimaryButton
+              title={t("changePassword")}
+              disabled={!isCodeValid}
+              onPress={handleChangePassword}
+              accessibilityLabel="Change password"
+            />
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -124,25 +106,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: Spacing.lg,
-  },
-
-  // Header
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: Spacing.md,
-    gap: Spacing.sm,
-  },
-  backButton: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.bold,
-    color: Colors.textBlack,
   },
 
   // Card
@@ -209,15 +172,5 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     color: Colors.textMuted,
     lineHeight: 20,
-  },
-
-  // Button
-  buttonContainer: {
-    paddingVertical: Spacing.lg,
-  },
-  submitButton: {
-    width: "100%",
-    borderRadius: Radius.md,
-    minHeight: 52,
   },
 });
