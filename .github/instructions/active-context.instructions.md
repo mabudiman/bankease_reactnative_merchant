@@ -1,39 +1,43 @@
 ---
-applyTo: '**'
+applyTo: "**"
 ---
 
 # Active Context
 
 ## Status Saat Ini
-Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile Edit screen selesai dengan full CRUD ke real API (26 Maret 2026). Sign Up screen terhubung ke real API. Sign In screen terhubung ke real API `POST http://4.193.104.245:3031/api/auth/signin` dengan field username (26 Maret 2026). Token JWT disimpan ke AsyncStorage `@auth:token` + in-memory cache via `tokenManager`, di-inject otomatis ke semua API call via `core/api/client.ts`. Sign Up menampilkan Alert sukses sebelum kembali ke Sign In. `user_id` dari response sign-in dipakai langsung sebagai `accountId` session + UUID profile API. Input validation ditambahkan di ProfileScreen & SignUpScreen. SignIn screen pakai i18n + navigasi ke forgot-password. 99 unit test lolos.
+
+Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile Edit screen selesai dengan full CRUD ke real API (26 Maret 2026). useFocusEffect untuk refresh Home saat kembali dari profile. Search feature unit tests ditambahkan (27 Maret 2026) — 5 file, 37 test baru. Total 127 unit test lolos.
 
 ## Fokus Kerja Saat Ini
-- **Sign In Real API selesai**: `POST http://4.193.104.245:3031/api/auth/signin`, body: `{ username, password }`, on success → simpan token + session → navigate `/(tabs)`, on error → `Alert.alert('Failed', msg)`
-- **`user_id` dari SignIn response**: disimpan sebagai `accountId` di session (`@auth:session`); dipakai langsung sebagai UUID ke `GET/PUT /api/profile/{user_id}` — tidak perlu mapping lagi
-- **`PROFILE_ID_MAP` dihapus**: `profileService` langsung pass `accountId` ke API tanpa resolusi
-- **Token Manager** (`core/api/token-manager.ts`): `setToken/getToken/clearToken/loadToken` — in-memory + AsyncStorage `@auth:token`; di-inject ke semua `request()` via `Authorization: Bearer`
-- **Sign Up success Alert**: `Alert.alert('Sign Up Successful', ..., [{ text: 'OK', onPress: () => router.back() }])` — user tap OK baru berpindah ke sign-in
-- **Sign Up Real API selesai**: `POST http://4.193.104.245:3031/api/auth/signup`, body: `{ username, phone, password }`, on success → Alert success, on error → tampil pesan error
-- **authApi** di `features/auth/api/index.ts`: `fetch` langsung ke `http://4.193.104.245:3031`; `signIn` error: 401/403 → `INVALID_CREDENTIALS`, network → `NETWORK_ERROR`; `signUp` error: 409/422 → `PHONE_TAKEN`; network → `NETWORK_ERROR`
-- **Input validation ProfileScreen**: card number → digits + spaces only; invalid char stripped silently + inline error; `isAllFilled` blocks submit if `cardNumberError !== null`
-- **Input validation SignUpScreen**: username → no spaces; phone → digits + optional leading `+`; password → min 6 chars; all shown as inline `fieldError` text below input; `isFormValid` blocks submit
-- **SignIn screen i18n**: `useTranslation("auth")` — title, subtitle, username placeholder, forgot password text semua dari locale keys
-- **Forgot password navigation**: `TouchableOpacity` forgot password di sign-in screen kini `onPress={() => router.push('/forgot-password')}` → `ForgotPasswordScreen`
+
+- **Profile Edit selesai**: GET profile dari `http://4.193.104.245:8080/api/profile/{uuid}`, form pre-fill, PUT update, alert success/failed, tombol disabled kalau belum semua field terisi
+- **Profile image**: ditampilkan di ProfileScreen (avatar atas) dan DashboardHeader (Home) — fallback ke Ionicons person kalau `image` null/empty
+- **Dashboard Home refresh**: `useDashboard` sekarang pakai `useFocusEffect` — data di-fetch ulang setiap kali tab Home aktif/fokus
+- **Dashboard Home selesai (refinement)**: Floating card navbar, stacked card visual, 3-color gradient kartu, PNG asset navbar + notification, FeatureMenuGrid plain-View
+- **Privilege-based menu**: demo-001 → 3 menu; demo-002 → semua 9 menu; akun baru → hanya Account and Card
+- **demo-001**: 2 kartu (VISA navy-blue, MC purple); **demo-002**: 2 kartu (VISA green, MC dark navy)
+- **Search feature unit tests selesai (27 Mar 2026)**: 5 file test, 37 tests — API, hooks, SearchCategoryCard, ExchangeRateRow, BranchRow
+- Auth backend (MSW/API) masih ditunda ke fase berikutnya
+- Auth session restoration (cold-start) masih ditunda
+- Kandidat fitur berikutnya: Payout Status Polling, Saved Beneficiaries, Screenshot Warning UI
 
 ## Keputusan Aktif & Pertimbangan
 
 ### Arsitektur
+
 - Feature-first layout dengan `app/` sebagai thin routing layer
 - `usePayoutFlow` sebagai single orchestration hook untuk entire payout journey
 - Custom native Expo module (`expo-screen-security`) — tidak boleh menggunakan library biometrik pihak ketiga
 
 ### Konvensi Kode
+
 - Jumlah uang selalu dalam **minor unit** (pence/cent) di API dan state internal
 - Konversi ke major unit hanya untuk tampilan (`utils/money.ts`)
 - IBAN dinormalisasi (uppercase, tanpa spasi) sebelum submit
 - Error class hierarchy di `core/api/errors.ts` — gunakan ini, jangan string error
 
 ### Pola Testing
+
 - Unit test untuk logic murni dan component render
 - MSW untuk integration test API
 - Maestro untuk E2E flow
@@ -41,17 +45,20 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 ## Pola Penting yang Perlu Diingat
 
 ### Saat Menambah Filter / Query Parameter Baru ke useInfiniteQuery
+
 - Masukkan parameter ke `queryKey` agar TanStack Query auto-refetch & reset pagination saat nilai berubah
 - Pattern: `queryKey: ["activity", dateFrom ?? null, dateTo ?? null]`
 - Helper date range di `utils/date.ts` — `getDateRangeForFilter(filter)` return `{ dateFrom, dateTo } | null`
 - `null` berarti "All" (tidak kirim params ke API)
 
 ### Saat Menambah Filter Bar Horizontal
+
 - Gunakan `ScrollView horizontal` dengan `flexGrow: 0, flexShrink: 0` di `style` — **WAJIB**, tanpa ini `ScrollView` akan memenuhi seluruh tinggi layar
 - Chips menggunakan `Pressable` + `accessibilityState={{ selected: isActive }}`
 - Active chip: background `Colors.light.tint` + text putih; inactive chip: border `#C7C7CC` + text `#687076`
 
 ### Saat Menambah Modal Baru (pola dari ActivityDetailModal)
+
 - Gunakan `React Native Modal` dengan `transparent` + `animationType="fade"` + overlay `rgba(0,0,0,0.45)`
 - Container: `borderRadius: 16`, `padding: 20`, `gap: 20`
 - Pola `Row` helper component (label + value) untuk menampilkan detail field
@@ -60,21 +67,25 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - `memo()` pada komponen modal untuk cegah re-render berlebih
 
 ### Saat Menambah Fitur Baru
+
 1. Buat folder di `features/<nama-fitur>/` dengan struktur: `api/`, `components/`, `hooks/`, `services/`, `locales/`, `types.ts`
 2. Gunakan `core/api/client.ts` untuk HTTP request
 3. Extend `core/api/errors.ts` jika ada error baru
 4. Tambahkan query key baru di TanStack Query
 
 ### Saat Mengedit Payout Flow
+
 - Logic utama ada di `features/payout/hooks/usePayoutFlow.ts`
 - Jangan tambahkan business logic di `app/(tabs)/payouts.tsx`
 - Idempotency key di-generate sekali di `start()`, jangan di `confirm()`
 
 ### Saat Mengedit Komponen
+
 - Gunakan `ThemedText` / `ThemedView` dari `components/ui/` untuk dukungan dark mode otomatis
 - Teks user-facing harus via i18n (`useTranslation` hook)
 
 ### Saat Membangun Auth Screen (pola dari Sign Up)
+
 - Screen Sign In tetap di `app/index.tsx` sebagai landing default
 - Screen Sign Up di `app/sign-up.tsx` — route terpisah, bukan overlay/modal
 - Navigasi antar auth screen: `router.push('/sign-up')` dari sign-in, `router.back()` dari sign-up
@@ -89,6 +100,7 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - `SafeAreaView edges={['top']}` hanya membungkus header section (flex:0), bukan seluruh screen
 
 ### Saat Menambah Local Auth Dummy (AsyncStorage)
+
 - Service di `features/auth/services/auth-service.ts` — tiga concern terpisah: `signIn`, `signUp`, `getSession`/`clearSession`, `getSessionAccount`
 - Storage keys dipisah: `@auth:accounts` untuk array akun, `@auth:session` untuk session aktif
 - Seed data pre-loaded pada akses `loadAccounts()` pertama kali (jika storage kosong)
@@ -96,6 +108,7 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - `getSessionAccount()` = `getSession()` + `loadAccounts()` → return `LocalAuthAccount | null`
 
 ### Saat Membangun Profile Edit Screen
+
 - `ProfileScreen` di `features/profile/components/ProfileScreen.tsx` — di-route dari `app/(tabs)/settings.tsx`
 - `useProfile()` hook: load dari `profileService.loadProfile(accountId)` → GET real API; save via `profileService.saveProfile(accountId, data)` → PUT real API
 - `profileService` punya `PROFILE_ID_MAP` untuk mapping dummy ID (`demo-001`) ke UUID API nyata (`da08ecfe-...`); akun sign-up baru sudah pakai UUID langsung
@@ -108,6 +121,7 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - **Profile image**: tampil `<Image source={{ uri: profile.image }}>` di avatar jika `profile.image` ada; fallback ke `<Ionicons name="person">`; avatar `overflow: 'hidden'` wajib agar gambar ter-clip jadi bulat
 
 ### Saat Membangun Dashboard Home (pola dari Dashboard feature)
+
 - `useDashboard()` hook menggunakan **`useFocusEffect` + `useCallback`** (bukan `useEffect`) agar data di-fetch ulang setiap kali screen/tab aktif — kritis untuk sinkronisasi setelah user edit profile lalu kembali ke Home
 - `dashboardService.getPrivileges(accountId)` — synchronous, hardcoded ROLE_MAP, tidak AsyncStorage
 - `dashboardService.loadCards(accountId)` — AsyncStorage key `@dashboard:cards`, upsert seed per accountId by card id
@@ -137,6 +151,7 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - Setiap feature baru yang menambah locale harus juga mendaftarkan import di `app/i18n.ts`
 
 ### Saat Membangun Token Manager / Auth Token
+
 - `core/api/token-manager.ts` — module-level `let _token: string | null` untuk synchronous access di `request()` headers; juga persist ke `AsyncStorage '@auth:token'` untuk cold-start session restoration
 - `loadToken()` dipanggil sekali di `app/_layout.tsx` `useEffect` saat `isReady` true — sebelum user membuka halaman apapun yang butuh auth
 - `getToken()` synchronous — dipakai di `core/api/client.ts` saat build request headers
@@ -144,6 +159,7 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - Test file yang mengimport `client.ts` (atau modul apapun yang transitif import `token-manager.ts`) harus menambahkan `jest.mock('@/core/api/token-manager', ...)` agar tidak crash karena AsyncStorage NativeModule null
 
 ### Saat Menambah Input Validation (pola dari ProfileScreen & SignUpScreen)
+
 - **Card number / digit-only field**: pakai `v.replace(/[^\d\s]/g, '')` untuk strip silently; set `fieldError` state jika ada char yang di-strip; `isAllFilled`/`isFormValid` harus cek `fieldError === null`
 - **No-space field (username)**: cek `/\s/.test(v)` → set `nameError`; strip tidak dilakukan (user harus hapus manual — lebih jelas)
 - **Phone field** (`+` + digits only): `v.replace(/(?!^\+)[^\d]/g, '')` — pertahankan `+` hanya di posisi 0; strip selain itu
@@ -153,6 +169,9 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - **`isFormValid` / `isAllFilled`** harus include semua error state: `cardNumberError === null && nameError === null && phoneError === null && passwordError === null`
 
 ## Insights & Pelajaran
+
+- **Search feature test pattern**: API test cukup import fungsi dan await langsung — MSW handler di `mocks/handlers.ts` sudah intercept tanpa setup tambahan; hook test pakai `renderHook` + `waitFor(() => isSuccess)` + `createWrapper()`; component test pakai `render` + `screen.getByText/getByRole` + `fireEvent.press`
+- **Import `MOCK_*` dari `mocks/data.ts`** saat assert jumlah/nilai di test API & hook — hindari magic number; pastikan test tetap valid jika seed data berubah
 - **`useFocusEffect` bukan `useEffect`** untuk hook yang perlu refresh saat navigasi kembali ke screen (e.g. `useDashboard`) — `useEffect([], [])` hanya jalan sekali saat mount, tidak re-run saat tab kembali aktif
 - **Form snapshot pattern**: untuk form edit yang harus revert-on-failure, gunakan `useRef snapshot` + `hasPopulated` ref; populate field hanya sekali; saveProfile kembalikan boolean; sukses → update snapshot; gagal → revert ke snapshot
 - **Jangan update profile state di hook saat save sukses** jika itu akan menyebabkan `useEffect([profile])` di screen meng-overwrite form yang sudah diisi user — ini root cause form reset
@@ -184,10 +203,3 @@ Dashboard Home UI polling & visual refinement selesai (25 Maret 2026). Profile E
 - **Shell backtick escaping** di `node -e` dapat membuang baris yang mengandung `!` (bash history expansion) — solusi: gunakan `node -p` atau tulis file via script JS terpisah
 - **`AccountCard` gunakan `width: '100%'`** bukan pixel fixed — agar wrapper layer (stacked carousel) yang mengontrol lebar, bukan card itu sendiri
 - **Stacked card carousel**: render `[...layers].reverse()` agar kartu belakang di-render pertama (z-order lebih rendah); gunakan `logicalIdx` (0=depan) untuk offset & opacity; `position:absolute` + `left/right inset` untuk efek tumpukan
-- **`core/api/token-manager.ts` import AsyncStorage langsung** — setiap test file yang transitif mengimport `client.ts` HARUS menambahkan `jest.mock('@/core/api/token-manager', ...)` agar tidak crash dengan `NativeModule: AsyncStorage is null` di Jest
-- **Sign In real API**: sign-in screen pakai field `username` (bukan `phone`); `keyboardType='default'`; error ditampilkan via `Alert.alert('Failed', msg)` bukan inline text — lebih konsisten dengan pola layar lain
-- **`authService.signIn` returns `void`** (tidak lagi `LocalAuthAccount`) — caller tidak perlu return value; token + session tersimpan sebagai side effect
-- **`user_id` dari SignIn response adalah UUID profile** — simpan sebagai `accountId` di session; `profileService` langsung pakai `accountId` tanpa mapping; `PROFILE_ID_MAP` sudah dihapus
-- **`SignInResponse.user_id` wajib** (tidak optional) — API selalu return field ini; tidak perlu fallback ke username
-- **SignIn screen i18n**: tambah `useTranslation("auth")` lalu ganti semua hardcoded string (title/subtitle/placeholder/forgotPassword) dengan `t("signIn.*")` keys — pola sama dengan SignUpScreen
-- **Forgot password link**: `TouchableOpacity` dengan `onPress={() => router.push('/forgot-password')}` di sign-in screen; route `app/forgot-password.tsx` sudah ada, export `ForgotPasswordScreen` langsung
