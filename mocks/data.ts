@@ -1,4 +1,5 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
+import type { Beneficiary } from '@/features/mobile-prepaid/types';
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1", country: "Vietnam", currency: "VND", flag: "🇻🇳", buy: 1.403, sell: 1.746 },
@@ -34,4 +35,9 @@ export const MOCK_BRANCHES: Branch[] = [
   { id: "3", name: "Bank 1657 Riverside Drive", distance: "5,3 km", latitude: -6.195, longitude: 106.825 },
   { id: "4", name: "Bank Rutherford", distance: "70m", latitude: -6.21, longitude: 106.812 },
   { id: "5", name: "Bank 1656 Union Street", distance: "30m", latitude: -6.208, longitude: 106.814 },
+];
+
+export const MOCK_BENEFICIARIES: Beneficiary[] = [
+  { id: 'ben-001', name: 'Emma', phone: '+8564757899' },
+  { id: 'ben-002', name: 'Justin', phone: '+8123456789' },
 ];
