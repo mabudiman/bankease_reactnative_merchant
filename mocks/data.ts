@@ -1,4 +1,5 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
+import type { Message, MessageThread } from "@/features/messages/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
@@ -53,4 +54,66 @@ export const MOCK_BRANCHES: Branch[] = [
   { id: "13", name: "BRI KC Tanjung Priok",      distance: "8,4 km", latitude: -6.1085, longitude: 106.8756 },
   { id: "14", name: "BRI KCP Penjaringan",       distance: "6,0 km", latitude: -6.1228, longitude: 106.7952 },
   { id: "15", name: "BRI KC Pluit",              distance: "7,5 km", latitude: -6.1154, longitude: 106.8013 },
+];
+
+export const MOCK_MESSAGES: Message[] = [
+  { id: "1", title: "Bank of America", preview: "Bank of America : 256486 is the au...", date: new Date().toISOString(), iconColor: "#1A2B5F", iconName: "business" },
+  { id: "2", title: "Account",         preview: "Your account is limited. Please foll...", date: "2025-10-12T08:00:00.000Z", iconColor: "#E53935", iconName: "person" },
+  { id: "3", title: "Alert",           preview: "Your statement is ready for you to...", date: "2025-10-11T08:00:00.000Z", iconColor: "#1E88E5", iconName: "refresh" },
+  { id: "4", title: "Paypal",          preview: "Your account has been locked. Ple...", date: "2025-11-10T08:00:00.000Z", iconColor: "#F6A800", iconName: "logo-paypal" },
+  { id: "5", title: "Withdraw",        preview: "Dear customer, 2987456 is your co...", date: "2025-12-10T08:00:00.000Z", iconColor: "#26C6DA", iconName: "stats-chart" },
+];
+
+export const MOCK_MESSAGE_THREADS: MessageThread[] = [
+  {
+    id: "1",
+    title: "Bank of America",
+    messages: [
+      { id: "m1", text: "Did you attempt transaction on debit card ending in 0000 at Mechan1 in NJ for $1,200? Reply YES or NO", type: "received", date: "2018-08-10T09:00:00.000Z" },
+      { id: "m2", text: "Yes", type: "sent", date: "2018-08-10T09:05:00.000Z" },
+      { id: "m3", text: "Bank of America : 256486 is your authorization code which expires in 10 minutes. If you didn't request the code. Call : 18009898 for assistance", type: "received", date: "2018-08-10T09:10:00.000Z" },
+      { id: "m4", text: "Thanks!", type: "sent", date: "2018-08-10T09:15:00.000Z" },
+    ],
+  },
+  {
+    id: "2",
+    title: "Account",
+    messages: [
+      { id: "m5a", text: "Welcome to BankEase! Your merchant account has been successfully created.", type: "received", date: "2025-09-01T08:00:00.000Z" },
+      { id: "m5b", text: "Thank you! Excited to get started.", type: "sent", date: "2025-09-01T08:05:00.000Z" },
+      { id: "m5c", text: "Your monthly statement for September 2025 is now available. You can view it in the app.", type: "received", date: "2025-10-01T09:00:00.000Z" },
+      { id: "m5d", text: "Got it, thanks.", type: "sent", date: "2025-10-01T09:10:00.000Z" },
+      { id: "m5e", text: "We noticed an unusual sign-in attempt on your account on 10 Oct 2025 at 03:22 AM. Was this you?", type: "received", date: "2025-10-10T06:00:00.000Z" },
+      { id: "m5f", text: "No, that was not me.", type: "sent", date: "2025-10-10T06:05:00.000Z" },
+      { id: "m5g", text: "We have blocked the suspicious login and secured your account. Please reset your password as a precaution.", type: "received", date: "2025-10-10T06:07:00.000Z" },
+      { id: "m5h", text: "Done, I've just reset it.", type: "sent", date: "2025-10-10T06:15:00.000Z" },
+      { id: "m5i", text: "Your account is limited. Please follow the instructions to restore full access.", type: "received", date: "2025-10-12T08:00:00.000Z" },
+      { id: "m5j", text: "How do I restore access?", type: "sent", date: "2025-10-12T08:03:00.000Z" },
+      { id: "m5k", text: "Please visit the nearest BRI branch with your ID and merchant registration documents to complete the verification process.", type: "received", date: "2025-10-12T08:05:00.000Z" },
+      { id: "m5l", text: "Understood, I will go tomorrow.", type: "sent", date: "2025-10-12T08:08:00.000Z" },
+      { id: "m5m", text: "Your account has been fully restored. Thank you for completing the verification.", type: "received", date: "2025-10-13T10:00:00.000Z" },
+      { id: "m5n", text: "Great, thank you!", type: "sent", date: "2025-10-13T10:02:00.000Z" },
+    ],
+  },
+  {
+    id: "3",
+    title: "Alert",
+    messages: [
+      { id: "m6", text: "Your statement is ready for you to view.", type: "received", date: "2025-10-11T08:00:00.000Z" },
+    ],
+  },
+  {
+    id: "4",
+    title: "Paypal",
+    messages: [
+      { id: "m7", text: "Your account has been locked. Please contact support.", type: "received", date: "2025-11-10T08:00:00.000Z" },
+    ],
+  },
+  {
+    id: "5",
+    title: "Withdraw",
+    messages: [
+      { id: "m8", text: "Dear customer, 2987456 is your code for the withdrawal.", type: "received", date: "2025-12-10T08:00:00.000Z" },
+    ],
+  },
 ];

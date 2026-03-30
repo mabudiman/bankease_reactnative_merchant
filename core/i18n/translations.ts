@@ -11,6 +11,8 @@ import dashboardEn from "@/features/dashboard/locales/en.json";
 import dashboardId from "@/features/dashboard/locales/id.json";
 import profileEn from "@/features/profile/locales/en.json";
 import profileId from "@/features/profile/locales/id.json";
+import messagesEn from "@/features/messages/locales/en.json";
+import messagesId from "@/features/messages/locales/id.json";
 
 function flattenWithPrefix(
   obj: Record<string, string>,
@@ -33,6 +35,7 @@ export const translations: TranslationsByLocale = {
     flattenWithPrefix(authEn as Record<string, string>, "auth"),
     flattenWithPrefix(dashboardEn as Record<string, string>, "dashboard"),
     flattenWithPrefix(profileEn as Record<string, string>, "profile"),
+    flattenWithPrefix(messagesEn as Record<string, string>, "messages"),
   ),
   id: merge(
     flattenWithPrefix(commonId as Record<string, string>, "common"),
@@ -41,5 +44,6 @@ export const translations: TranslationsByLocale = {
     flattenWithPrefix(authId as Record<string, string>, "auth"),
     flattenWithPrefix(dashboardId as Record<string, string>, "dashboard"),
     flattenWithPrefix(profileId as Record<string, string>, "profile"),
+    flattenWithPrefix(messagesId as Record<string, string>, "messages"),
   ),
 };
