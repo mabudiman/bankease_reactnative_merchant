@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { View, StyleSheet, Alert, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui/themed-text';
+import { useRouter } from 'expo-router';
 import { useTranslation } from '@/core/i18n';
 import type { Privilege } from '../types';
 
@@ -11,8 +12,13 @@ interface MenuGridItemProps {
 
 function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
   const { t } = useTranslation();
+  const router = useRouter();
 
   function handlePress() {
+    if (privilege.code === 'MOBILE_PREPAID') {
+      router.push('/mobile-prepaid');
+      return;
+    }
     Alert.alert(
       t('dashboard.comingSoon.title'),
       t('dashboard.comingSoon.message'),
