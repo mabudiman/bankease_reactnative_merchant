@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,27 +7,26 @@ import {
   Platform,
   ScrollView,
   Pressable,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { ThemedText } from '@/components/ui/themed-text';
-import { ThemedButton } from '@/components/ui/themed-button';
-import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
-import { useTranslation } from '@/core/i18n';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { ThemedText } from "@/components/ui/themed-text";
+import { ThemedButton } from "@/components/ui/themed-button";
+import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
+import { useTranslation } from "@/core/i18n";
 
 export function ChangePasswordScreen() {
   const router = useRouter();
-  const { t } = useTranslation('auth');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const { t } = useTranslation("auth");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const passwordsMatch = newPassword === confirmPassword;
-  const showMismatchError =
-    confirmPassword.length > 0 && !passwordsMatch;
+  const showMismatchError = confirmPassword.length > 0 && !passwordsMatch;
   const isFormValid =
     newPassword.trim().length >= 6 &&
     confirmPassword.trim().length >= 6 &&
@@ -39,16 +38,16 @@ export function ChangePasswordScreen() {
     // TODO: call change password API
     setTimeout(() => {
       setIsLoading(false);
-      router.replace('/change-password-success');
+      router.replace("/change-password-success");
     }, 1500);
   }
 
   return (
     <View style={styles.root}>
-      <SafeAreaView style={styles.flex} edges={['top']}>
+      <SafeAreaView style={styles.flex} edges={["top"]}>
         <KeyboardAvoidingView
           style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <ScrollView
             contentContainerStyle={styles.scrollContent}
@@ -65,14 +64,14 @@ export function ChangePasswordScreen() {
               >
                 <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
               </Pressable>
-              <ThemedText style={styles.headerTitle}>{t('changePassword')}</ThemedText>
+              <ThemedText style={styles.headerTitle}>{t("changePassword")}</ThemedText>
             </View>
 
             {/* Form Card */}
             <View style={styles.card}>
               {/* New Password */}
               <View style={styles.inputGroup}>
-                <ThemedText style={styles.label}>{t('typeNewPassword')}</ThemedText>
+                <ThemedText style={styles.label}>{t("typeNewPassword")}</ThemedText>
                 <View style={styles.inputWrapper}>
                   <TextInput
                     style={styles.input}
@@ -85,11 +84,13 @@ export function ChangePasswordScreen() {
                   <Pressable
                     onPress={() => setShowNewPassword(!showNewPassword)}
                     accessibilityRole="button"
-                    accessibilityLabel={showNewPassword ? 'Hide password' : 'Show password'}
+                    accessibilityLabel={
+                      showNewPassword ? "Hide password" : "Show password"
+                    }
                     hitSlop={8}
                   >
                     <Ionicons
-                      name={showNewPassword ? 'eye' : 'eye-off'}
+                      name={showNewPassword ? "eye" : "eye-off"}
                       size={20}
                       color={Colors.textMuted}
                     />
@@ -99,11 +100,10 @@ export function ChangePasswordScreen() {
 
               {/* Confirm Password */}
               <View style={styles.inputGroup}>
-                <ThemedText style={styles.label}>{t('confirmPassword')}</ThemedText>
-                <View style={[
-                  styles.inputWrapper,
-                  showMismatchError && styles.inputError,
-                ]}>
+                <ThemedText style={styles.label}>{t("confirmPassword")}</ThemedText>
+                <View
+                  style={[styles.inputWrapper, showMismatchError && styles.inputError]}
+                >
                   <TextInput
                     style={styles.input}
                     secureTextEntry={!showConfirmPassword}
@@ -116,11 +116,13 @@ export function ChangePasswordScreen() {
                   <Pressable
                     onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                     accessibilityRole="button"
-                    accessibilityLabel={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    accessibilityLabel={
+                      showConfirmPassword ? "Hide password" : "Show password"
+                    }
                     hitSlop={8}
                   >
                     <Ionicons
-                      name={showConfirmPassword ? 'eye' : 'eye-off'}
+                      name={showConfirmPassword ? "eye" : "eye-off"}
                       size={20}
                       color={Colors.textMuted}
                     />
@@ -128,16 +130,14 @@ export function ChangePasswordScreen() {
                 </View>
                 {showMismatchError && (
                   <ThemedText style={styles.errorText}>
-                    {t('passwordsDoNotMatch')}
+                    {t("passwordsDoNotMatch")}
                   </ThemedText>
                 )}
               </View>
-            </View>
 
-            {/* Submit Button */}
-            <View style={styles.buttonContainer}>
+              {/* Submit Button */}
               <ThemedButton
-                title={t('changePassword')}
+                title={t("changePassword")}
                 variant="primary"
                 disabled={!isFormValid}
                 loading={isLoading}
@@ -160,7 +160,7 @@ export function ChangePasswordScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.cardBackground,
   },
   flex: {
     flex: 1,
@@ -172,16 +172,16 @@ const styles = StyleSheet.create({
 
   // Header
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: Spacing.md,
     gap: Spacing.sm,
   },
   backButton: {
     width: 36,
     height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
     fontSize: 20,
@@ -191,10 +191,15 @@ const styles = StyleSheet.create({
 
   // Card
   card: {
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.white,
     borderRadius: Radius.md,
     padding: Spacing.lg,
     marginTop: Spacing.sm,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.02,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
   // Input group
@@ -208,14 +213,14 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     height: 52,
     borderWidth: 1,
     borderColor: Colors.inputBorderLight,
     borderRadius: Radius.sm,
     paddingHorizontal: Spacing.lg,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.cardBackground,
   },
   input: {
     flex: 1,
@@ -234,12 +239,10 @@ const styles = StyleSheet.create({
   },
 
   // Button
-  buttonContainer: {
-    paddingVertical: Spacing.lg,
-  },
   submitButton: {
-    width: '100%',
+    width: "100%",
     borderRadius: Radius.md,
     minHeight: 52,
+    marginTop: Spacing.sm,
   },
 });
