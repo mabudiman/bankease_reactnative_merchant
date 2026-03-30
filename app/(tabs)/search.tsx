@@ -1,6 +1,7 @@
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "@/core/i18n";
 import { ThemedText } from "@/components/ui/themed-text";
 import { SearchCategoryCard } from "@/features/search/components/SearchCategoryCard";
@@ -31,6 +32,14 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <Pressable
+          onPress={() => router.navigate("/(tabs)" as any)}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back to Home"
+        >
+          <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
+        </Pressable>
         <ThemedText style={styles.headerTitle}>{t("common.search")}</ThemedText>
       </View>
       <ScrollView
@@ -76,13 +85,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   header: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: Spacing.md,
     paddingTop: Spacing.sm,
     paddingBottom: Spacing.md,
   },
+  backButton: {
+    marginRight: 8,
+  },
   headerTitle: {
-    fontFamily: Fonts.bold,
-    fontSize: 24,
+    fontFamily: Fonts.semiBold,
+    fontSize: 18,
     color: Colors.textBlack,
   },
   content: {

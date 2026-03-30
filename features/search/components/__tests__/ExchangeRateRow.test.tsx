@@ -5,19 +5,13 @@ import { createWrapper } from "@/test-utils/createWrapper";
 import { MOCK_EXCHANGE_RATES } from "@/mocks/data";
 import type { ExchangeRate } from "../../types";
 
-const SAMPLE: ExchangeRate = MOCK_EXCHANGE_RATES[0]; // Vietnam, VND, 🇻🇳, buy 1.403, sell 1.746
+const SAMPLE: ExchangeRate = MOCK_EXCHANGE_RATES[0]; // Vietnam, VND, VN, buy 1.403, sell 1.746
 
 describe("ExchangeRateRow", () => {
   it("renders the country name", () => {
     const { Wrapper } = createWrapper();
     render(<ExchangeRateRow item={SAMPLE} />, { wrapper: Wrapper });
     expect(screen.getByText(SAMPLE.country)).toBeOnTheScreen();
-  });
-
-  it("renders the flag emoji", () => {
-    const { Wrapper } = createWrapper();
-    render(<ExchangeRateRow item={SAMPLE} />, { wrapper: Wrapper });
-    expect(screen.getByText(SAMPLE.flag)).toBeOnTheScreen();
   });
 
   it("renders the buy rate", () => {
@@ -37,7 +31,6 @@ describe("ExchangeRateRow", () => {
     const koreanRate: ExchangeRate = MOCK_EXCHANGE_RATES[2]; // Korea, KRW
     render(<ExchangeRateRow item={koreanRate} />, { wrapper: Wrapper });
     expect(screen.getByText("Korea")).toBeOnTheScreen();
-    expect(screen.getByText("🇰🇷")).toBeOnTheScreen();
   });
 
   it("renders buy and sell as distinct values", () => {
@@ -46,7 +39,7 @@ describe("ExchangeRateRow", () => {
       id: "test-1",
       country: "TestLand",
       currency: "TST",
-      flag: "🏳",
+      countryCode: "RU",
       buy: 10.0,
       sell: 20.0,
     };
