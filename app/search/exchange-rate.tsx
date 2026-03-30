@@ -68,11 +68,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: Spacing.sm,
-    padding: 4,
   },
   headerTitle: {
-    fontFamily: Fonts.bold,
-    fontSize: 20,
+    fontFamily: Fonts.semiBold,
+    fontSize: 18,
     color: Colors.textBlack,
   },
   columnHeader: {
@@ -84,18 +83,18 @@ const styles = StyleSheet.create({
     borderBottomColor: "#F0F0F0",
   },
   flagPlaceholder: {
-    width: 36 + Spacing.sm,
+    width: Spacing.sm,
   },
   columnCountry: {
     flex: 1,
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
     fontSize: 13,
     color: Colors.textMuted,
   },
   columnValue: {
     width: 60,
     textAlign: "right",
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
     fontSize: 13,
     color: Colors.textMuted,
   },
