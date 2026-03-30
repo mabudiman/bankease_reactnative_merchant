@@ -47,11 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     padding: Spacing.md,
     marginBottom: Spacing.md,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    filter: [{ dropShadow: { offsetX: 0, offsetY: 6, standardDeviation: 6, color: "rgba(0,0,0,0.04)" } }],
   },
   cardPressed: {
     opacity: 0.85,
