@@ -29,9 +29,28 @@ export const MOCK_INTEREST_RATES: InterestRate[] = [
 ];
 
 export const MOCK_BRANCHES: Branch[] = [
-  { id: "1", name: "Bank 1656 Union Street", distance: "50m", latitude: -6.2, longitude: 106.816 },
-  { id: "2", name: "Bank Secaucus", distance: "1,2 km", latitude: -6.205, longitude: 106.82 },
-  { id: "3", name: "Bank 1657 Riverside Drive", distance: "5,3 km", latitude: -6.195, longitude: 106.825 },
-  { id: "4", name: "Bank Rutherford", distance: "70m", latitude: -6.21, longitude: 106.812 },
-  { id: "5", name: "Bank 1656 Union Street", distance: "30m", latitude: -6.208, longitude: 106.814 },
+  // Central Jakarta cluster
+  { id: "1",  name: "BRI KCU Gambir",           distance: "120m",   latitude: -6.1763, longitude: 106.8227 },
+  { id: "2",  name: "BRI KC Tanah Abang",        distance: "850m",   latitude: -6.1862, longitude: 106.8133 },
+  { id: "3",  name: "BRI KC Menteng",            distance: "1,1 km", latitude: -6.1953, longitude: 106.8318 },
+
+  // South Jakarta cluster
+  { id: "4",  name: "BRI KC Kebayoran Baru",     distance: "3,2 km", latitude: -6.2432, longitude: 106.7966 },
+  { id: "5",  name: "BRI KC Mampang Prapatan",   distance: "4,5 km", latitude: -6.2612, longitude: 106.8301 },
+  { id: "6",  name: "BRI KCP Cilandak",          distance: "6,7 km", latitude: -6.2944, longitude: 106.7975 },
+
+  // East Jakarta cluster
+  { id: "7",  name: "BRI KC Jatinegara",         distance: "5,0 km", latitude: -6.2154, longitude: 106.8697 },
+  { id: "8",  name: "BRI KCP Cakung",            distance: "9,3 km", latitude: -6.1982, longitude: 106.9326 },
+  { id: "9",  name: "BRI KC Kramat Jati",        distance: "7,8 km", latitude: -6.2573, longitude: 106.8742 },
+
+  // West Jakarta cluster
+  { id: "10", name: "BRI KC Grogol",             distance: "4,1 km", latitude: -6.1671, longitude: 106.7893 },
+  { id: "11", name: "BRI KCP Kebon Jeruk",       distance: "7,2 km", latitude: -6.1964, longitude: 106.7602 },
+  { id: "12", name: "BRI KC Taman Sari",         distance: "2,6 km", latitude: -6.1476, longitude: 106.8132 },
+
+  // North Jakarta cluster
+  { id: "13", name: "BRI KC Tanjung Priok",      distance: "8,4 km", latitude: -6.1085, longitude: 106.8756 },
+  { id: "14", name: "BRI KCP Penjaringan",       distance: "6,0 km", latitude: -6.1228, longitude: 106.7952 },
+  { id: "15", name: "BRI KC Pluit",              distance: "7,5 km", latitude: -6.1154, longitude: 106.8013 },
 ];

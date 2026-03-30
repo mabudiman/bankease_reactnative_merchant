@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   Pressable,
@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -35,6 +36,20 @@ export default function BranchScreen() {
 
   const { data, isLoading, isError, refetch } = useBranches(debouncedQuery);
 
+  const mapRef = useRef<MapView>(null);
+
+  useEffect(() => {
+    if (!data || data.length === 0) return;
+    const coordinates = data.map((b: Branch) => ({
+      latitude: b.latitude,
+      longitude: b.longitude,
+    }));
+    mapRef.current?.fitToCoordinates(coordinates, {
+      edgePadding: { top: 160, right: 140, bottom: 340, left: 140 },
+      animated: true,
+    });
+  }, [data]);
+
   const handleSearchChange = useCallback((text: string) => {
     setSearchText(text);
     if (debounceTimer.current) {
@@ -52,25 +67,31 @@ export default function BranchScreen() {
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={JAKARTA_REGION} showsUserLocation>
-        {data?.map((branch: Branch) => (
-          <Marker
-            key={branch.id}
-            coordinate={{ latitude: branch.latitude, longitude: branch.longitude }}
-            title={branch.name}
-          />
-        ))}
-      </MapView>
+      {/* Header */}
+      <SafeAreaView edges={["top"]} style={styles.header}>
+        <Pressable
+          onPress={() => router.back()}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
+          <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
+        </Pressable>
+        <ThemedText style={styles.headerTitle}>Branch</ThemedText>
+      </SafeAreaView>
 
-      {/* Floating back button */}
-      <Pressable
-        onPress={() => router.back()}
-        style={styles.backButton}
-        accessibilityRole="button"
-        accessibilityLabel="Go back"
-      >
-        <Ionicons name="chevron-back" size={24} color={Colors.textBlack} />
-      </Pressable>
+      <View style={styles.mapContainer}>
+        <MapView ref={mapRef} style={styles.map} initialRegion={JAKARTA_REGION} showsUserLocation>
+          {data?.map((branch: Branch) => (
+            <Marker
+              key={branch.id}
+              coordinate={{ latitude: branch.latitude, longitude: branch.longitude }}
+              title={branch.name}
+            >
+              <Ionicons name="location" size={32} color={Colors.primary} />
+            </Marker>
+          ))}
+        </MapView>
 
       {/* Bottom panel */}
       <View style={styles.panel}>
@@ -114,31 +135,41 @@ export default function BranchScreen() {
         )}
       </View>
     </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.white,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.white,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  headerTitle: {
+    fontFamily: Fonts.semiBold,
+    fontSize: 18,
+    color: Colors.textBlack,
+    marginLeft: Spacing.sm,
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mapContainer: {
+    flex: 1,
   },
   map: {
     flex: 1,
-  },
-  backButton: {
-    position: "absolute",
-    top: 56,
-    left: Spacing.md,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.white,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
   },
   panel: {
     position: "absolute",
@@ -169,8 +200,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.sm,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: Colors.white,
     borderRadius: Radius.pill,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
   },
@@ -179,7 +212,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.semiBold,
     fontSize: 14,
     color: Colors.textBlack,
     padding: 0,

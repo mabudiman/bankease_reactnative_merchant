@@ -13,7 +13,7 @@ export const BranchRow = memo(function BranchRow({ item }: Props) {
   return (
     <View style={styles.row}>
       <Ionicons
-        name="location-outline"
+        name="location"
         size={20}
         color={Colors.primary}
         style={styles.icon}
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: Spacing.sm + 4,
     paddingHorizontal: Spacing.md,
+    marginHorizontal: Spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: "#F0F0F0",
   },
@@ -40,12 +41,12 @@ const styles = StyleSheet.create({
   },
   name: {
     flex: 1,
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.semiBold,
     fontSize: 14,
     color: Colors.textBlack,
   },
   distance: {
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.semiBold,
     fontSize: 13,
     color: Colors.textMuted,
     marginLeft: Spacing.sm,
