@@ -31,3 +31,9 @@ export type Branch = {
   latitude: number;
   longitude: number;
 };
+
+export type CurrencyEntry = {
+  code: string;
+  label: string;
+  rate: number;
+};

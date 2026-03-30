@@ -1,4 +1,10 @@
-import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
+import type {
+  Branch,
+  CurrencyEntry,
+  ExchangeRate,
+  InterestRate,
+} from "@/features/search/types";
+import type { Provider, InternetBillDetail } from "@/features/payTheBill/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
@@ -53,4 +59,39 @@ export const MOCK_BRANCHES: Branch[] = [
   { id: "13", name: "BRI KC Tanjung Priok",      distance: "8,4 km", latitude: -6.1085, longitude: 106.8756 },
   { id: "14", name: "BRI KCP Penjaringan",       distance: "6,0 km", latitude: -6.1228, longitude: 106.7952 },
   { id: "15", name: "BRI KC Pluit",              distance: "7,5 km", latitude: -6.1154, longitude: 106.8013 },
+];
+
+export const CURRENCY_LIST: CurrencyEntry[] = [
+  { code: "AUD", label: "AUD (Australian Dollar)", rate: 1.53 },
+  { code: "CNY", label: "CNY (Chinese Yuan)", rate: 7.24 },
+  { code: "EUR", label: "EUR (Euro)", rate: 0.92 },
+  { code: "GBP", label: "GBP (British Pound Sterling)", rate: 0.79 },
+  { code: "IDR", label: "IDR (Indonesian Rupiah)", rate: 16350 },
+  { code: "JPY", label: "JPY (Japanese Yen)", rate: 149.5 },
+  { code: "MYR", label: "MYR (Malaysian Ringgit)", rate: 4.72 },
+  { code: "SAR", label: "SAR (Saudi Riyal)", rate: 3.75 },
+  { code: "SGD", label: "SGD (Singapore Dollar)", rate: 1.34 },
+  { code: "USD", label: "USD (United States Dollar)", rate: 1 },
+];
+
+export const INTERNET_BILL_DETAIL: InternetBillDetail = {
+  customerId: "#2345641ASS",
+  name: "Jackson Maine",
+  address: "403 East 4th Street, Santa Ana",
+  phoneNumber: "+8424599721",
+  code: "#2345641",
+  from: "01/09/2019",
+  to: "01/10/2019",
+  internetFee: "$50",
+  tax: "$0",
+  total: "$50",
+};
+
+export const MOCK_PROVIDERS: Provider[] = [
+  { id: "1", name: "Biznet" },
+  { id: "2", name: "Indihome" },
+  { id: "3", name: "MyRepublic" },
+  { id: "4", name: "XL Home" },
+  { id: "5", name: "CBN" },
+  { id: "6", name: "First Media" },
 ];

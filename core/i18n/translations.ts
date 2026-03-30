@@ -11,14 +11,11 @@ import dashboardEn from "@/features/dashboard/locales/en.json";
 import dashboardId from "@/features/dashboard/locales/id.json";
 import profileEn from "@/features/profile/locales/en.json";
 import profileId from "@/features/profile/locales/id.json";
+import payTheBillEn from "@/features/payTheBill/locales/en.json";
+import payTheBillId from "@/features/payTheBill/locales/id.json";
 
-function flattenWithPrefix(
-  obj: Record<string, string>,
-  prefix: string,
-): TranslationMap {
-  return Object.fromEntries(
-    Object.entries(obj).map(([k, v]) => [`${prefix}.${k}`, v]),
-  );
+function flattenWithPrefix(obj: Record<string, string>, prefix: string): TranslationMap {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [`${prefix}.${k}`, v]));
 }
 
 function merge(...maps: TranslationMap[]): TranslationMap {
@@ -33,6 +30,7 @@ export const translations: TranslationsByLocale = {
     flattenWithPrefix(authEn as Record<string, string>, "auth"),
     flattenWithPrefix(dashboardEn as Record<string, string>, "dashboard"),
     flattenWithPrefix(profileEn as Record<string, string>, "profile"),
+    flattenWithPrefix(payTheBillEn as Record<string, string>, "billScreen"),
   ),
   id: merge(
     flattenWithPrefix(commonId as Record<string, string>, "common"),
@@ -41,5 +39,6 @@ export const translations: TranslationsByLocale = {
     flattenWithPrefix(authId as Record<string, string>, "auth"),
     flattenWithPrefix(dashboardId as Record<string, string>, "dashboard"),
     flattenWithPrefix(profileId as Record<string, string>, "profile"),
+    flattenWithPrefix(payTheBillId as Record<string, string>, "billScreen"),
   ),
 };

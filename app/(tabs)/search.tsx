@@ -72,7 +72,7 @@ export default function SearchScreen() {
           subtitle={ts("exchangeSubtitle")}
           illustration={illustrations.exchange}
           bgColor={CATEGORY_BG.exchange}
-          onPress={() => router.push("/search/exchange" as any)}
+          onPress={() => router.push("/payTheBill" as any)}
         />
       </ScrollView>
     </SafeAreaView>
