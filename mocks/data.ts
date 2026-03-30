@@ -1,16 +1,16 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
-  { id: "1", country: "Vietnam", currency: "VND", flag: "🇻🇳", buy: 1.403, sell: 1.746 },
-  { id: "2", country: "Nicaragua", currency: "NIO", flag: "🇳🇮", buy: 9.123, sell: 12.09 },
-  { id: "3", country: "Korea", currency: "KRW", flag: "🇰🇷", buy: 3.704, sell: 5.151 },
-  { id: "4", country: "Russia", currency: "RUB", flag: "🇷🇺", buy: 116.0, sell: 144.4 },
-  { id: "5", country: "China", currency: "CNY", flag: "🇨🇳", buy: 1.725, sell: 2.234 },
-  { id: "6", country: "Portuguese", currency: "EUR", flag: "🇵🇹", buy: 1.403, sell: 1.746 },
-  { id: "7", country: "Korea", currency: "KRW", flag: "🇰🇷", buy: 3.454, sell: 4.312 },
-  { id: "8", country: "French", currency: "EUR", flag: "🇫🇷", buy: 23.45, sell: 34.56 },
-  { id: "9", country: "Nicaragua", currency: "NIO", flag: "🇳🇮", buy: 263.1, sell: 300.3 },
-  { id: "10", country: "China", currency: "CNY", flag: "🇨🇳", buy: 1.725, sell: 2.234 },
+  { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
+  { id: "2",  country: "Nicaragua", currency: "NIO", countryCode: "NI", buy: 9.123, sell: 12.09  },
+  { id: "3",  country: "Korea",    currency: "KRW", countryCode: "KR", buy: 3.704, sell: 5.151  },
+  { id: "4",  country: "Russia",   currency: "RUB", countryCode: "RU", buy: 116.0, sell: 144.4  },
+  { id: "5",  country: "China",    currency: "CNY", countryCode: "CN", buy: 1.725, sell: 2.234  },
+  { id: "6",  country: "Portugal", currency: "EUR", countryCode: "PT", buy: 1.403, sell: 1.746  },
+  { id: "7",  country: "Korea",    currency: "KRW", countryCode: "KR", buy: 3.454, sell: 4.312  },
+  { id: "8",  country: "France",   currency: "EUR", countryCode: "FR", buy: 23.45, sell: 34.56  },
+  { id: "9",  country: "Nicaragua", currency: "NIO", countryCode: "NI", buy: 263.1, sell: 300.3  },
+  { id: "10", country: "China",    currency: "CNY", countryCode: "CN", buy: 1.725, sell: 2.234  },
 ];
 
 export const MOCK_INTEREST_RATES: InterestRate[] = [

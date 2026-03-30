@@ -12,7 +12,7 @@ export type ExchangeRate = {
   id: string;
   country: string;
   currency: string;
-  flag: string;
+  countryCode: string;
   buy: number;
   sell: number;
 };

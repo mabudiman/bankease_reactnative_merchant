@@ -17,7 +17,7 @@ describe("getExchangeRates", () => {
         id: expect.any(String),
         country: expect.any(String),
         currency: expect.any(String),
-        flag: expect.any(String),
+        countryCode: expect.any(String),
         buy: expect.any(Number),
         sell: expect.any(Number),
       });
