@@ -5,7 +5,14 @@ import {
   StyleSheet,
   TextInput,
   View,
+  useWindowDimensions,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,6 +36,35 @@ const JAKARTA_REGION = {
 export default function BranchScreen() {
   const { t } = useTranslation();
   const ts = (key: string) => t(`searchScreen.${key}`);
+
+  const { height: screenHeight } = useWindowDimensions();
+  const PANEL_EXPANDED_HEIGHT = screenHeight * 0.5;
+  const COLLAPSED_VISIBLE = 96;
+  const MAX_TRANSLATE = PANEL_EXPANDED_HEIGHT - COLLAPSED_VISIBLE;
+
+  const translateY = useSharedValue(0);
+  const startY = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      startY.value = translateY.value;
+    })
+    .onUpdate((e) => {
+      translateY.value = Math.max(
+        0,
+        Math.min(startY.value + e.translationY, MAX_TRANSLATE)
+      );
+    })
+    .onEnd(() => {
+      translateY.value = withSpring(
+        translateY.value > MAX_TRANSLATE / 2 ? MAX_TRANSLATE : 0,
+        { damping: 50, stiffness: 300 }
+      );
+    });
+
+  const animatedPanelStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
 
   const [searchText, setSearchText] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -94,31 +130,35 @@ export default function BranchScreen() {
         </MapView>
 
       {/* Bottom panel */}
-      <View style={styles.panel}>
-        <View style={styles.dragHandle} />
+      <Animated.View style={[styles.panel, { height: PANEL_EXPANDED_HEIGHT }, animatedPanelStyle]}>
+        <GestureDetector gesture={panGesture}>
+          <View style={styles.panelHeader}>
+            <View style={styles.dragHandle} />
 
-        <View style={styles.searchBar}>
-          <Ionicons
-            name="search-outline"
-            size={18}
-            color={Colors.textMuted}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            value={searchText}
-            onChangeText={handleSearchChange}
-            placeholder={ts("searchBranchPlaceholder")}
-            placeholderTextColor={Colors.textMuted}
-            returnKeyType="search"
-            autoCorrect={false}
-          />
-          {searchText.length > 0 && (
-            <Pressable onPress={handleClear} accessibilityRole="button" accessibilityLabel="Clear search">
-              <Ionicons name="close" size={18} color={Colors.textMuted} />
-            </Pressable>
-          )}
-        </View>
+            <View style={styles.searchBar}>
+              <Ionicons
+                name="search-outline"
+                size={18}
+                color={Colors.textMuted}
+                style={styles.searchIcon}
+              />
+              <TextInput
+                style={styles.searchInput}
+                value={searchText}
+                onChangeText={handleSearchChange}
+                placeholder={ts("searchBranchPlaceholder")}
+                placeholderTextColor={Colors.textMuted}
+                returnKeyType="search"
+                autoCorrect={false}
+              />
+              {searchText.length > 0 && (
+                <Pressable onPress={handleClear} accessibilityRole="button" accessibilityLabel="Clear search">
+                  <Ionicons name="close" size={18} color={Colors.textMuted} />
+                </Pressable>
+              )}
+            </View>
+          </View>
+        </GestureDetector>
 
         {isLoading ? (
           <LoadingState />
@@ -133,7 +173,7 @@ export default function BranchScreen() {
             keyboardShouldPersistTaps="handled"
           />
         )}
-      </View>
+      </Animated.View>
     </View>
     </View>
   );
@@ -176,7 +216,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: "45%",
     backgroundColor: Colors.white,
     borderTopLeftRadius: Radius.lg,
     borderTopRightRadius: Radius.lg,
@@ -186,6 +225,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 8,
+  },
+  panelHeader: {
+    paddingBottom: Spacing.sm,
   },
   dragHandle: {
     alignSelf: "center",
