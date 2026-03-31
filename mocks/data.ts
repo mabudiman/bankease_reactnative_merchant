@@ -1,5 +1,5 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
-import type { Beneficiary } from '@/features/mobile-prepaid/types';
+import type { Beneficiary } from "@/features/mobile-prepaid/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1", country: "Vietnam", currency: "VND", flag: "🇻🇳", buy: 1.403, sell: 1.746 },
@@ -7,7 +7,14 @@ export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "3", country: "Korea", currency: "KRW", flag: "🇰🇷", buy: 3.704, sell: 5.151 },
   { id: "4", country: "Russia", currency: "RUB", flag: "🇷🇺", buy: 116.0, sell: 144.4 },
   { id: "5", country: "China", currency: "CNY", flag: "🇨🇳", buy: 1.725, sell: 2.234 },
-  { id: "6", country: "Portuguese", currency: "EUR", flag: "🇵🇹", buy: 1.403, sell: 1.746 },
+  {
+    id: "6",
+    country: "Portuguese",
+    currency: "EUR",
+    flag: "🇵🇹",
+    buy: 1.403,
+    sell: 1.746,
+  },
   { id: "7", country: "Korea", currency: "KRW", flag: "🇰🇷", buy: 3.454, sell: 4.312 },
   { id: "8", country: "French", currency: "EUR", flag: "🇫🇷", buy: 23.45, sell: 34.56 },
   { id: "9", country: "Nicaragua", currency: "NIO", flag: "🇳🇮", buy: 263.1, sell: 300.3 },
@@ -30,14 +37,44 @@ export const MOCK_INTEREST_RATES: InterestRate[] = [
 ];
 
 export const MOCK_BRANCHES: Branch[] = [
-  { id: "1", name: "Bank 1656 Union Street", distance: "50m", latitude: -6.2, longitude: 106.816 },
-  { id: "2", name: "Bank Secaucus", distance: "1,2 km", latitude: -6.205, longitude: 106.82 },
-  { id: "3", name: "Bank 1657 Riverside Drive", distance: "5,3 km", latitude: -6.195, longitude: 106.825 },
-  { id: "4", name: "Bank Rutherford", distance: "70m", latitude: -6.21, longitude: 106.812 },
-  { id: "5", name: "Bank 1656 Union Street", distance: "30m", latitude: -6.208, longitude: 106.814 },
+  {
+    id: "1",
+    name: "Bank 1656 Union Street",
+    distance: "50m",
+    latitude: -6.2,
+    longitude: 106.816,
+  },
+  {
+    id: "2",
+    name: "Bank Secaucus",
+    distance: "1,2 km",
+    latitude: -6.205,
+    longitude: 106.82,
+  },
+  {
+    id: "3",
+    name: "Bank 1657 Riverside Drive",
+    distance: "5,3 km",
+    latitude: -6.195,
+    longitude: 106.825,
+  },
+  {
+    id: "4",
+    name: "Bank Rutherford",
+    distance: "70m",
+    latitude: -6.21,
+    longitude: 106.812,
+  },
+  {
+    id: "5",
+    name: "Bank 1656 Union Street",
+    distance: "30m",
+    latitude: -6.208,
+    longitude: 106.814,
+  },
 ];
 
 export const MOCK_BENEFICIARIES: Beneficiary[] = [
-  { id: 'ben-001', name: 'Emma', phone: '+8564757899' },
-  { id: 'ben-002', name: 'Justin', phone: '+8123456789' },
+  { id: "ben-001", name: "Emma", phone: "+8564757899" },
+  { id: "ben-002", name: "Justin", phone: "+8123456789" },
 ];

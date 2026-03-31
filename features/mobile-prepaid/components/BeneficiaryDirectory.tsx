@@ -1,10 +1,10 @@
 // features/mobile-prepaid/components/BeneficiaryDirectory.tsx
-import React, { memo } from 'react';
-import { View, ScrollView, Pressable, Image, Alert, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import type { Beneficiary } from '../types';
+import React, { memo } from "react";
+import { View, ScrollView, Pressable, Image, Alert, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import type { Beneficiary } from "../types";
 
 interface BeneficiaryDirectoryProps {
   beneficiaries: Beneficiary[];
@@ -26,7 +26,7 @@ function BeneficiaryDirectoryComponent({
       {/* Header row */}
       <View style={styles.headerRow}>
         <ThemedText style={styles.headerTitle}>Directory</ThemedText>
-        <Pressable onPress={() => Alert.alert('Coming Soon')}>
+        <Pressable onPress={() => Alert.alert("Coming Soon")}>
           <ThemedText style={styles.findLink}>Find beneficiary</ThemedText>
         </Pressable>
       </View>
@@ -41,7 +41,7 @@ function BeneficiaryDirectoryComponent({
         {/* Add button */}
         <Pressable
           style={styles.addButton}
-          onPress={() => Alert.alert('Coming Soon')}
+          onPress={() => Alert.alert("Coming Soon")}
           accessibilityRole="button"
           accessibilityLabel="Add beneficiary"
         >
@@ -59,17 +59,9 @@ function BeneficiaryDirectoryComponent({
               accessibilityRole="button"
               accessibilityLabel={b.name}
             >
-              <View
-                style={[
-                  styles.avatarWrapper,
-                  isSelected && styles.avatarSelected,
-                ]}
-              >
+              <View style={[styles.avatarWrapper, isSelected && styles.avatarSelected]}>
                 {b.avatar ? (
-                  <Image
-                    source={{ uri: b.avatar }}
-                    style={styles.avatarImage}
-                  />
+                  <Image source={{ uri: b.avatar }} style={styles.avatarImage} />
                 ) : (
                   <View style={styles.avatarFallback}>
                     <ThemedText style={styles.avatarInitial}>
@@ -96,18 +88,18 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   headerTitle: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-    color: '#343434',
+    fontFamily: "Poppins_500Medium",
+    color: "#343434",
   },
   findLink: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
+    fontFamily: "Poppins_500Medium",
     color: Colors.primary,
   },
   scroll: {
@@ -123,14 +115,14 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 32,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#E0E0E0',
-    backgroundColor: '#F5F5F5',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderStyle: "dashed",
+    borderColor: "#E0E0E0",
+    backgroundColor: "#F5F5F5",
+    alignItems: "center",
+    justifyContent: "center",
   },
   beneficiaryItem: {
-    alignItems: 'center',
+    alignItems: "center",
     width: 72,
     gap: 6,
   },
@@ -138,33 +130,33 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderWidth: 3,
-    borderColor: 'transparent',
+    borderColor: "transparent",
   },
   avatarSelected: {
     borderColor: Colors.primary,
   },
   avatarImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   avatarFallback: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#E0E0E0',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#E0E0E0",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarInitial: {
     fontSize: 22,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#687076',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#687076",
   },
   beneficiaryName: {
     fontSize: 12,
-    fontFamily: 'Poppins_400Regular',
-    color: '#343434',
-    textAlign: 'center',
+    fontFamily: "Poppins_400Regular",
+    color: "#343434",
+    textAlign: "center",
   },
 });

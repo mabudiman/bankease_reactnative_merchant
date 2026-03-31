@@ -1,11 +1,11 @@
 // features/mobile-prepaid/components/CardSelectorSheet.tsx
-import React, { memo } from 'react';
-import { Modal, View, Pressable, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import { formatCurrency } from '@/utils/money';
-import type { PaymentCard } from '@/features/dashboard/types';
+import React, { memo } from "react";
+import { Modal, View, Pressable, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import { formatCurrency } from "@/utils/money";
+import type { PaymentCard } from "@/features/dashboard/types";
 
 interface CardSelectorSheetProps {
   visible: boolean;
@@ -50,22 +50,14 @@ function CardSelectorSheetComponent({
                 accessibilityLabel={`${card.brand} ${card.maskedNumber}`}
               >
                 <View style={styles.cardInfo}>
-                  <ThemedText style={styles.brandText}>
-                    {card.brand}
-                  </ThemedText>
-                  <ThemedText style={styles.maskedNumber}>
-                    {card.maskedNumber}
-                  </ThemedText>
+                  <ThemedText style={styles.brandText}>{card.brand}</ThemedText>
+                  <ThemedText style={styles.maskedNumber}>{card.maskedNumber}</ThemedText>
                 </View>
                 <ThemedText style={styles.balance}>
                   {formatCurrency(card.balance, card.currency)}
                 </ThemedText>
                 {isSelected && (
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={22}
-                    color={Colors.primary}
-                  />
+                  <Ionicons name="checkmark-circle" size={22} color={Colors.primary} />
                 )}
               </Pressable>
             );
@@ -81,11 +73,11 @@ export const CardSelectorSheet = memo(CardSelectorSheetComponent);
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "flex-end",
   },
   sheet: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 20,
@@ -93,16 +85,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#343434',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#343434",
   },
   cardRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 14,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     gap: 12,
   },
   cardRowSelected: {
@@ -115,17 +107,17 @@ const styles = StyleSheet.create({
   },
   brandText: {
     fontSize: 12,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#687076',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#687076",
   },
   maskedNumber: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-    color: '#343434',
+    fontFamily: "Poppins_500Medium",
+    color: "#343434",
   },
   balance: {
     fontSize: 13,
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: "Poppins_400Regular",
     color: Colors.primary,
   },
 });

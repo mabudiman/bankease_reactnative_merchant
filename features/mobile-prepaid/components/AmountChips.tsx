@@ -1,10 +1,10 @@
 // features/mobile-prepaid/components/AmountChips.tsx
-import React, { memo } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import { AMOUNT_OPTIONS } from '../types';
-import type { AmountOption } from '../types';
+import React, { memo } from "react";
+import { View, Pressable, StyleSheet } from "react-native";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import { AMOUNT_OPTIONS } from "../types";
+import type { AmountOption } from "../types";
 
 interface AmountChipsProps {
   selected: AmountOption | null;
@@ -25,9 +25,7 @@ function AmountChipsComponent({ selected, onSelect }: AmountChipsProps) {
             accessibilityState={{ selected: isActive }}
             accessibilityLabel={option.label}
           >
-            <ThemedText
-              style={[styles.chipText, isActive && styles.chipTextActive]}
-            >
+            <ThemedText style={[styles.chipText, isActive && styles.chipTextActive]}>
               {option.label}
             </ThemedText>
           </Pressable>
@@ -41,7 +39,7 @@ export const AmountChips = memo(AmountChipsComponent);
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   chip: {
@@ -49,8 +47,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    backgroundColor: '#FFFFFF',
+    borderColor: "#E0E0E0",
+    backgroundColor: "#FFFFFF",
   },
   chipActive: {
     backgroundColor: Colors.primary,
@@ -58,11 +56,11 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#687076',
+    fontFamily: "Poppins_400Regular",
+    color: "#687076",
   },
   chipTextActive: {
-    color: '#FFFFFF',
-    fontFamily: 'Poppins_600SemiBold',
+    color: "#FFFFFF",
+    fontFamily: "Poppins_600SemiBold",
   },
 });

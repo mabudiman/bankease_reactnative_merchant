@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -6,19 +6,19 @@ import {
   Pressable,
   ActivityIndicator,
   StyleSheet,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import { formatCurrency } from '@/utils/money';
-import { authService } from '@/features/auth/services/auth-service';
-import { useMobilePrepaid } from '../hooks/useMobilePrepaid';
-import { AmountChips } from './AmountChips';
-import { BeneficiaryDirectory } from './BeneficiaryDirectory';
-import { CardSelectorSheet } from './CardSelectorSheet';
-import { PrepaidSuccessView } from './PrepaidSuccessView';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import { formatCurrency } from "@/utils/money";
+import { authService } from "@/features/auth/services/auth-service";
+import { useMobilePrepaid } from "../hooks/useMobilePrepaid";
+import { AmountChips } from "./AmountChips";
+import { BeneficiaryDirectory } from "./BeneficiaryDirectory";
+import { CardSelectorSheet } from "./CardSelectorSheet";
+import { PrepaidSuccessView } from "./PrepaidSuccessView";
 
 interface MobilePrepaidScreenInnerProps {
   accountId: string;
@@ -49,7 +49,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
 
   if (isSuccess) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <PrepaidSuccessView />
       </SafeAreaView>
     );
@@ -57,7 +57,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
 
   if (isLoading) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.primary} />
         </View>
@@ -66,7 +66,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
   }
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <SafeAreaView edges={["top"]} style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
         <Pressable
@@ -89,9 +89,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
       >
         {/* Card selector */}
         <View style={styles.section}>
-          <ThemedText style={styles.sectionLabel}>
-            Choose account/ card
-          </ThemedText>
+          <ThemedText style={styles.sectionLabel}>Choose account/ card</ThemedText>
           <Pressable
             style={styles.cardField}
             onPress={() => setSheetVisible(true)}
@@ -99,19 +97,17 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
             accessibilityLabel="Choose account or card"
           >
             <ThemedText
-              style={[
-                styles.cardFieldText,
-                !selectedCard && styles.cardFieldPlaceholder,
-              ]}
+              style={[styles.cardFieldText, !selectedCard && styles.cardFieldPlaceholder]}
             >
               {selectedCard
                 ? `${selectedCard.brand} ${selectedCard.maskedNumber}`
-                : 'Choose account / card'}
+                : "Choose account / card"}
             </ThemedText>
           </Pressable>
           {selectedCard && (
             <ThemedText style={styles.balanceText}>
-              Available balance : {formatCurrency(selectedCard.balance, selectedCard.currency)}
+              Available balance :{" "}
+              {formatCurrency(selectedCard.balance, selectedCard.currency)}
             </ThemedText>
           )}
         </View>
@@ -142,10 +138,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
         {/* Amount chips */}
         <View style={styles.section}>
           <ThemedText style={styles.sectionLabel}>Choose amount</ThemedText>
-          <AmountChips
-            selected={selectedAmount}
-            onSelect={setSelectedAmount}
-          />
+          <AmountChips selected={selectedAmount} onSelect={setSelectedAmount} />
         </View>
 
         {/* Spacer to push Confirm to bottom */}
@@ -153,7 +146,10 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
 
         {/* Confirm button */}
         <Pressable
-          style={[styles.confirmButton, (!isAllFilled || isSubmitting) && styles.confirmDisabled]}
+          style={[
+            styles.confirmButton,
+            (!isAllFilled || isSubmitting) && styles.confirmDisabled,
+          ]}
           onPress={submit}
           disabled={!isAllFilled || isSubmitting}
           accessibilityRole="button"
@@ -192,7 +188,7 @@ export function MobilePrepaidScreen() {
 
   if (!accountId) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.primary} />
         </View>
@@ -206,16 +202,16 @@ export function MobilePrepaidScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     gap: 12,
@@ -223,8 +219,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     fontSize: 18,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#343434',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#343434",
   },
   headerSpacer: {
     width: 24,
@@ -243,47 +239,47 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-    color: '#687076',
+    fontFamily: "Poppins_500Medium",
+    color: "#687076",
   },
   cardField: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     borderRadius: 8,
     padding: 14,
   },
   cardFieldText: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#343434',
+    fontFamily: "Poppins_400Regular",
+    color: "#343434",
   },
   cardFieldPlaceholder: {
-    color: '#9E9E9E',
+    color: "#9E9E9E",
   },
   balanceText: {
     fontSize: 13,
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: "Poppins_400Regular",
     color: Colors.primary,
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     borderRadius: 8,
     padding: 14,
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#343434',
+    fontFamily: "Poppins_400Regular",
+    color: "#343434",
   },
   spacer: {
     flex: 1,
     minHeight: 32,
   },
   confirmButton: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 16,
     borderRadius: 28,
     backgroundColor: Colors.primary,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 16,
   },
   confirmDisabled: {
@@ -291,7 +287,7 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#FFFFFF',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#FFFFFF",
   },
 });

@@ -1,9 +1,9 @@
-import { request } from '@/core/api/client';
+import { request } from "@/core/api/client";
 import type {
   Beneficiary,
   PrepaidPaymentRequest,
   PrepaidPaymentResponse,
-} from '../types';
+} from "../types";
 
 export function getBeneficiaries(accountId: string): Promise<Beneficiary[]> {
   return request<Beneficiary[]>(
@@ -14,8 +14,8 @@ export function getBeneficiaries(accountId: string): Promise<Beneficiary[]> {
 export function submitPrepaid(
   payload: PrepaidPaymentRequest,
 ): Promise<PrepaidPaymentResponse> {
-  return request<PrepaidPaymentResponse>('/api/mobile-prepaid/pay', {
-    method: 'POST',
+  return request<PrepaidPaymentResponse>("/api/mobile-prepaid/pay", {
+    method: "POST",
     body: JSON.stringify(payload),
   });
 }

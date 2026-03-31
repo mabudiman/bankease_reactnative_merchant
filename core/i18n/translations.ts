@@ -14,13 +14,8 @@ import profileId from "@/features/profile/locales/id.json";
 import mobilePrepaidEn from "@/features/mobile-prepaid/locales/en.json";
 import mobilePrepaidId from "@/features/mobile-prepaid/locales/id.json";
 
-function flattenWithPrefix(
-  obj: Record<string, string>,
-  prefix: string,
-): TranslationMap {
-  return Object.fromEntries(
-    Object.entries(obj).map(([k, v]) => [`${prefix}.${k}`, v]),
-  );
+function flattenWithPrefix(obj: Record<string, string>, prefix: string): TranslationMap {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [`${prefix}.${k}`, v]));
 }
 
 function merge(...maps: TranslationMap[]): TranslationMap {

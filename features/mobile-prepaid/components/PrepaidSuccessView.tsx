@@ -1,9 +1,9 @@
 // features/mobile-prepaid/components/PrepaidSuccessView.tsx
-import React, { memo } from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
+import React, { memo } from "react";
+import { View, Image, Pressable, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
 
 function PrepaidSuccessViewComponent() {
   const router = useRouter();
@@ -11,7 +11,7 @@ function PrepaidSuccessViewComponent() {
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/images/illustrations/payment-success.png')}
+        source={require("@/assets/images/illustrations/payment-success.png")}
         style={styles.illustration}
         resizeMode="contain"
       />
@@ -21,7 +21,7 @@ function PrepaidSuccessViewComponent() {
       </ThemedText>
       <Pressable
         style={styles.button}
-        onPress={() => router.replace('/(tabs)')}
+        onPress={() => router.replace("/(tabs)")}
         accessibilityRole="button"
         accessibilityLabel="Confirm"
       >
@@ -36,8 +36,8 @@ export const PrepaidSuccessView = memo(PrepaidSuccessViewComponent);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 24,
     gap: 16,
   },
@@ -48,27 +48,27 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: 'Poppins_600SemiBold',
+    fontFamily: "Poppins_600SemiBold",
     color: Colors.primary,
-    textAlign: 'center',
+    textAlign: "center",
   },
   message: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#687076',
-    textAlign: 'center',
+    fontFamily: "Poppins_400Regular",
+    color: "#687076",
+    textAlign: "center",
   },
   button: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 16,
     borderRadius: 28,
     backgroundColor: Colors.primary,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 24,
   },
   buttonText: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#FFFFFF',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#FFFFFF",
   },
 });

@@ -49,6 +49,7 @@ features/mobile-prepaid/
 ### Privilege Gate
 
 `MOBILE_PREPAID` is already defined in `dashboardService` privilege system:
+
 - `demo-002`: enabled (has all 9 privileges)
 - `demo-001`: not enabled (only 3 privileges)
 - New accounts: not enabled (only `ACCOUNT_CARD`)
@@ -70,27 +71,27 @@ export interface Beneficiary {
 }
 
 export interface AmountOption {
-  value: number;   // minor units (cents) — e.g., 1000 = $10
-  label: string;   // display label: "$10"
+  value: number; // minor units (cents) — e.g., 1000 = $10
+  label: string; // display label: "$10"
 }
 
 export interface PrepaidPaymentRequest {
   cardId: string;
   phone: string;
-  amount: number;  // minor units
+  amount: number; // minor units
 }
 
 export interface PrepaidPaymentResponse {
   id: string;
-  status: 'SUCCESS' | 'FAILED';
+  status: "SUCCESS" | "FAILED";
   message: string;
   timestamp: string;
 }
 
 export const AMOUNT_OPTIONS: AmountOption[] = [
-  { value: 1000, label: '$10' },
-  { value: 2000, label: '$20' },
-  { value: 3000, label: '$30' },
+  { value: 1000, label: "$10" },
+  { value: 2000, label: "$20" },
+  { value: 3000, label: "$30" },
 ];
 ```
 
@@ -119,6 +120,7 @@ getBeneficiaries(accountId: string): Promise<Beneficiary[]>
 ### MSW Mock Handlers (added to `mocks/handlers.ts`)
 
 **GET `/api/mobile-prepaid/beneficiaries`:**
+
 ```json
 [
   { "id": "ben-001", "name": "Emma", "phone": "+8564757899", "avatar": null },
@@ -127,6 +129,7 @@ getBeneficiaries(accountId: string): Promise<Beneficiary[]>
 ```
 
 **POST `/api/mobile-prepaid/pay`:**
+
 - Validates: `cardId` required, `phone` required, `amount > 0`
 - Default: returns `{ id: "txn-<uuid>", status: "SUCCESS", message: "Payment successful", timestamp: "<now>" }`
 - Error case: phone `+0000000000` → returns `{ status: "FAILED", message: "Invalid phone number" }`
@@ -209,7 +212,7 @@ getBeneficiaries(accountId: string): Promise<Beneficiary[]>
 
 - Bordered `Pressable` container: `borderRadius: 8`, `border: 1px #E0E0E0`, `padding: 14`
 - **Empty state:** placeholder "Choose account / card" in gray (`#9E9E9E`)
-- **Filled state:** "VISA **** **** **** 1234" in black text
+- **Filled state:** "VISA \***\* \*\*** \*\*\*\* 1234" in black text
 - Below field (when card selected): "Available balance : 10,000$" in primary color (`#3629B7`), Poppins Regular 13 — formatted via `utils/money.ts` `formatMajor(card.balance, card.currency)`
 
 ### BeneficiaryDirectory
@@ -269,6 +272,7 @@ getBeneficiaries(accountId: string): Promise<Beneficiary[]>
 ### i18n Keys (`features/mobile-prepaid/locales/en.json`)
 
 Flat dotted keys (compatible with `flattenWithPrefix`):
+
 ```json
 {
   "screen.title": "Mobile prepaid",
@@ -298,15 +302,15 @@ Flat dotted keys (compatible with `flattenWithPrefix`):
 
 ### Unit Tests (`features/mobile-prepaid/__tests__/`)
 
-| Test File | Coverage |
-|---|---|
-| `useMobilePrepaid.test.ts` | Load cards, load beneficiaries, select beneficiary fills phone, submit success/failure, double-submit guard, disabled state logic |
-| `mobile-prepaid-api.test.ts` | API functions with MSW: success response, error responses (invalid phone, insufficient funds) |
-| `AmountChips.test.tsx` | Renders 3 chips, active state toggles on tap, calls `onSelect` callback |
-| `BeneficiaryDirectory.test.tsx` | Renders avatars + names, tap calls `onSelect`, "+" button shows alert |
-| `CardSelectorSheet.test.tsx` | Renders card list, selection callback fires, modal open/close |
-| `MobilePrepaidScreen.test.tsx` | Form renders all sections, confirm disabled when incomplete, success view shown after mock submit |
-| `PrepaidSuccessView.test.tsx` | Renders illustration + text, confirm button calls navigation |
+| Test File                       | Coverage                                                                                                                          |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `useMobilePrepaid.test.ts`      | Load cards, load beneficiaries, select beneficiary fills phone, submit success/failure, double-submit guard, disabled state logic |
+| `mobile-prepaid-api.test.ts`    | API functions with MSW: success response, error responses (invalid phone, insufficient funds)                                     |
+| `AmountChips.test.tsx`          | Renders 3 chips, active state toggles on tap, calls `onSelect` callback                                                           |
+| `BeneficiaryDirectory.test.tsx` | Renders avatars + names, tap calls `onSelect`, "+" button shows alert                                                             |
+| `CardSelectorSheet.test.tsx`    | Renders card list, selection callback fires, modal open/close                                                                     |
+| `MobilePrepaidScreen.test.tsx`  | Form renders all sections, confirm disabled when incomplete, success view shown after mock submit                                 |
+| `PrepaidSuccessView.test.tsx`   | Renders illustration + text, confirm button calls navigation                                                                      |
 
 ### MSW Integration
 
@@ -317,13 +321,13 @@ Flat dotted keys (compatible with `flattenWithPrefix`):
 
 ## 8. Error Handling
 
-| Scenario | Behavior |
-|---|---|
-| API returns `status: 'FAILED'` | `Alert.alert('Failed', response.message)`, stay on form |
-| Network error / timeout | `Alert.alert('Failed', 'Network error. Please try again.')`, stay on form |
-| Insufficient funds (400) | `Alert.alert('Failed', 'Insufficient balance')`, stay on form |
-| Card loading fails | Show error state (loadingState/errorState feedback component) |
-| Beneficiary loading fails | Show empty directory (graceful degradation), form still usable |
+| Scenario                       | Behavior                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| API returns `status: 'FAILED'` | `Alert.alert('Failed', response.message)`, stay on form                   |
+| Network error / timeout        | `Alert.alert('Failed', 'Network error. Please try again.')`, stay on form |
+| Insufficient funds (400)       | `Alert.alert('Failed', 'Insufficient balance')`, stay on form             |
+| Card loading fails             | Show error state (loadingState/errorState feedback component)             |
+| Beneficiary loading fails      | Show empty directory (graceful degradation), form still usable            |
 
 Error classes from `core/api/errors.ts` are used — no string errors.
 
@@ -331,14 +335,14 @@ Error classes from `core/api/errors.ts` are used — no string errors.
 
 ## 9. Decisions Summary
 
-| Decision | Rationale |
-|---|---|
-| Real API + MSW mock fallback | Consistent with Profile Edit pattern; API endpoints ready to swap |
-| Beneficiaries API-backed (mock now) | Future-proof; easy to connect real endpoint later |
-| Predefined amount chips only | Matches design, simpler UX, no validation needed |
-| Direct submit (no confirmation modal) | Design shows single-tap flow, reduces friction |
-| Success view in-screen (not separate route) | Simple visual swap, avoids route param passing |
-| Alert on failure | Consistent with Profile Edit pattern, user stays on form |
-| Bottom sheet card selector | Rich card preview, better UX than flat dropdown |
-| `useRef` double-submit guard | Same pattern as payout flow, no re-render |
-| Reuse `PaymentCard` from dashboard | No type duplication, cards already loaded via existing service |
+| Decision                                    | Rationale                                                         |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| Real API + MSW mock fallback                | Consistent with Profile Edit pattern; API endpoints ready to swap |
+| Beneficiaries API-backed (mock now)         | Future-proof; easy to connect real endpoint later                 |
+| Predefined amount chips only                | Matches design, simpler UX, no validation needed                  |
+| Direct submit (no confirmation modal)       | Design shows single-tap flow, reduces friction                    |
+| Success view in-screen (not separate route) | Simple visual swap, avoids route param passing                    |
+| Alert on failure                            | Consistent with Profile Edit pattern, user stays on form          |
+| Bottom sheet card selector                  | Rich card preview, better UX than flat dropdown                   |
+| `useRef` double-submit guard                | Same pattern as payout flow, no re-render                         |
+| Reuse `PaymentCard` from dashboard          | No type duplication, cards already loaded via existing service    |

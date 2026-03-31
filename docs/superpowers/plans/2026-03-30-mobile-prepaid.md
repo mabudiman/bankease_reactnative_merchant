@@ -16,35 +16,35 @@
 
 ### New Files
 
-| File | Responsibility |
-|---|---|
-| `features/mobile-prepaid/types.ts` | `Beneficiary`, `AmountOption`, `PrepaidPaymentRequest`, `PrepaidPaymentResponse`, `AMOUNT_OPTIONS` constant |
-| `features/mobile-prepaid/api/index.ts` | `submitPrepaid()`, `getBeneficiaries()` — HTTP calls via `core/api/client.ts` |
-| `features/mobile-prepaid/hooks/useMobilePrepaid.ts` | Orchestration hook: load cards + beneficiaries, form state, submit + double-submit guard |
-| `features/mobile-prepaid/components/AmountChips.tsx` | Row of predefined amount chips ($10/$20/$30) |
-| `features/mobile-prepaid/components/BeneficiaryDirectory.tsx` | Horizontal scroll of beneficiary avatars + add button |
-| `features/mobile-prepaid/components/CardSelectorSheet.tsx` | Bottom sheet modal listing payment cards |
-| `features/mobile-prepaid/components/PrepaidSuccessView.tsx` | Success illustration + message + confirm button |
-| `features/mobile-prepaid/components/MobilePrepaidScreen.tsx` | Main screen composing all components + form/success state swap |
-| `features/mobile-prepaid/components/index.ts` | Barrel export |
-| `features/mobile-prepaid/locales/en.json` | English translations (flat dotted keys) |
-| `features/mobile-prepaid/locales/id.json` | Indonesian translations |
-| `features/mobile-prepaid/__tests__/AmountChips.test.tsx` | Unit tests for AmountChips |
-| `features/mobile-prepaid/__tests__/BeneficiaryDirectory.test.tsx` | Unit tests for BeneficiaryDirectory |
-| `features/mobile-prepaid/__tests__/CardSelectorSheet.test.tsx` | Unit tests for CardSelectorSheet |
-| `features/mobile-prepaid/__tests__/PrepaidSuccessView.test.tsx` | Unit tests for PrepaidSuccessView |
-| `features/mobile-prepaid/__tests__/MobilePrepaidScreen.test.tsx` | Unit tests for MobilePrepaidScreen |
-| `features/mobile-prepaid/__tests__/mobile-prepaid-api.test.ts` | Unit tests for API layer |
-| `features/mobile-prepaid/__tests__/useMobilePrepaid.test.ts` | Unit tests for hook |
-| `app/mobile-prepaid.tsx` | Thin Expo Router route file |
+| File                                                              | Responsibility                                                                                              |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `features/mobile-prepaid/types.ts`                                | `Beneficiary`, `AmountOption`, `PrepaidPaymentRequest`, `PrepaidPaymentResponse`, `AMOUNT_OPTIONS` constant |
+| `features/mobile-prepaid/api/index.ts`                            | `submitPrepaid()`, `getBeneficiaries()` — HTTP calls via `core/api/client.ts`                               |
+| `features/mobile-prepaid/hooks/useMobilePrepaid.ts`               | Orchestration hook: load cards + beneficiaries, form state, submit + double-submit guard                    |
+| `features/mobile-prepaid/components/AmountChips.tsx`              | Row of predefined amount chips ($10/$20/$30)                                                                |
+| `features/mobile-prepaid/components/BeneficiaryDirectory.tsx`     | Horizontal scroll of beneficiary avatars + add button                                                       |
+| `features/mobile-prepaid/components/CardSelectorSheet.tsx`        | Bottom sheet modal listing payment cards                                                                    |
+| `features/mobile-prepaid/components/PrepaidSuccessView.tsx`       | Success illustration + message + confirm button                                                             |
+| `features/mobile-prepaid/components/MobilePrepaidScreen.tsx`      | Main screen composing all components + form/success state swap                                              |
+| `features/mobile-prepaid/components/index.ts`                     | Barrel export                                                                                               |
+| `features/mobile-prepaid/locales/en.json`                         | English translations (flat dotted keys)                                                                     |
+| `features/mobile-prepaid/locales/id.json`                         | Indonesian translations                                                                                     |
+| `features/mobile-prepaid/__tests__/AmountChips.test.tsx`          | Unit tests for AmountChips                                                                                  |
+| `features/mobile-prepaid/__tests__/BeneficiaryDirectory.test.tsx` | Unit tests for BeneficiaryDirectory                                                                         |
+| `features/mobile-prepaid/__tests__/CardSelectorSheet.test.tsx`    | Unit tests for CardSelectorSheet                                                                            |
+| `features/mobile-prepaid/__tests__/PrepaidSuccessView.test.tsx`   | Unit tests for PrepaidSuccessView                                                                           |
+| `features/mobile-prepaid/__tests__/MobilePrepaidScreen.test.tsx`  | Unit tests for MobilePrepaidScreen                                                                          |
+| `features/mobile-prepaid/__tests__/mobile-prepaid-api.test.ts`    | Unit tests for API layer                                                                                    |
+| `features/mobile-prepaid/__tests__/useMobilePrepaid.test.ts`      | Unit tests for hook                                                                                         |
+| `app/mobile-prepaid.tsx`                                          | Thin Expo Router route file                                                                                 |
 
 ### Modified Files
 
-| File | Change |
-|---|---|
-| `mocks/handlers.ts` | Add 2 MSW handlers (GET beneficiaries, POST pay) |
-| `mocks/data.ts` | Add `MOCK_BENEFICIARIES` seed data |
-| `core/i18n/translations.ts` | Import + register mobile-prepaid locale files |
+| File                                             | Change                                                       |
+| ------------------------------------------------ | ------------------------------------------------------------ |
+| `mocks/handlers.ts`                              | Add 2 MSW handlers (GET beneficiaries, POST pay)             |
+| `mocks/data.ts`                                  | Add `MOCK_BENEFICIARIES` seed data                           |
+| `core/i18n/translations.ts`                      | Import + register mobile-prepaid locale files                |
 | `features/dashboard/components/MenuGridItem.tsx` | Route `MOBILE_PREPAID` to `/mobile-prepaid` instead of alert |
 
 ---
@@ -52,6 +52,7 @@
 ## Task 1: Types & Constants
 
 **Files:**
+
 - Create: `features/mobile-prepaid/types.ts`
 
 - [ ] **Step 1: Create types file**
@@ -67,8 +68,8 @@ export interface Beneficiary {
 }
 
 export interface AmountOption {
-  value: number;  // minor units (cents)
-  label: string;  // display: "$10"
+  value: number; // minor units (cents)
+  label: string; // display: "$10"
 }
 
 export interface PrepaidPaymentRequest {
@@ -79,15 +80,15 @@ export interface PrepaidPaymentRequest {
 
 export interface PrepaidPaymentResponse {
   id: string;
-  status: 'SUCCESS' | 'FAILED';
+  status: "SUCCESS" | "FAILED";
   message: string;
   timestamp: string;
 }
 
 export const AMOUNT_OPTIONS: AmountOption[] = [
-  { value: 1000, label: '$10' },
-  { value: 2000, label: '$20' },
-  { value: 3000, label: '$30' },
+  { value: 1000, label: "$10" },
+  { value: 2000, label: "$20" },
+  { value: 3000, label: "$30" },
 ];
 ```
 
@@ -103,18 +104,19 @@ git commit -m "feat(mobile-prepaid): add domain types and amount constants"
 ## Task 2: API Layer
 
 **Files:**
+
 - Create: `features/mobile-prepaid/api/index.ts`
 
 - [ ] **Step 1: Create API functions**
 
 ```typescript
 // features/mobile-prepaid/api/index.ts
-import { request } from '@/core/api/client';
+import { request } from "@/core/api/client";
 import type {
   Beneficiary,
   PrepaidPaymentRequest,
   PrepaidPaymentResponse,
-} from '../types';
+} from "../types";
 
 export function getBeneficiaries(accountId: string): Promise<Beneficiary[]> {
   return request<Beneficiary[]>(
@@ -125,8 +127,8 @@ export function getBeneficiaries(accountId: string): Promise<Beneficiary[]> {
 export function submitPrepaid(
   payload: PrepaidPaymentRequest,
 ): Promise<PrepaidPaymentResponse> {
-  return request<PrepaidPaymentResponse>('/api/mobile-prepaid/pay', {
-    method: 'POST',
+  return request<PrepaidPaymentResponse>("/api/mobile-prepaid/pay", {
+    method: "POST",
     body: JSON.stringify(payload),
   });
 }
@@ -144,6 +146,7 @@ git commit -m "feat(mobile-prepaid): add API layer (getBeneficiaries, submitPrep
 ## Task 3: MSW Mock Handlers
 
 **Files:**
+
 - Modify: `mocks/data.ts`
 - Modify: `mocks/handlers.ts`
 
@@ -152,11 +155,11 @@ git commit -m "feat(mobile-prepaid): add API layer (getBeneficiaries, submitPrep
 Add this import type and export at the end of the file:
 
 ```typescript
-import type { Beneficiary } from '@/features/mobile-prepaid/types';
+import type { Beneficiary } from "@/features/mobile-prepaid/types";
 
 export const MOCK_BENEFICIARIES: Beneficiary[] = [
-  { id: 'ben-001', name: 'Emma', phone: '+8564757899' },
-  { id: 'ben-002', name: 'Justin', phone: '+8123456789' },
+  { id: "ben-001", name: "Emma", phone: "+8564757899" },
+  { id: "ben-002", name: "Justin", phone: "+8123456789" },
 ];
 ```
 
@@ -222,47 +225,48 @@ git commit -m "feat(mobile-prepaid): add MSW mock handlers for beneficiaries and
 ## Task 4: API Layer Tests
 
 **Files:**
+
 - Create: `features/mobile-prepaid/__tests__/mobile-prepaid-api.test.ts`
 
 - [ ] **Step 1: Write API tests**
 
 ```typescript
 // features/mobile-prepaid/__tests__/mobile-prepaid-api.test.ts
-import { getBeneficiaries, submitPrepaid } from '../api';
+import { getBeneficiaries, submitPrepaid } from "../api";
 
-describe('mobile-prepaid API', () => {
-  describe('getBeneficiaries', () => {
-    it('returns a list of beneficiaries', async () => {
-      const result = await getBeneficiaries('demo-002');
+describe("mobile-prepaid API", () => {
+  describe("getBeneficiaries", () => {
+    it("returns a list of beneficiaries", async () => {
+      const result = await getBeneficiaries("demo-002");
       expect(result).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({ id: 'ben-001', name: 'Emma' }),
-          expect.objectContaining({ id: 'ben-002', name: 'Justin' }),
+          expect.objectContaining({ id: "ben-001", name: "Emma" }),
+          expect.objectContaining({ id: "ben-002", name: "Justin" }),
         ]),
       );
     });
   });
 
-  describe('submitPrepaid', () => {
-    it('returns SUCCESS for valid payment', async () => {
+  describe("submitPrepaid", () => {
+    it("returns SUCCESS for valid payment", async () => {
       const result = await submitPrepaid({
-        cardId: 'card-001',
-        phone: '+8564757899',
+        cardId: "card-001",
+        phone: "+8564757899",
         amount: 1000,
       });
-      expect(result.status).toBe('SUCCESS');
+      expect(result.status).toBe("SUCCESS");
       expect(result.id).toBeDefined();
       expect(result.timestamp).toBeDefined();
     });
 
-    it('returns FAILED for invalid phone', async () => {
+    it("returns FAILED for invalid phone", async () => {
       const result = await submitPrepaid({
-        cardId: 'card-001',
-        phone: '+0000000000',
+        cardId: "card-001",
+        phone: "+0000000000",
         amount: 1000,
       });
-      expect(result.status).toBe('FAILED');
-      expect(result.message).toBe('Invalid phone number');
+      expect(result.status).toBe("FAILED");
+      expect(result.message).toBe("Invalid phone number");
     });
   });
 });
@@ -288,6 +292,7 @@ git commit -m "test(mobile-prepaid): add API layer tests"
 ## Task 5: i18n Locale Files & Registration
 
 **Files:**
+
 - Create: `features/mobile-prepaid/locales/en.json`
 - Create: `features/mobile-prepaid/locales/id.json`
 - Modify: `core/i18n/translations.ts`
@@ -367,6 +372,7 @@ git commit -m "feat(mobile-prepaid): add i18n locale files and register translat
 ## Task 6: AmountChips Component + Tests
 
 **Files:**
+
 - Create: `features/mobile-prepaid/components/AmountChips.tsx`
 - Create: `features/mobile-prepaid/__tests__/AmountChips.test.tsx`
 
@@ -374,41 +380,37 @@ git commit -m "feat(mobile-prepaid): add i18n locale files and register translat
 
 ```tsx
 // features/mobile-prepaid/__tests__/AmountChips.test.tsx
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { AmountChips } from '../components/AmountChips';
-import { AMOUNT_OPTIONS } from '../types';
-import type { AmountOption } from '../types';
+import React from "react";
+import { render, fireEvent } from "@testing-library/react-native";
+import { AmountChips } from "../components/AmountChips";
+import { AMOUNT_OPTIONS } from "../types";
+import type { AmountOption } from "../types";
 
-describe('AmountChips', () => {
+describe("AmountChips", () => {
   const onSelect = jest.fn();
 
   beforeEach(() => {
     onSelect.mockClear();
   });
 
-  it('renders all amount options', () => {
-    const { getByText } = render(
-      <AmountChips selected={null} onSelect={onSelect} />,
-    );
+  it("renders all amount options", () => {
+    const { getByText } = render(<AmountChips selected={null} onSelect={onSelect} />);
     for (const opt of AMOUNT_OPTIONS) {
       expect(getByText(opt.label)).toBeTruthy();
     }
   });
 
-  it('calls onSelect when a chip is tapped', () => {
-    const { getByText } = render(
-      <AmountChips selected={null} onSelect={onSelect} />,
-    );
-    fireEvent.press(getByText('$20'));
+  it("calls onSelect when a chip is tapped", () => {
+    const { getByText } = render(<AmountChips selected={null} onSelect={onSelect} />);
+    fireEvent.press(getByText("$20"));
     expect(onSelect).toHaveBeenCalledWith(AMOUNT_OPTIONS[1]);
   });
 
-  it('highlights the selected chip', () => {
+  it("highlights the selected chip", () => {
     const { getByText } = render(
       <AmountChips selected={AMOUNT_OPTIONS[0]} onSelect={onSelect} />,
     );
-    const chip = getByText('$10');
+    const chip = getByText("$10");
     // The selected chip's parent Pressable has a testID
     expect(chip).toBeTruthy();
   });
@@ -427,12 +429,12 @@ Expected: FAIL — module not found
 
 ```tsx
 // features/mobile-prepaid/components/AmountChips.tsx
-import React, { memo } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import { AMOUNT_OPTIONS } from '../types';
-import type { AmountOption } from '../types';
+import React, { memo } from "react";
+import { View, Pressable, StyleSheet } from "react-native";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import { AMOUNT_OPTIONS } from "../types";
+import type { AmountOption } from "../types";
 
 interface AmountChipsProps {
   selected: AmountOption | null;
@@ -453,9 +455,7 @@ function AmountChipsComponent({ selected, onSelect }: AmountChipsProps) {
             accessibilityState={{ selected: isActive }}
             accessibilityLabel={option.label}
           >
-            <ThemedText
-              style={[styles.chipText, isActive && styles.chipTextActive]}
-            >
+            <ThemedText style={[styles.chipText, isActive && styles.chipTextActive]}>
               {option.label}
             </ThemedText>
           </Pressable>
@@ -469,7 +469,7 @@ export const AmountChips = memo(AmountChipsComponent);
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   chip: {
@@ -477,8 +477,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    backgroundColor: '#FFFFFF',
+    borderColor: "#E0E0E0",
+    backgroundColor: "#FFFFFF",
   },
   chipActive: {
     backgroundColor: Colors.primary,
@@ -486,12 +486,12 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#687076',
+    fontFamily: "Poppins_400Regular",
+    color: "#687076",
   },
   chipTextActive: {
-    color: '#FFFFFF',
-    fontFamily: 'Poppins_600SemiBold',
+    color: "#FFFFFF",
+    fontFamily: "Poppins_600SemiBold",
   },
 });
 ```
@@ -516,6 +516,7 @@ git commit -m "feat(mobile-prepaid): add AmountChips component with tests"
 ## Task 7: BeneficiaryDirectory Component + Tests
 
 **Files:**
+
 - Create: `features/mobile-prepaid/components/BeneficiaryDirectory.tsx`
 - Create: `features/mobile-prepaid/__tests__/BeneficiaryDirectory.test.tsx`
 
@@ -523,20 +524,20 @@ git commit -m "feat(mobile-prepaid): add AmountChips component with tests"
 
 ```tsx
 // features/mobile-prepaid/__tests__/BeneficiaryDirectory.test.tsx
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { Alert } from 'react-native';
-import { BeneficiaryDirectory } from '../components/BeneficiaryDirectory';
-import type { Beneficiary } from '../types';
+import React from "react";
+import { render, fireEvent } from "@testing-library/react-native";
+import { Alert } from "react-native";
+import { BeneficiaryDirectory } from "../components/BeneficiaryDirectory";
+import type { Beneficiary } from "../types";
 
-jest.spyOn(Alert, 'alert');
+jest.spyOn(Alert, "alert");
 
 const BENEFICIARIES: Beneficiary[] = [
-  { id: 'ben-001', name: 'Emma', phone: '+8564757899' },
-  { id: 'ben-002', name: 'Justin', phone: '+8123456789' },
+  { id: "ben-001", name: "Emma", phone: "+8564757899" },
+  { id: "ben-002", name: "Justin", phone: "+8123456789" },
 ];
 
-describe('BeneficiaryDirectory', () => {
+describe("BeneficiaryDirectory", () => {
   const onSelect = jest.fn();
 
   beforeEach(() => {
@@ -544,7 +545,7 @@ describe('BeneficiaryDirectory', () => {
     (Alert.alert as jest.Mock).mockClear();
   });
 
-  it('renders beneficiary names', () => {
+  it("renders beneficiary names", () => {
     const { getByText } = render(
       <BeneficiaryDirectory
         beneficiaries={BENEFICIARIES}
@@ -552,11 +553,11 @@ describe('BeneficiaryDirectory', () => {
         onSelect={onSelect}
       />,
     );
-    expect(getByText('Emma')).toBeTruthy();
-    expect(getByText('Justin')).toBeTruthy();
+    expect(getByText("Emma")).toBeTruthy();
+    expect(getByText("Justin")).toBeTruthy();
   });
 
-  it('calls onSelect when a beneficiary is tapped', () => {
+  it("calls onSelect when a beneficiary is tapped", () => {
     const { getByText } = render(
       <BeneficiaryDirectory
         beneficiaries={BENEFICIARIES}
@@ -564,11 +565,11 @@ describe('BeneficiaryDirectory', () => {
         onSelect={onSelect}
       />,
     );
-    fireEvent.press(getByText('Emma'));
+    fireEvent.press(getByText("Emma"));
     expect(onSelect).toHaveBeenCalledWith(BENEFICIARIES[0]);
   });
 
-  it('shows Coming Soon alert when add button is pressed', () => {
+  it("shows Coming Soon alert when add button is pressed", () => {
     const { getByLabelText } = render(
       <BeneficiaryDirectory
         beneficiaries={BENEFICIARIES}
@@ -576,11 +577,11 @@ describe('BeneficiaryDirectory', () => {
         onSelect={onSelect}
       />,
     );
-    fireEvent.press(getByLabelText('Add beneficiary'));
-    expect(Alert.alert).toHaveBeenCalledWith('Coming Soon');
+    fireEvent.press(getByLabelText("Add beneficiary"));
+    expect(Alert.alert).toHaveBeenCalledWith("Coming Soon");
   });
 
-  it('shows Coming Soon alert when Find beneficiary is pressed', () => {
+  it("shows Coming Soon alert when Find beneficiary is pressed", () => {
     const { getByText } = render(
       <BeneficiaryDirectory
         beneficiaries={BENEFICIARIES}
@@ -588,8 +589,8 @@ describe('BeneficiaryDirectory', () => {
         onSelect={onSelect}
       />,
     );
-    fireEvent.press(getByText('Find beneficiary'));
-    expect(Alert.alert).toHaveBeenCalledWith('Coming Soon');
+    fireEvent.press(getByText("Find beneficiary"));
+    expect(Alert.alert).toHaveBeenCalledWith("Coming Soon");
   });
 });
 ```
@@ -606,12 +607,12 @@ Expected: FAIL — module not found
 
 ```tsx
 // features/mobile-prepaid/components/BeneficiaryDirectory.tsx
-import React, { memo } from 'react';
-import { View, ScrollView, Pressable, Image, Alert, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import type { Beneficiary } from '../types';
+import React, { memo } from "react";
+import { View, ScrollView, Pressable, Image, Alert, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import type { Beneficiary } from "../types";
 
 interface BeneficiaryDirectoryProps {
   beneficiaries: Beneficiary[];
@@ -633,7 +634,7 @@ function BeneficiaryDirectoryComponent({
       {/* Header row */}
       <View style={styles.headerRow}>
         <ThemedText style={styles.headerTitle}>Directory</ThemedText>
-        <Pressable onPress={() => Alert.alert('Coming Soon')}>
+        <Pressable onPress={() => Alert.alert("Coming Soon")}>
           <ThemedText style={styles.findLink}>Find beneficiary</ThemedText>
         </Pressable>
       </View>
@@ -648,7 +649,7 @@ function BeneficiaryDirectoryComponent({
         {/* Add button */}
         <Pressable
           style={styles.addButton}
-          onPress={() => Alert.alert('Coming Soon')}
+          onPress={() => Alert.alert("Coming Soon")}
           accessibilityRole="button"
           accessibilityLabel="Add beneficiary"
         >
@@ -666,17 +667,9 @@ function BeneficiaryDirectoryComponent({
               accessibilityRole="button"
               accessibilityLabel={b.name}
             >
-              <View
-                style={[
-                  styles.avatarWrapper,
-                  isSelected && styles.avatarSelected,
-                ]}
-              >
+              <View style={[styles.avatarWrapper, isSelected && styles.avatarSelected]}>
                 {b.avatar ? (
-                  <Image
-                    source={{ uri: b.avatar }}
-                    style={styles.avatarImage}
-                  />
+                  <Image source={{ uri: b.avatar }} style={styles.avatarImage} />
                 ) : (
                   <View style={styles.avatarFallback}>
                     <ThemedText style={styles.avatarInitial}>
@@ -703,18 +696,18 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   headerTitle: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-    color: '#343434',
+    fontFamily: "Poppins_500Medium",
+    color: "#343434",
   },
   findLink: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
+    fontFamily: "Poppins_500Medium",
     color: Colors.primary,
   },
   scroll: {
@@ -730,14 +723,14 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 32,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#E0E0E0',
-    backgroundColor: '#F5F5F5',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderStyle: "dashed",
+    borderColor: "#E0E0E0",
+    backgroundColor: "#F5F5F5",
+    alignItems: "center",
+    justifyContent: "center",
   },
   beneficiaryItem: {
-    alignItems: 'center',
+    alignItems: "center",
     width: 72,
     gap: 6,
   },
@@ -745,34 +738,34 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderWidth: 3,
-    borderColor: 'transparent',
+    borderColor: "transparent",
   },
   avatarSelected: {
     borderColor: Colors.primary,
   },
   avatarImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   avatarFallback: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#E0E0E0',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#E0E0E0",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarInitial: {
     fontSize: 22,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#687076',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#687076",
   },
   beneficiaryName: {
     fontSize: 12,
-    fontFamily: 'Poppins_400Regular',
-    color: '#343434',
-    textAlign: 'center',
+    fontFamily: "Poppins_400Regular",
+    color: "#343434",
+    textAlign: "center",
   },
 });
 ```
@@ -797,6 +790,7 @@ git commit -m "feat(mobile-prepaid): add BeneficiaryDirectory component with tes
 ## Task 8: CardSelectorSheet Component + Tests
 
 **Files:**
+
 - Create: `features/mobile-prepaid/components/CardSelectorSheet.tsx`
 - Create: `features/mobile-prepaid/__tests__/CardSelectorSheet.test.tsx`
 
@@ -804,37 +798,37 @@ git commit -m "feat(mobile-prepaid): add BeneficiaryDirectory component with tes
 
 ```tsx
 // features/mobile-prepaid/__tests__/CardSelectorSheet.test.tsx
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { CardSelectorSheet } from '../components/CardSelectorSheet';
-import type { PaymentCard } from '@/features/dashboard/types';
+import React from "react";
+import { render, fireEvent } from "@testing-library/react-native";
+import { CardSelectorSheet } from "../components/CardSelectorSheet";
+import type { PaymentCard } from "@/features/dashboard/types";
 
 const MOCK_CARDS: PaymentCard[] = [
   {
-    id: 'card-001',
-    accountId: 'demo-002',
-    holderName: 'John Doe',
-    cardLabel: 'VISA Platinum',
-    maskedNumber: '4111  ••••  ••••  1234',
+    id: "card-001",
+    accountId: "demo-002",
+    holderName: "John Doe",
+    cardLabel: "VISA Platinum",
+    maskedNumber: "4111  ••••  ••••  1234",
     balance: 1000000,
-    currency: 'USD',
-    brand: 'VISA',
-    gradientColors: ['#1A1563', '#1E2FA0', '#3B7ED4'],
+    currency: "USD",
+    brand: "VISA",
+    gradientColors: ["#1A1563", "#1E2FA0", "#3B7ED4"],
   },
   {
-    id: 'card-002',
-    accountId: 'demo-002',
-    holderName: 'John Doe',
-    cardLabel: 'MC Gold',
-    maskedNumber: '5200  ••••  ••••  5678',
+    id: "card-002",
+    accountId: "demo-002",
+    holderName: "John Doe",
+    cardLabel: "MC Gold",
+    maskedNumber: "5200  ••••  ••••  5678",
     balance: 500000,
-    currency: 'USD',
-    brand: 'MASTERCARD',
-    gradientColors: ['#2D1B69', '#5B2D8E', '#8E4EC6'],
+    currency: "USD",
+    brand: "MASTERCARD",
+    gradientColors: ["#2D1B69", "#5B2D8E", "#8E4EC6"],
   },
 ];
 
-describe('CardSelectorSheet', () => {
+describe("CardSelectorSheet", () => {
   const onSelect = jest.fn();
   const onClose = jest.fn();
 
@@ -843,7 +837,7 @@ describe('CardSelectorSheet', () => {
     onClose.mockClear();
   });
 
-  it('renders card masked numbers when visible', () => {
+  it("renders card masked numbers when visible", () => {
     const { getByText } = render(
       <CardSelectorSheet
         visible={true}
@@ -853,11 +847,11 @@ describe('CardSelectorSheet', () => {
         onClose={onClose}
       />,
     );
-    expect(getByText('4111  ••••  ••••  1234')).toBeTruthy();
-    expect(getByText('5200  ••••  ••••  5678')).toBeTruthy();
+    expect(getByText("4111  ••••  ••••  1234")).toBeTruthy();
+    expect(getByText("5200  ••••  ••••  5678")).toBeTruthy();
   });
 
-  it('calls onSelect and onClose when a card is tapped', () => {
+  it("calls onSelect and onClose when a card is tapped", () => {
     const { getByText } = render(
       <CardSelectorSheet
         visible={true}
@@ -867,12 +861,12 @@ describe('CardSelectorSheet', () => {
         onClose={onClose}
       />,
     );
-    fireEvent.press(getByText('4111  ••••  ••••  1234'));
+    fireEvent.press(getByText("4111  ••••  ••••  1234"));
     expect(onSelect).toHaveBeenCalledWith(MOCK_CARDS[0]);
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('does not render content when not visible', () => {
+  it("does not render content when not visible", () => {
     const { queryByText } = render(
       <CardSelectorSheet
         visible={false}
@@ -882,7 +876,7 @@ describe('CardSelectorSheet', () => {
         onClose={onClose}
       />,
     );
-    expect(queryByText('4111  ••••  ••••  1234')).toBeNull();
+    expect(queryByText("4111  ••••  ••••  1234")).toBeNull();
   });
 });
 ```
@@ -899,13 +893,13 @@ Expected: FAIL — module not found
 
 ```tsx
 // features/mobile-prepaid/components/CardSelectorSheet.tsx
-import React, { memo } from 'react';
-import { Modal, View, Pressable, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import { formatCurrency } from '@/utils/money';
-import type { PaymentCard } from '@/features/dashboard/types';
+import React, { memo } from "react";
+import { Modal, View, Pressable, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import { formatCurrency } from "@/utils/money";
+import type { PaymentCard } from "@/features/dashboard/types";
 
 interface CardSelectorSheetProps {
   visible: boolean;
@@ -950,22 +944,14 @@ function CardSelectorSheetComponent({
                 accessibilityLabel={`${card.brand} ${card.maskedNumber}`}
               >
                 <View style={styles.cardInfo}>
-                  <ThemedText style={styles.brandText}>
-                    {card.brand}
-                  </ThemedText>
-                  <ThemedText style={styles.maskedNumber}>
-                    {card.maskedNumber}
-                  </ThemedText>
+                  <ThemedText style={styles.brandText}>{card.brand}</ThemedText>
+                  <ThemedText style={styles.maskedNumber}>{card.maskedNumber}</ThemedText>
                 </View>
                 <ThemedText style={styles.balance}>
                   {formatCurrency(card.balance, card.currency)}
                 </ThemedText>
                 {isSelected && (
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={22}
-                    color={Colors.primary}
-                  />
+                  <Ionicons name="checkmark-circle" size={22} color={Colors.primary} />
                 )}
               </Pressable>
             );
@@ -981,11 +967,11 @@ export const CardSelectorSheet = memo(CardSelectorSheetComponent);
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "flex-end",
   },
   sheet: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 20,
@@ -993,16 +979,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#343434',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#343434",
   },
   cardRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 14,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     gap: 12,
   },
   cardRowSelected: {
@@ -1015,17 +1001,17 @@ const styles = StyleSheet.create({
   },
   brandText: {
     fontSize: 12,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#687076',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#687076",
   },
   maskedNumber: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-    color: '#343434',
+    fontFamily: "Poppins_500Medium",
+    color: "#343434",
   },
   balance: {
     fontSize: 13,
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: "Poppins_400Regular",
     color: Colors.primary,
   },
 });
@@ -1051,6 +1037,7 @@ git commit -m "feat(mobile-prepaid): add CardSelectorSheet component with tests"
 ## Task 9: PrepaidSuccessView Component + Tests
 
 **Files:**
+
 - Create: `features/mobile-prepaid/components/PrepaidSuccessView.tsx`
 - Create: `features/mobile-prepaid/__tests__/PrepaidSuccessView.test.tsx`
 
@@ -1058,32 +1045,30 @@ git commit -m "feat(mobile-prepaid): add CardSelectorSheet component with tests"
 
 ```tsx
 // features/mobile-prepaid/__tests__/PrepaidSuccessView.test.tsx
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { PrepaidSuccessView } from '../components/PrepaidSuccessView';
+import React from "react";
+import { render, fireEvent } from "@testing-library/react-native";
+import { PrepaidSuccessView } from "../components/PrepaidSuccessView";
 
 const mockReplace = jest.fn();
-jest.mock('expo-router', () => ({
+jest.mock("expo-router", () => ({
   useRouter: () => ({ replace: mockReplace }),
 }));
 
-describe('PrepaidSuccessView', () => {
+describe("PrepaidSuccessView", () => {
   beforeEach(() => {
     mockReplace.mockClear();
   });
 
-  it('renders success title and message', () => {
+  it("renders success title and message", () => {
     const { getByText } = render(<PrepaidSuccessView />);
-    expect(getByText('Payment success!')).toBeTruthy();
-    expect(
-      getByText('You have successfully paid mobile prepaid!'),
-    ).toBeTruthy();
+    expect(getByText("Payment success!")).toBeTruthy();
+    expect(getByText("You have successfully paid mobile prepaid!")).toBeTruthy();
   });
 
-  it('navigates to home when confirm is pressed', () => {
+  it("navigates to home when confirm is pressed", () => {
     const { getByText } = render(<PrepaidSuccessView />);
-    fireEvent.press(getByText('Confirm'));
-    expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
+    fireEvent.press(getByText("Confirm"));
+    expect(mockReplace).toHaveBeenCalledWith("/(tabs)");
   });
 });
 ```
@@ -1100,11 +1085,11 @@ Expected: FAIL — module not found
 
 ```tsx
 // features/mobile-prepaid/components/PrepaidSuccessView.tsx
-import React, { memo } from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
+import React, { memo } from "react";
+import { View, Image, Pressable, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
 
 function PrepaidSuccessViewComponent() {
   const router = useRouter();
@@ -1112,7 +1097,7 @@ function PrepaidSuccessViewComponent() {
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/images/illustrations/payment-success.png')}
+        source={require("@/assets/images/illustrations/payment-success.png")}
         style={styles.illustration}
         resizeMode="contain"
       />
@@ -1122,7 +1107,7 @@ function PrepaidSuccessViewComponent() {
       </ThemedText>
       <Pressable
         style={styles.button}
-        onPress={() => router.replace('/(tabs)')}
+        onPress={() => router.replace("/(tabs)")}
         accessibilityRole="button"
         accessibilityLabel="Confirm"
       >
@@ -1137,8 +1122,8 @@ export const PrepaidSuccessView = memo(PrepaidSuccessViewComponent);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 24,
     gap: 16,
   },
@@ -1149,28 +1134,28 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: 'Poppins_600SemiBold',
+    fontFamily: "Poppins_600SemiBold",
     color: Colors.primary,
-    textAlign: 'center',
+    textAlign: "center",
   },
   message: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#687076',
-    textAlign: 'center',
+    fontFamily: "Poppins_400Regular",
+    color: "#687076",
+    textAlign: "center",
   },
   button: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 16,
     borderRadius: 28,
     backgroundColor: Colors.primary,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 24,
   },
   buttonText: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#FFFFFF',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#FFFFFF",
   },
 });
 ```
@@ -1197,6 +1182,7 @@ git commit -m "feat(mobile-prepaid): add PrepaidSuccessView component with tests
 ## Task 10: useMobilePrepaid Hook + Tests
 
 **Files:**
+
 - Create: `features/mobile-prepaid/hooks/useMobilePrepaid.ts`
 - Create: `features/mobile-prepaid/__tests__/useMobilePrepaid.test.ts`
 
@@ -1204,45 +1190,45 @@ git commit -m "feat(mobile-prepaid): add PrepaidSuccessView component with tests
 
 ```tsx
 // features/mobile-prepaid/__tests__/useMobilePrepaid.test.ts
-import { renderHook, act, waitFor } from '@testing-library/react-native';
-import { Alert } from 'react-native';
-import { useMobilePrepaid } from '../hooks/useMobilePrepaid';
-import { createWrapper } from '@/test-utils/createWrapper';
-import { AMOUNT_OPTIONS } from '../types';
-import type { PaymentCard } from '@/features/dashboard/types';
+import { renderHook, act, waitFor } from "@testing-library/react-native";
+import { Alert } from "react-native";
+import { useMobilePrepaid } from "../hooks/useMobilePrepaid";
+import { createWrapper } from "@/test-utils/createWrapper";
+import { AMOUNT_OPTIONS } from "../types";
+import type { PaymentCard } from "@/features/dashboard/types";
 
-jest.spyOn(Alert, 'alert');
+jest.spyOn(Alert, "alert");
 
 // Mock dashboardService.loadCards
 const MOCK_CARDS: PaymentCard[] = [
   {
-    id: 'card-001',
-    accountId: 'demo-002',
-    holderName: 'John Doe',
-    cardLabel: 'VISA Platinum',
-    maskedNumber: '4111  ••••  ••••  1234',
+    id: "card-001",
+    accountId: "demo-002",
+    holderName: "John Doe",
+    cardLabel: "VISA Platinum",
+    maskedNumber: "4111  ••••  ••••  1234",
     balance: 1000000,
-    currency: 'USD',
-    brand: 'VISA',
-    gradientColors: ['#1A1563', '#1E2FA0', '#3B7ED4'],
+    currency: "USD",
+    brand: "VISA",
+    gradientColors: ["#1A1563", "#1E2FA0", "#3B7ED4"],
   },
 ];
 
-jest.mock('@/features/dashboard/services/dashboard-service', () => ({
+jest.mock("@/features/dashboard/services/dashboard-service", () => ({
   dashboardService: {
     loadCards: jest.fn().mockResolvedValue(MOCK_CARDS),
   },
 }));
 
-describe('useMobilePrepaid', () => {
+describe("useMobilePrepaid", () => {
   const { Wrapper } = createWrapper();
 
   beforeEach(() => {
     (Alert.alert as jest.Mock).mockClear();
   });
 
-  it('loads cards and beneficiaries on mount', async () => {
-    const { result } = renderHook(() => useMobilePrepaid('demo-002'), {
+  it("loads cards and beneficiaries on mount", async () => {
+    const { result } = renderHook(() => useMobilePrepaid("demo-002"), {
       wrapper: Wrapper,
     });
 
@@ -1254,8 +1240,8 @@ describe('useMobilePrepaid', () => {
     expect(result.current.beneficiaries.length).toBeGreaterThan(0);
   });
 
-  it('selectBeneficiary fills phone field', async () => {
-    const { result } = renderHook(() => useMobilePrepaid('demo-002'), {
+  it("selectBeneficiary fills phone field", async () => {
+    const { result } = renderHook(() => useMobilePrepaid("demo-002"), {
       wrapper: Wrapper,
     });
 
@@ -1270,8 +1256,8 @@ describe('useMobilePrepaid', () => {
     expect(result.current.phone).toBe(result.current.beneficiaries[0].phone);
   });
 
-  it('submit succeeds with valid data', async () => {
-    const { result } = renderHook(() => useMobilePrepaid('demo-002'), {
+  it("submit succeeds with valid data", async () => {
+    const { result } = renderHook(() => useMobilePrepaid("demo-002"), {
       wrapper: Wrapper,
     });
 
@@ -1281,7 +1267,7 @@ describe('useMobilePrepaid', () => {
 
     act(() => {
       result.current.setSelectedCard(result.current.cards[0]);
-      result.current.setPhone('+8564757899');
+      result.current.setPhone("+8564757899");
       result.current.setSelectedAmount(AMOUNT_OPTIONS[0]);
     });
 
@@ -1292,8 +1278,8 @@ describe('useMobilePrepaid', () => {
     expect(result.current.isSuccess).toBe(true);
   });
 
-  it('submit shows alert on failure', async () => {
-    const { result } = renderHook(() => useMobilePrepaid('demo-002'), {
+  it("submit shows alert on failure", async () => {
+    const { result } = renderHook(() => useMobilePrepaid("demo-002"), {
       wrapper: Wrapper,
     });
 
@@ -1303,7 +1289,7 @@ describe('useMobilePrepaid', () => {
 
     act(() => {
       result.current.setSelectedCard(result.current.cards[0]);
-      result.current.setPhone('+0000000000');
+      result.current.setPhone("+0000000000");
       result.current.setSelectedAmount(AMOUNT_OPTIONS[0]);
     });
 
@@ -1312,7 +1298,7 @@ describe('useMobilePrepaid', () => {
     });
 
     expect(result.current.isSuccess).toBe(false);
-    expect(Alert.alert).toHaveBeenCalledWith('Failed', 'Invalid phone number');
+    expect(Alert.alert).toHaveBeenCalledWith("Failed", "Invalid phone number");
   });
 });
 ```
@@ -1329,13 +1315,13 @@ Expected: FAIL — module not found
 
 ```typescript
 // features/mobile-prepaid/hooks/useMobilePrepaid.ts
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Alert } from 'react-native';
-import { useQuery } from '@tanstack/react-query';
-import { dashboardService } from '@/features/dashboard/services/dashboard-service';
-import { getBeneficiaries, submitPrepaid } from '../api';
-import type { PaymentCard } from '@/features/dashboard/types';
-import type { AmountOption, Beneficiary } from '../types';
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Alert } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { dashboardService } from "@/features/dashboard/services/dashboard-service";
+import { getBeneficiaries, submitPrepaid } from "../api";
+import type { PaymentCard } from "@/features/dashboard/types";
+import type { AmountOption, Beneficiary } from "../types";
 
 export function useMobilePrepaid(accountId: string) {
   // ─── Data loading ───────────────────────────────────────────────────
@@ -1350,14 +1336,13 @@ export function useMobilePrepaid(accountId: string) {
         setCardsLoading(false);
       }
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [accountId]);
 
-  const {
-    data: beneficiaries = [],
-    isLoading: beneficiariesLoading,
-  } = useQuery({
-    queryKey: ['mobile-prepaid', 'beneficiaries', accountId],
+  const { data: beneficiaries = [], isLoading: beneficiariesLoading } = useQuery({
+    queryKey: ["mobile-prepaid", "beneficiaries", accountId],
     queryFn: () => getBeneficiaries(accountId),
   });
 
@@ -1366,7 +1351,7 @@ export function useMobilePrepaid(accountId: string) {
   // ─── Form state ─────────────────────────────────────────────────────
   const [selectedCard, setSelectedCard] = useState<PaymentCard | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<AmountOption | null>(null);
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState("");
   const [selectedBeneficiaryId, setSelectedBeneficiaryId] = useState<string | null>(null);
 
   // ─── Submit ─────────────────────────────────────────────────────────
@@ -1393,15 +1378,15 @@ export function useMobilePrepaid(accountId: string) {
         amount: selectedAmount.value,
       });
 
-      if (result.status === 'SUCCESS') {
+      if (result.status === "SUCCESS") {
         setIsSuccess(true);
       } else {
-        Alert.alert('Failed', result.message);
+        Alert.alert("Failed", result.message);
       }
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : 'Network error. Please try again.';
-      Alert.alert('Failed', message);
+        error instanceof Error ? error.message : "Network error. Please try again.";
+      Alert.alert("Failed", message);
     } finally {
       submittingRef.current = false;
       setIsSubmitting(false);
@@ -1411,7 +1396,7 @@ export function useMobilePrepaid(accountId: string) {
   const reset = useCallback(() => {
     setSelectedCard(null);
     setSelectedAmount(null);
-    setPhone('');
+    setPhone("");
     setSelectedBeneficiaryId(null);
     setIsSuccess(false);
   }, []);
@@ -1456,6 +1441,7 @@ git commit -m "feat(mobile-prepaid): add useMobilePrepaid orchestration hook wit
 ## Task 11: MobilePrepaidScreen + Barrel Export
 
 **Files:**
+
 - Create: `features/mobile-prepaid/components/MobilePrepaidScreen.tsx`
 - Create: `features/mobile-prepaid/components/index.ts`
 
@@ -1463,7 +1449,7 @@ git commit -m "feat(mobile-prepaid): add useMobilePrepaid orchestration hook wit
 
 ```tsx
 // features/mobile-prepaid/components/MobilePrepaidScreen.tsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -1471,19 +1457,19 @@ import {
   Pressable,
   ActivityIndicator,
   StyleSheet,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import { formatCurrency } from '@/utils/money';
-import { authService } from '@/features/auth/services/auth-service';
-import { useMobilePrepaid } from '../hooks/useMobilePrepaid';
-import { AmountChips } from './AmountChips';
-import { BeneficiaryDirectory } from './BeneficiaryDirectory';
-import { CardSelectorSheet } from './CardSelectorSheet';
-import { PrepaidSuccessView } from './PrepaidSuccessView';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import { formatCurrency } from "@/utils/money";
+import { authService } from "@/features/auth/services/auth-service";
+import { useMobilePrepaid } from "../hooks/useMobilePrepaid";
+import { AmountChips } from "./AmountChips";
+import { BeneficiaryDirectory } from "./BeneficiaryDirectory";
+import { CardSelectorSheet } from "./CardSelectorSheet";
+import { PrepaidSuccessView } from "./PrepaidSuccessView";
 
 interface MobilePrepaidScreenInnerProps {
   accountId: string;
@@ -1514,7 +1500,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
 
   if (isSuccess) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <PrepaidSuccessView />
       </SafeAreaView>
     );
@@ -1522,7 +1508,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
 
   if (isLoading) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.primary} />
         </View>
@@ -1531,7 +1517,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
   }
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <SafeAreaView edges={["top"]} style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
         <Pressable
@@ -1554,9 +1540,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
       >
         {/* Card selector */}
         <View style={styles.section}>
-          <ThemedText style={styles.sectionLabel}>
-            Choose account/ card
-          </ThemedText>
+          <ThemedText style={styles.sectionLabel}>Choose account/ card</ThemedText>
           <Pressable
             style={styles.cardField}
             onPress={() => setSheetVisible(true)}
@@ -1564,19 +1548,17 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
             accessibilityLabel="Choose account or card"
           >
             <ThemedText
-              style={[
-                styles.cardFieldText,
-                !selectedCard && styles.cardFieldPlaceholder,
-              ]}
+              style={[styles.cardFieldText, !selectedCard && styles.cardFieldPlaceholder]}
             >
               {selectedCard
                 ? `${selectedCard.brand} ${selectedCard.maskedNumber}`
-                : 'Choose account / card'}
+                : "Choose account / card"}
             </ThemedText>
           </Pressable>
           {selectedCard && (
             <ThemedText style={styles.balanceText}>
-              Available balance : {formatCurrency(selectedCard.balance, selectedCard.currency)}
+              Available balance :{" "}
+              {formatCurrency(selectedCard.balance, selectedCard.currency)}
             </ThemedText>
           )}
         </View>
@@ -1607,10 +1589,7 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
         {/* Amount chips */}
         <View style={styles.section}>
           <ThemedText style={styles.sectionLabel}>Choose amount</ThemedText>
-          <AmountChips
-            selected={selectedAmount}
-            onSelect={setSelectedAmount}
-          />
+          <AmountChips selected={selectedAmount} onSelect={setSelectedAmount} />
         </View>
 
         {/* Spacer to push Confirm to bottom */}
@@ -1618,7 +1597,10 @@ function MobilePrepaidScreenInner({ accountId }: MobilePrepaidScreenInnerProps) 
 
         {/* Confirm button */}
         <Pressable
-          style={[styles.confirmButton, (!isAllFilled || isSubmitting) && styles.confirmDisabled]}
+          style={[
+            styles.confirmButton,
+            (!isAllFilled || isSubmitting) && styles.confirmDisabled,
+          ]}
           onPress={submit}
           disabled={!isAllFilled || isSubmitting}
           accessibilityRole="button"
@@ -1657,7 +1639,7 @@ export function MobilePrepaidScreen() {
 
   if (!accountId) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.primary} />
         </View>
@@ -1671,16 +1653,16 @@ export function MobilePrepaidScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     gap: 12,
@@ -1688,8 +1670,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     fontSize: 18,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#343434',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#343434",
   },
   headerSpacer: {
     width: 24,
@@ -1708,47 +1690,47 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-    color: '#687076',
+    fontFamily: "Poppins_500Medium",
+    color: "#687076",
   },
   cardField: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     borderRadius: 8,
     padding: 14,
   },
   cardFieldText: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#343434',
+    fontFamily: "Poppins_400Regular",
+    color: "#343434",
   },
   cardFieldPlaceholder: {
-    color: '#9E9E9E',
+    color: "#9E9E9E",
   },
   balanceText: {
     fontSize: 13,
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: "Poppins_400Regular",
     color: Colors.primary,
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     borderRadius: 8,
     padding: 14,
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#343434',
+    fontFamily: "Poppins_400Regular",
+    color: "#343434",
   },
   spacer: {
     flex: 1,
     minHeight: 32,
   },
   confirmButton: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 16,
     borderRadius: 28,
     backgroundColor: Colors.primary,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 16,
   },
   confirmDisabled: {
@@ -1756,8 +1738,8 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#FFFFFF',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#FFFFFF",
   },
 });
 ```
@@ -1766,11 +1748,11 @@ const styles = StyleSheet.create({
 
 ```typescript
 // features/mobile-prepaid/components/index.ts
-export { MobilePrepaidScreen } from './MobilePrepaidScreen';
-export { AmountChips } from './AmountChips';
-export { BeneficiaryDirectory } from './BeneficiaryDirectory';
-export { CardSelectorSheet } from './CardSelectorSheet';
-export { PrepaidSuccessView } from './PrepaidSuccessView';
+export { MobilePrepaidScreen } from "./MobilePrepaidScreen";
+export { AmountChips } from "./AmountChips";
+export { BeneficiaryDirectory } from "./BeneficiaryDirectory";
+export { CardSelectorSheet } from "./CardSelectorSheet";
+export { PrepaidSuccessView } from "./PrepaidSuccessView";
 ```
 
 - [ ] **Step 3: Commit**
@@ -1785,60 +1767,61 @@ git commit -m "feat(mobile-prepaid): add MobilePrepaidScreen and barrel export"
 ## Task 12: MobilePrepaidScreen Tests
 
 **Files:**
+
 - Create: `features/mobile-prepaid/__tests__/MobilePrepaidScreen.test.tsx`
 
 - [ ] **Step 1: Write screen tests**
 
 ```tsx
 // features/mobile-prepaid/__tests__/MobilePrepaidScreen.test.tsx
-import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import { Alert } from 'react-native';
-import { MobilePrepaidScreen } from '../components/MobilePrepaidScreen';
-import { createWrapper } from '@/test-utils/createWrapper';
-import type { PaymentCard } from '@/features/dashboard/types';
+import React from "react";
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { Alert } from "react-native";
+import { MobilePrepaidScreen } from "../components/MobilePrepaidScreen";
+import { createWrapper } from "@/test-utils/createWrapper";
+import type { PaymentCard } from "@/features/dashboard/types";
 
-jest.spyOn(Alert, 'alert');
+jest.spyOn(Alert, "alert");
 
 const mockBack = jest.fn();
 const mockReplace = jest.fn();
-jest.mock('expo-router', () => ({
+jest.mock("expo-router", () => ({
   useRouter: () => ({ back: mockBack, replace: mockReplace }),
 }));
 
 const MOCK_CARDS: PaymentCard[] = [
   {
-    id: 'card-001',
-    accountId: 'demo-002',
-    holderName: 'John Doe',
-    cardLabel: 'VISA Platinum',
-    maskedNumber: '4111  ••••  ••••  1234',
+    id: "card-001",
+    accountId: "demo-002",
+    holderName: "John Doe",
+    cardLabel: "VISA Platinum",
+    maskedNumber: "4111  ••••  ••••  1234",
     balance: 1000000,
-    currency: 'USD',
-    brand: 'VISA',
-    gradientColors: ['#1A1563', '#1E2FA0', '#3B7ED4'],
+    currency: "USD",
+    brand: "VISA",
+    gradientColors: ["#1A1563", "#1E2FA0", "#3B7ED4"],
   },
 ];
 
-jest.mock('@/features/dashboard/services/dashboard-service', () => ({
+jest.mock("@/features/dashboard/services/dashboard-service", () => ({
   dashboardService: {
     loadCards: jest.fn().mockResolvedValue(MOCK_CARDS),
   },
 }));
 
-jest.mock('@/features/auth/services/auth-service', () => ({
+jest.mock("@/features/auth/services/auth-service", () => ({
   authService: {
     getSessionAccount: jest.fn().mockResolvedValue({
-      id: 'demo-002',
-      name: 'Test User',
-      phone: '1234567890',
-      password: 'test',
-      createdAt: '2026-01-01',
+      id: "demo-002",
+      name: "Test User",
+      phone: "1234567890",
+      password: "test",
+      createdAt: "2026-01-01",
     }),
   },
 }));
 
-describe('MobilePrepaidScreen', () => {
+describe("MobilePrepaidScreen", () => {
   const { Wrapper } = createWrapper();
 
   beforeEach(() => {
@@ -1847,7 +1830,7 @@ describe('MobilePrepaidScreen', () => {
     (Alert.alert as jest.Mock).mockClear();
   });
 
-  it('renders the form after loading', async () => {
+  it("renders the form after loading", async () => {
     const { getByText, getByLabelText } = render(
       <Wrapper>
         <MobilePrepaidScreen />
@@ -1855,17 +1838,17 @@ describe('MobilePrepaidScreen', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Mobile prepaid')).toBeTruthy();
+      expect(getByText("Mobile prepaid")).toBeTruthy();
     });
 
-    expect(getByText('Choose account / card')).toBeTruthy();
-    expect(getByLabelText('Phone number')).toBeTruthy();
-    expect(getByText('$10')).toBeTruthy();
-    expect(getByText('$20')).toBeTruthy();
-    expect(getByText('$30')).toBeTruthy();
+    expect(getByText("Choose account / card")).toBeTruthy();
+    expect(getByLabelText("Phone number")).toBeTruthy();
+    expect(getByText("$10")).toBeTruthy();
+    expect(getByText("$20")).toBeTruthy();
+    expect(getByText("$30")).toBeTruthy();
   });
 
-  it('confirm button is disabled when form is incomplete', async () => {
+  it("confirm button is disabled when form is incomplete", async () => {
     const { getByLabelText } = render(
       <Wrapper>
         <MobilePrepaidScreen />
@@ -1873,14 +1856,16 @@ describe('MobilePrepaidScreen', () => {
     );
 
     await waitFor(() => {
-      expect(getByLabelText('Confirm')).toBeTruthy();
+      expect(getByLabelText("Confirm")).toBeTruthy();
     });
 
-    const confirmButton = getByLabelText('Confirm');
-    expect(confirmButton.props.accessibilityState?.disabled ?? confirmButton.props.disabled).toBeTruthy();
+    const confirmButton = getByLabelText("Confirm");
+    expect(
+      confirmButton.props.accessibilityState?.disabled ?? confirmButton.props.disabled,
+    ).toBeTruthy();
   });
 
-  it('navigates back when back arrow is pressed', async () => {
+  it("navigates back when back arrow is pressed", async () => {
     const { getByLabelText } = render(
       <Wrapper>
         <MobilePrepaidScreen />
@@ -1888,10 +1873,10 @@ describe('MobilePrepaidScreen', () => {
     );
 
     await waitFor(() => {
-      expect(getByLabelText('Go back')).toBeTruthy();
+      expect(getByLabelText("Go back")).toBeTruthy();
     });
 
-    fireEvent.press(getByLabelText('Go back'));
+    fireEvent.press(getByLabelText("Go back"));
     expect(mockBack).toHaveBeenCalled();
   });
 });
@@ -1917,6 +1902,7 @@ git commit -m "test(mobile-prepaid): add MobilePrepaidScreen tests"
 ## Task 13: Route File & MenuGridItem Navigation
 
 **Files:**
+
 - Create: `app/mobile-prepaid.tsx`
 - Modify: `features/dashboard/components/MenuGridItem.tsx`
 
@@ -1924,7 +1910,7 @@ git commit -m "test(mobile-prepaid): add MobilePrepaidScreen tests"
 
 ```tsx
 // app/mobile-prepaid.tsx
-import { MobilePrepaidScreen } from '@/features/mobile-prepaid/components';
+import { MobilePrepaidScreen } from "@/features/mobile-prepaid/components";
 
 export default function MobilePrepaidRoute() {
   return <MobilePrepaidScreen />;
@@ -1938,7 +1924,7 @@ In `features/dashboard/components/MenuGridItem.tsx`, add the router import and u
 Add import at top:
 
 ```typescript
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
 ```
 
 Replace the component body with:
