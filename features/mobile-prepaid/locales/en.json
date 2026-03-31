@@ -1,0 +1,20 @@
+{
+  "title": "Mobile prepaid",
+  "chooseAccount": "Choose account / card",
+  "availableBalance": "Available balance : {{balance}}",
+  "directory": "Directory",
+  "findBeneficiary": "Find beneficiary",
+  "phoneNumber": "Phone number",
+  "phoneNumberPlaceholder": "Phone number",
+  "chooseAmount": "Choose amount",
+  "confirm": "Confirm",
+  "success.title": "Payment success!",
+  "success.message": "You have successfully paid mobile prepaid!",
+  "addBeneficiary.title": "Add Beneficiary",
+  "addBeneficiary.namePlaceholder": "Name",
+  "addBeneficiary.phonePlaceholder": "Phone number",
+  "addBeneficiary.cancel": "Cancel",
+  "addBeneficiary.add": "Add",
+  "selectCard": "Select Card",
+  "noCards": "No cards available"
+}

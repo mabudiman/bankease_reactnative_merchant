@@ -1,0 +1,20 @@
+{
+  "title": "Pulsa seluler",
+  "chooseAccount": "Pilih akun / kartu",
+  "availableBalance": "Saldo tersedia : {{balance}}",
+  "directory": "Direktori",
+  "findBeneficiary": "Cari penerima",
+  "phoneNumber": "Nomor telepon",
+  "phoneNumberPlaceholder": "Nomor telepon",
+  "chooseAmount": "Pilih nominal",
+  "confirm": "Konfirmasi",
+  "success.title": "Pembayaran berhasil!",
+  "success.message": "Anda telah berhasil membayar pulsa seluler!",
+  "addBeneficiary.title": "Tambah Penerima",
+  "addBeneficiary.namePlaceholder": "Nama",
+  "addBeneficiary.phonePlaceholder": "Nomor telepon",
+  "addBeneficiary.cancel": "Batal",
+  "addBeneficiary.add": "Tambah",
+  "selectCard": "Pilih Kartu",
+  "noCards": "Tidak ada kartu tersedia"
+}

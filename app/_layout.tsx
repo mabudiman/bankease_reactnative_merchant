@@ -1,8 +1,4 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -53,6 +49,8 @@ function RootNavigator() {
       <Stack.Screen name="change-password-success" />
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="search" />
+      <Stack.Screen name="mobile-prepaid" />
+      <Stack.Screen name="mobile-prepaid-success" />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
     </Stack>
   );
@@ -76,13 +74,20 @@ export default function RootLayout() {
   useEffect(() => {
     if (isReady) {
       SplashScreen.hideAsync().catch((e) => {
-        if (__DEV__) console.warn('[RootLayout] SplashScreen.hideAsync failed:', e);
+        if (__DEV__) console.warn("[RootLayout] SplashScreen.hideAsync failed:", e);
       });
     }
   }, [isReady]);
 
   if (__DEV__) {
-    console.log('[RootLayout] fontsLoaded:', fontsLoaded, 'fontError:', fontError, 'isMSWReady:', isMSWReady);
+    console.log(
+      "[RootLayout] fontsLoaded:",
+      fontsLoaded,
+      "fontError:",
+      fontError,
+      "isMSWReady:",
+      isMSWReady,
+    );
   }
 
   // Don't render the app until fonts and MSW are ready.
@@ -94,9 +99,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <I18nProvider translations={translations}>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
             <RootNavigator />
             <StatusBar style="auto" />
           </ThemeProvider>
