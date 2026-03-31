@@ -36,6 +36,9 @@ ios/
 coverage/
 .jest-cache/
 
+# ─── SonarQube ────────────────────────────────────────────────────────────────
+.scannerwork/
+
 # ─── Environment & Secrets ────────────────────────────────────────────────────
 .env
 .env.local
