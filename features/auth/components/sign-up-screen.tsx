@@ -78,13 +78,13 @@ export function SignUpScreen() {
   /** Phone: only digits and an optional leading + */
   function handlePhoneChange(v: string) {
     // Allow digits, and a + only at position 0
-    const cleaned = v.replace(/(?!^\+)[^\d]/g, '');
+    const cleaned = v.replaceAll(/(?!^\+)[^\d]/g, '');
     setPhone(cleaned);
     setError(null);
-    if (v !== cleaned) {
-      setPhoneError('Phone number may only contain digits (and a leading +)');
-    } else {
+    if (v === cleaned) {
       setPhoneError(null);
+    } else {
+      setPhoneError('Phone number may only contain digits (and a leading +)');
     }
   }
 

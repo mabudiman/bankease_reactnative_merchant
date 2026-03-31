@@ -31,7 +31,7 @@ const TAB_LABELS: Record<string, string> = {
   settings: 'Settings',
 };
 
-function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
+function FloatingTabBar({ state, navigation }: Readonly<BottomTabBarProps>) {
   const insets = useSafeAreaInsets();
   const visibleRoutes = state.routes.filter((r) => TAB_LABELS[r.name]);
 
@@ -87,7 +87,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 export default function TabLayout() {
   return (
     <Tabs
-      tabBar={(props) => <FloatingTabBar {...props} />}
+      tabBar={FloatingTabBar}
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="index" />
@@ -120,7 +120,7 @@ const S = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.06)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.10,
+    shadowOpacity: 0.1,
     shadowRadius: 16,
     elevation: 8,
   },

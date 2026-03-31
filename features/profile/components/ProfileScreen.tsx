@@ -27,13 +27,13 @@ const FIELD_BORDER = 'rgba(0, 0, 0, 0.12)';
 const FIELD_LABEL_COLOR = '#8E8BA2';
 
 interface FieldProps {
-  label: string;
-  value: string;
-  onChangeText: (v: string) => void;
-  placeholder?: string;
-  keyboardType?: 'default' | 'numeric' | 'email-address';
-  autoCapitalize?: 'none' | 'sentences' | 'words';
-  error?: string | null;
+  readonly label: string;
+  readonly value: string;
+  readonly onChangeText: (v: string) => void;
+  readonly placeholder?: string;
+  readonly keyboardType?: 'default' | 'numeric' | 'email-address';
+  readonly autoCapitalize?: 'none' | 'sentences' | 'words';
+  readonly error?: string | null;
 }
 
 function FormField({ label, value, onChangeText, placeholder, keyboardType = 'default', autoCapitalize = 'words', error }: FieldProps) {
@@ -104,11 +104,11 @@ export function ProfileScreen() {
   /** Card number: allow digits and spaces only (no letters or symbols) */
   function handleCardNumberChange(v: string) {
     // Strip anything that is not a digit or space
-    const cleaned = v.replace(/[^\d\s]/g, '');
+    const cleaned = v.replaceAll(/[^\d\s]/g, '');
     setCardNumber(cleaned);
     if (v !== cleaned) {
       setCardNumberError('Card number may only contain digits');
-    } else if (cleaned.replace(/\s/g, '').length > 0 && cleaned.replace(/\s/g, '').length < 4) {
+    } else if (cleaned.replaceAll(/\s/g, '').length > 0 && cleaned.replaceAll(/\s/g, '').length < 4) {
       setCardNumberError('Card number is too short');
     } else {
       setCardNumberError(null);

@@ -6,7 +6,7 @@ import { useTranslation } from '@/core/i18n';
 import type { Privilege } from '../types';
 
 interface MenuGridItemProps {
-  privilege: Privilege;
+  readonly privilege: Privilege;
 }
 
 function MenuGridItemComponent({ privilege }: MenuGridItemProps) {

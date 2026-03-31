@@ -8,14 +8,14 @@ import type { PaymentCard } from '../types';
 import VisaLogo from '@/assets/svgs/icon_visa.svg';
 
 interface AccountCardProps {
-  card: PaymentCard;
+  readonly card: PaymentCard;
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const CARD_WIDTH = SCREEN_WIDTH - 48;
 export const CARD_HEIGHT = 190;
 
-function BrandLogo({ brand }: { brand: PaymentCard['brand'] }) {
+function BrandLogo({ brand }: { readonly brand: PaymentCard['brand'] }) {
   if (brand === 'VISA') {
     return <VisaLogo width={58} height={20} />;
   }

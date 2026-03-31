@@ -11,10 +11,10 @@ let _token: string | null = null;
  */
 async function setToken(token: string | null): Promise<void> {
   _token = token;
-  if (token !== null) {
-    await AsyncStorage.setItem(TOKEN_KEY, token);
-  } else {
+  if (token === null) {
     await AsyncStorage.removeItem(TOKEN_KEY);
+  } else {
+    await AsyncStorage.setItem(TOKEN_KEY, token);
   }
 }
 

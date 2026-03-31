@@ -9,10 +9,10 @@ import { useTranslation } from '@/core/i18n';
 import NotificationIcon from '@/assets/svgs/icon_notification.svg';
 
 interface DashboardHeaderProps {
-  name: string;
-  notificationCount: number;
-  avatarUri?: string;
-  onAvatarPress?: () => void;
+  readonly name: string;
+  readonly notificationCount: number;
+  readonly avatarUri?: string;
+  readonly onAvatarPress?: () => void;
 }
 
 export function DashboardHeader({ name, notificationCount, avatarUri, onAvatarPress }: DashboardHeaderProps) {
