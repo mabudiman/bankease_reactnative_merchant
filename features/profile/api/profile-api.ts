@@ -56,7 +56,7 @@ function mapInputToPayload(data: UserProfileInput): UpdateProfilePayload {
 // ─── API functions ────────────────────────────────────────────────────────────
 
 export async function getProfile(accountId: string): Promise<UserProfile> {
-  const res = await request<ApiProfileResponse>(`/api/profile/${accountId}`);
+  const res = await request<ApiProfileResponse>(`/api/profile`);
   return mapResponseToProfile(accountId, res);
 }
 

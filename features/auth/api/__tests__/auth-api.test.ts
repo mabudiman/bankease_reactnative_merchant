@@ -1,6 +1,6 @@
 import { authApi } from '../index';
 
-const AUTH_BASE = 'http://4.193.104.245:3031';
+const AUTH_BASE = 'http://4.193.104.245:3000';
 
 // ─── Mock global.fetch — bypasses MSW which only handles localhost:3000 ──────
 // We replace global.fetch directly so MSW interceptors don't see these requests

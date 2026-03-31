@@ -1,6 +1,6 @@
 import type { SignUpRequest, SignUpResponse, SignInRequest, SignInResponse } from '../types';
 
-const AUTH_API_BASE = 'http://4.193.104.245:3031';
+const AUTH_API_BASE = 'http://4.193.104.245:3000';
 
 async function signIn(payload: SignInRequest): Promise<SignInResponse> {
   let response: Response;
