@@ -16,28 +16,9 @@ export function FeatureMenuGrid({ privileges }: FeatureMenuGridProps) {
     rows.push(enabled.slice(i, i + 3));
   }
 
-  const fallbackRows: Privilege[][] = [
-    [
-      {
-        code: "ACCOUNT_AND_CARDS",
-        enabled: true,
-        title: "Account & Cards",
-        icon: "wallet",
-        color: "#4A90E2",
-      },
-      {
-        code: "MOBILE_PREPAID",
-        enabled: true,
-        title: "Mobile Prepaid",
-        icon: "phone-portrait",
-        color: "#FFAF2A",
-      },
-    ],
-  ];
-
   return (
     <View style={styles.container}>
-      {fallbackRows.map((row) => (
+      {rows.map((row) => (
         <View key={row[0].code} style={styles.row}>
           {row.map((item) => (
             <View key={item.code} style={styles.cell}>
