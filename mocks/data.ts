@@ -1,6 +1,26 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
+import type { Beneficiary } from "@/features/mobile-prepaid/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
+<<<<<<< HEAD
+  { id: "1", country: "Vietnam", currency: "VND", flag: "🇻🇳", buy: 1.403, sell: 1.746 },
+  { id: "2", country: "Nicaragua", currency: "NIO", flag: "🇳🇮", buy: 9.123, sell: 12.09 },
+  { id: "3", country: "Korea", currency: "KRW", flag: "🇰🇷", buy: 3.704, sell: 5.151 },
+  { id: "4", country: "Russia", currency: "RUB", flag: "🇷🇺", buy: 116.0, sell: 144.4 },
+  { id: "5", country: "China", currency: "CNY", flag: "🇨🇳", buy: 1.725, sell: 2.234 },
+  {
+    id: "6",
+    country: "Portuguese",
+    currency: "EUR",
+    flag: "🇵🇹",
+    buy: 1.403,
+    sell: 1.746,
+  },
+  { id: "7", country: "Korea", currency: "KRW", flag: "🇰🇷", buy: 3.454, sell: 4.312 },
+  { id: "8", country: "French", currency: "EUR", flag: "🇫🇷", buy: 23.45, sell: 34.56 },
+  { id: "9", country: "Nicaragua", currency: "NIO", flag: "🇳🇮", buy: 263.1, sell: 300.3 },
+  { id: "10", country: "China", currency: "CNY", flag: "🇨🇳", buy: 1.725, sell: 2.234 },
+=======
   { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
   { id: "2",  country: "Nicaragua", currency: "NIO", countryCode: "NI", buy: 9.123, sell: 12.09  },
   { id: "3",  country: "Korea",    currency: "KRW", countryCode: "KR", buy: 3.704, sell: 5.151  },
@@ -11,6 +31,7 @@ export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "8",  country: "France",   currency: "EUR", countryCode: "FR", buy: 23.45, sell: 34.56  },
   { id: "9",  country: "Nicaragua", currency: "NIO", countryCode: "NI", buy: 263.1, sell: 300.3  },
   { id: "10", country: "China",    currency: "CNY", countryCode: "CN", buy: 1.725, sell: 2.234  },
+>>>>>>> 05c76a99e8f528807407a5f083a5cf89974a73a3
 ];
 
 export const MOCK_INTEREST_RATES: InterestRate[] = [
@@ -29,6 +50,48 @@ export const MOCK_INTEREST_RATES: InterestRate[] = [
 ];
 
 export const MOCK_BRANCHES: Branch[] = [
+<<<<<<< HEAD
+  {
+    id: "1",
+    name: "Bank 1656 Union Street",
+    distance: "50m",
+    latitude: -6.2,
+    longitude: 106.816,
+  },
+  {
+    id: "2",
+    name: "Bank Secaucus",
+    distance: "1,2 km",
+    latitude: -6.205,
+    longitude: 106.82,
+  },
+  {
+    id: "3",
+    name: "Bank 1657 Riverside Drive",
+    distance: "5,3 km",
+    latitude: -6.195,
+    longitude: 106.825,
+  },
+  {
+    id: "4",
+    name: "Bank Rutherford",
+    distance: "70m",
+    latitude: -6.21,
+    longitude: 106.812,
+  },
+  {
+    id: "5",
+    name: "Bank 1656 Union Street",
+    distance: "30m",
+    latitude: -6.208,
+    longitude: 106.814,
+  },
+];
+
+export const MOCK_BENEFICIARIES: Beneficiary[] = [
+  { id: "ben-001", name: "Emma", phone: "+8564757899" },
+  { id: "ben-002", name: "Justin", phone: "+8123456789" },
+=======
   // Central Jakarta cluster
   { id: "1",  name: "BRI KCU Gambir",           distance: "120m",   latitude: -6.1763, longitude: 106.8227 },
   { id: "2",  name: "BRI KC Tanah Abang",        distance: "850m",   latitude: -6.1862, longitude: 106.8133 },
@@ -53,4 +116,5 @@ export const MOCK_BRANCHES: Branch[] = [
   { id: "13", name: "BRI KC Tanjung Priok",      distance: "8,4 km", latitude: -6.1085, longitude: 106.8756 },
   { id: "14", name: "BRI KCP Penjaringan",       distance: "6,0 km", latitude: -6.1228, longitude: 106.7952 },
   { id: "15", name: "BRI KC Pluit",              distance: "7,5 km", latitude: -6.1154, longitude: 106.8013 },
+>>>>>>> 05c76a99e8f528807407a5f083a5cf89974a73a3
 ];

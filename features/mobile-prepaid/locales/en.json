@@ -1,0 +1,16 @@
+{
+  "screen.title": "Mobile prepaid",
+  "card.placeholder": "Choose account / card",
+  "card.balance": "Available balance : {{balance}}",
+  "card.selectTitle": "Select card",
+  "directory.title": "Directory",
+  "directory.findBeneficiary": "Find beneficiary",
+  "phone.label": "Phone number",
+  "phone.placeholder": "Phone number",
+  "amount.title": "Choose amount",
+  "confirm": "Confirm",
+  "success.title": "Payment success!",
+  "success.message": "You have successfully paid mobile prepaid!",
+  "error.failed": "Failed",
+  "comingSoon": "Coming Soon"
+}

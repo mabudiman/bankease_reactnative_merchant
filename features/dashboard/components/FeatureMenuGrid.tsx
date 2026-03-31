@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { MenuGridItem } from './MenuGridItem';
-import type { Privilege } from '../types';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { MenuGridItem } from "./MenuGridItem";
+import type { Privilege } from "../types";
 
 interface FeatureMenuGridProps {
   privileges: Privilege[];
@@ -16,9 +16,28 @@ export function FeatureMenuGrid({ privileges }: FeatureMenuGridProps) {
     rows.push(enabled.slice(i, i + 3));
   }
 
+  const fallbackRows: Privilege[][] = [
+    [
+      {
+        code: "ACCOUNT_AND_CARDS",
+        enabled: true,
+        title: "Account & Cards",
+        icon: "wallet",
+        color: "#4A90E2",
+      },
+      {
+        code: "MOBILE_PREPAID",
+        enabled: true,
+        title: "Mobile Prepaid",
+        icon: "phone-portrait",
+        color: "#FFAF2A",
+      },
+    ],
+  ];
+
   return (
     <View style={styles.container}>
-      {rows.map((row) => (
+      {fallbackRows.map((row) => (
         <View key={row[0].code} style={styles.row}>
           {row.map((item) => (
             <View key={item.code} style={styles.cell}>
@@ -42,7 +61,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginBottom: 12,
   },
@@ -50,4 +69,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
