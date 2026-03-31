@@ -81,11 +81,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: Spacing.sm,
-    padding: 4,
   },
   headerTitle: {
-    fontFamily: Fonts.bold,
-    fontSize: 20,
+    fontFamily: Fonts.semiBold,
+    fontSize: 18,
     color: Colors.textBlack,
   },
   columnHeader: {
@@ -98,21 +97,21 @@ const styles = StyleSheet.create({
   },
   columnKind: {
     flex: 1,
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
     fontSize: 13,
     color: Colors.textMuted,
   },
   columnDeposit: {
     width: 64,
     textAlign: "right",
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
     fontSize: 13,
     color: Colors.textMuted,
   },
   columnRate: {
     width: 64,
     textAlign: "right",
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
     fontSize: 13,
     color: Colors.textMuted,
   },
@@ -126,21 +125,21 @@ const styles = StyleSheet.create({
   },
   kindText: {
     flex: 1,
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.medium,
     fontSize: 14,
     color: Colors.textBlack,
   },
   depositText: {
     width: 64,
     textAlign: "right",
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.medium,
     fontSize: 14,
     color: Colors.textBlack,
   },
   rateText: {
     width: 64,
     textAlign: "right",
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.medium,
     fontSize: 14,
     color: Colors.primary,
   },
