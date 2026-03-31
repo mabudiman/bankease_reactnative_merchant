@@ -217,6 +217,18 @@ export function SignInScreen() {
                   />
                 </TouchableOpacity>
 
+                {/* DEV SHORTCUT — remove before production */}
+                <Pressable
+                  onPress={() => router.push('/withdraw' as any)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Go to Withdraw (dev)"
+                  style={styles.devButton}
+                >
+                  <ThemedText type="caption" style={styles.devButtonText}>
+                    [DEV] Try Withdraw →
+                  </ThemedText>
+                </Pressable>
+
                 {/* Footer */}
                 <View style={styles.footer}>
                   <View style={styles.footerTopRow}>
@@ -442,5 +454,21 @@ const styles = StyleSheet.create({
     color: Colors.signUpLink,
     fontFamily: Fonts.semiBold,
     fontSize: 12.5,
+  },
+
+  devButton: {
+    alignSelf: 'center',
+    marginTop: Spacing.md,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    borderRadius: 6,
+    borderStyle: 'dashed',
+  },
+  devButtonText: {
+    color: Colors.primary,
+    fontFamily: Fonts.medium,
+    fontSize: 12,
   },
 });

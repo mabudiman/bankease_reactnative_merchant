@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, StyleSheet, Alert, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ui/themed-text';
 import { useTranslation } from '@/core/i18n';
 import type { Privilege } from '../types';
@@ -9,10 +10,20 @@ interface MenuGridItemProps {
   readonly privilege: Privilege;
 }
 
+const ROUTE_MAP: Partial<Record<string, string>> = {
+  WITHDRAW: '/withdraw',
+};
+
 function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
   const { t } = useTranslation();
+  const router = useRouter();
 
   function handlePress() {
+    const route = ROUTE_MAP[privilege.code];
+    if (route) {
+      router.push(route as any);
+      return;
+    }
     Alert.alert(
       t('dashboard.comingSoon.title'),
       t('dashboard.comingSoon.message'),

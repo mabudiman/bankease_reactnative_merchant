@@ -1,4 +1,5 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
+import type { MockAccount } from "@/features/withdraw/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
@@ -82,3 +83,12 @@ export const MOCK_USER_PROFILE = {
   accountType: "REGULAR",
   image: undefined as string | undefined,
 };
+
+/** Mock accounts for withdraw/transfer flows */
+export const MOCK_WITHDRAW_ACCOUNTS: MockAccount[] = [
+  { id: "1", label: "1900 8988 5456" },
+  { id: "2", label: "1900 8112 5222" },
+  { id: "3", label: "4411 0000 1234" },
+  { id: "4", label: "1900 8988 5457" },
+  { id: "5", label: "1900 8988 5458" },
+];
