@@ -22,10 +22,10 @@ describe("BranchRow", () => {
 
   it("renders correctly for a branch with km distance", () => {
     const { Wrapper } = createWrapper();
-    const branch: Branch = MOCK_BRANCHES[1]; // Bank Secaucus, 1,2 km
+    const branch: Branch = MOCK_BRANCHES[2]; // BRI KC Menteng, 1,1 km
     render(<BranchRow item={branch} />, { wrapper: Wrapper });
-    expect(screen.getByText("Bank Secaucus")).toBeOnTheScreen();
-    expect(screen.getByText("1,2 km")).toBeOnTheScreen();
+    expect(screen.getByText("BRI KC Menteng")).toBeOnTheScreen();
+    expect(screen.getByText("1,1 km")).toBeOnTheScreen();
   });
 
   it("renders correctly with a custom branch entry", () => {

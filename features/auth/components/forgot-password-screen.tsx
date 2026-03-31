@@ -16,6 +16,10 @@ import { ThemedButton } from "@/components/ui/themed-button";
 import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
 import { useTranslation } from "@/core/i18n";
 
+function handleResend() {
+  // TODO: re-trigger OTP SMS API
+}
+
 export function ForgotPasswordScreen() {
   const router = useRouter();
   const { t } = useTranslation("auth");
@@ -26,10 +30,6 @@ export function ForgotPasswordScreen() {
   function handleChangePassword() {
     if (!isCodeValid) return;
     router.push("/change-password");
-  }
-
-  function handleResend() {
-    // TODO: re-trigger OTP SMS API
   }
 
   return (

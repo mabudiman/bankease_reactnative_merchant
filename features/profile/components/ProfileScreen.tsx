@@ -27,12 +27,12 @@ const FIELD_BORDER = 'rgba(0, 0, 0, 0.12)';
 const FIELD_LABEL_COLOR = '#8E8BA2';
 
 interface FieldProps {
-  label: string;
-  value: string;
-  onChangeText: (v: string) => void;
-  placeholder?: string;
-  keyboardType?: 'default' | 'numeric' | 'email-address';
-  autoCapitalize?: 'none' | 'sentences' | 'words';
+  readonly label: string;
+  readonly value: string;
+  readonly onChangeText: (v: string) => void;
+  readonly placeholder?: string;
+  readonly keyboardType?: 'default' | 'numeric' | 'email-address';
+  readonly autoCapitalize?: 'none' | 'sentences' | 'words';
 }
 
 function FormField({ label, value, onChangeText, placeholder, keyboardType = 'default', autoCapitalize = 'words' }: FieldProps) {

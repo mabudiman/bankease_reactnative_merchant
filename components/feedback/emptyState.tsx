@@ -4,8 +4,8 @@ import { StyleSheet } from "react-native"
 import { useTranslation } from "@/core/i18n"
 
 type Props = {
-  title?: string
-  description?: string
+  readonly title?: string
+  readonly description?: string
 }
 
 export function EmptyState({

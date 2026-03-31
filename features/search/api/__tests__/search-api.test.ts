@@ -68,10 +68,10 @@ describe("getBranches", () => {
   });
 
   it("returns filtered branches when query matches branch name", async () => {
-    const branches = await getBranches("union");
+    const branches = await getBranches("tanah");
     expect(branches.length).toBeGreaterThan(0);
     for (const branch of branches) {
-      expect(branch.name.toLowerCase()).toContain("union");
+      expect(branch.name.toLowerCase()).toContain("tanah");
     }
   });
 
@@ -94,8 +94,8 @@ describe("getBranches", () => {
   });
 
   it("filter is case-insensitive", async () => {
-    const lower = await getBranches("union");
-    const upper = await getBranches("UNION");
+    const lower = await getBranches("tanah");
+    const upper = await getBranches("TANAH");
     expect(lower).toHaveLength(upper.length);
   });
 });

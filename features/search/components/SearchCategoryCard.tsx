@@ -7,7 +7,6 @@ type Props = {
   title: string;
   subtitle: string;
   illustration: ImageSourcePropType;
-  bgColor?: string;
   onPress?: () => void;
 };
 

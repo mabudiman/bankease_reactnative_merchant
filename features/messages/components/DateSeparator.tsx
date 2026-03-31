@@ -4,7 +4,7 @@ import { ThemedText } from "@/components/ui/themed-text";
 import { Spacing } from "@/constants/theme";
 
 interface Props {
-  label: string;
+  readonly label: string;
 }
 
 export function DateSeparator({ label }: Props) {

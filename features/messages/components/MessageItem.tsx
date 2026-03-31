@@ -14,9 +14,9 @@ const ICON_MAP = {
 } as const;
 
 interface Props {
-  item: Message;
-  todayLabel: string;
-  onPress?: () => void;
+  readonly item: Message;
+  readonly todayLabel: string;
+  readonly onPress?: () => void;
 }
 
 export function MessageItem({ item, todayLabel, onPress }: Props) {

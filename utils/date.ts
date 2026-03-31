@@ -1,10 +1,9 @@
 /**
  * Format a date string to a readable date string.
  */
-export function formatDate(dateString: string, locale?: string): string {
+export function formatDate(dateString: string, locale = "en-GB"): string {
   const date = new Date(dateString);
-  const localeTag = locale ?? "en-GB";
-  return new Intl.DateTimeFormat(localeTag, {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
   }).format(date);
 }

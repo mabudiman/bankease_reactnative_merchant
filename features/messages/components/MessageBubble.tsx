@@ -5,7 +5,7 @@ import { Fonts, Spacing } from "@/constants/theme";
 import type { ThreadMessage } from "../types";
 
 interface Props {
-  message: ThreadMessage;
+  readonly message: ThreadMessage;
 }
 
 export function MessageBubble({ message }: Props) {

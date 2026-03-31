@@ -14,7 +14,7 @@ afterEach(() => {
 beforeAll(() => {
   server.listen({ onUnhandledRequest: "error" });
   jest
-    .spyOn(global, "requestAnimationFrame")
+    .spyOn(globalThis, "requestAnimationFrame")
     .mockImplementation((cb) => setTimeout(cb, 0));
 });
 

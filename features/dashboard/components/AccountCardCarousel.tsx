@@ -4,7 +4,7 @@ import { AccountCard, CARD_HEIGHT } from './AccountCard';
 import type { PaymentCard } from '../types';
 
 interface AccountCardCarouselProps {
-  cards: PaymentCard[];
+  readonly cards: PaymentCard[];
 }
 
 // How many pixels each back layer peeks below the layer in front of it

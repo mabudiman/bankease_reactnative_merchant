@@ -17,6 +17,33 @@ export default function MessagesScreen() {
   const { data, isLoading, isError, refetch } = useMessages();
   const todayLabel = t("messages.today");
 
+  function renderContent() {
+    if (isLoading) return <LoadingState />;
+    if (isError) return <ErrorState message={t("common.error")} onRetry={refetch} recoverable />;
+    if (!data || data.length === 0)
+      return (
+        <EmptyState
+          title={t("messages.empty")}
+          description={t("common.nothingHereDescription")}
+        />
+      );
+    return (
+      <FlatList
+        data={data}
+        keyExtractor={(item: Message) => item.id}
+        renderItem={({ item }) => (
+          <MessageItem
+            item={item}
+            todayLabel={todayLabel}
+            onPress={() => router.push(`/messages/${item.id}` as any)}
+          />
+        )}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -31,30 +58,7 @@ export default function MessagesScreen() {
         <ThemedText style={styles.headerTitle}>{t("messages.title")}</ThemedText>
       </View>
 
-      {isLoading ? (
-        <LoadingState />
-      ) : isError ? (
-        <ErrorState message={t("common.error")} onRetry={refetch} recoverable />
-      ) : !data || data.length === 0 ? (
-        <EmptyState
-          title={t("messages.empty")}
-          description={t("common.nothingHereDescription")}
-        />
-      ) : (
-        <FlatList
-          data={data}
-          keyExtractor={(item: Message) => item.id}
-          renderItem={({ item }) => (
-            <MessageItem
-              item={item}
-              todayLabel={todayLabel}
-              onPress={() => router.push(`/messages/${item.id}` as any)}
-            />
-          )}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+      {renderContent()}
     </SafeAreaView>
   );
 }

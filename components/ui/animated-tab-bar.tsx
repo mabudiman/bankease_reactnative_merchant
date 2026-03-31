@@ -27,11 +27,11 @@ const ROUTE_ICON_MAP: Record<string, IconName> = {
 // ─── AnimatedTabItem ────────────────────────────────────────────────────────
 
 type TabItemProps = {
-  isFocused: boolean;
-  label: string;
-  iconName: IconName;
-  onPress: () => void;
-  accessibilityLabel?: string;
+  readonly isFocused: boolean;
+  readonly label: string;
+  readonly iconName: IconName;
+  readonly onPress: () => void;
+  readonly accessibilityLabel?: string;
 };
 
 function AnimatedTabItem({
@@ -105,7 +105,7 @@ export function AnimatedTabBar({
   descriptors,
   navigation,
   insets,
-}: BottomTabBarProps) {
+}: Readonly<BottomTabBarProps>) {
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {state.routes.map((route, index) => {

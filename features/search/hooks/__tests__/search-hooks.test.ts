@@ -66,13 +66,13 @@ describe("useBranches", () => {
 
   it("returns filtered branches for a matching query", async () => {
     const { Wrapper } = createWrapper();
-    const { result } = renderHook(() => useBranches("union"), { wrapper: Wrapper });
+    const { result } = renderHook(() => useBranches("tanah"), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.data!.length).toBeGreaterThan(0);
     for (const branch of result.current.data!) {
-      expect(branch.name.toLowerCase()).toContain("union");
+      expect(branch.name.toLowerCase()).toContain("tanah");
     }
   });
 
@@ -88,8 +88,8 @@ describe("useBranches", () => {
   it("query key changes when query changes", async () => {
     const { Wrapper } = createWrapper();
 
-    // First hook instance with 'union'
-    const { result: r1 } = renderHook(() => useBranches("union"), { wrapper: Wrapper });
+    // First hook instance with 'tanah'
+    const { result: r1 } = renderHook(() => useBranches("tanah"), { wrapper: Wrapper });
     await waitFor(() => expect(r1.current.isSuccess).toBe(true));
 
     // Second hook instance with '' (all results)

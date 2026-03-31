@@ -66,6 +66,61 @@ export default function MessageDetailScreen() {
     setInputText("");
   }
 
+  function renderBody() {
+    if (isLoading) return <LoadingState />;
+    if (isError) return <ErrorState message={t("common.error")} onRetry={refetch} recoverable />;
+    return (
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={0}
+      >
+        <FlatList
+          data={listItems}
+          keyExtractor={(item) =>
+            item.kind === "separator" ? item.id : item.message.id
+          }
+          renderItem={({ item }) =>
+            item.kind === "separator" ? (
+              <DateSeparator label={item.label} />
+            ) : (
+              <MessageBubble message={item.message} />
+            )
+          }
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+
+        {/* Input bar */}
+        <View style={styles.inputBar}>
+          <TextInput
+            style={styles.input}
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder={t("messages.inputPlaceholder")}
+            placeholderTextColor="#AAAAAA"
+            onSubmitEditing={handleSend}
+            returnKeyType="send"
+            accessibilityLabel={t("messages.inputPlaceholder")}
+          />
+          <Pressable
+            onPress={handleSend}
+            style={[
+              styles.sendButton,
+              inputText.trim().length > 0
+                ? styles.sendButtonActive
+                : styles.sendButtonInactive,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={t("messages.send")}
+          >
+            <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       {/* Header */}
@@ -83,60 +138,7 @@ export default function MessageDetailScreen() {
         </ThemedText>
       </View>
 
-      {isLoading ? (
-        <LoadingState />
-      ) : isError ? (
-        <ErrorState message={t("common.error")} onRetry={refetch} recoverable />
-      ) : (
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={0}
-        >
-          <FlatList
-            data={listItems}
-            keyExtractor={(item) =>
-              item.kind === "separator" ? item.id : item.message.id
-            }
-            renderItem={({ item }) =>
-              item.kind === "separator" ? (
-                <DateSeparator label={item.label} />
-              ) : (
-                <MessageBubble message={item.message} />
-              )
-            }
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
-
-          {/* Input bar */}
-          <View style={styles.inputBar}>
-            <TextInput
-              style={styles.input}
-              value={inputText}
-              onChangeText={setInputText}
-              placeholder={t("messages.inputPlaceholder")}
-              placeholderTextColor="#AAAAAA"
-              onSubmitEditing={handleSend}
-              returnKeyType="send"
-              accessibilityLabel={t("messages.inputPlaceholder")}
-            />
-            <Pressable
-              onPress={handleSend}
-              style={[
-                styles.sendButton,
-                inputText.trim().length > 0
-                  ? styles.sendButtonActive
-                  : styles.sendButtonInactive,
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={t("messages.send")}
-            >
-              <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
-            </Pressable>
-          </View>
-        </KeyboardAvoidingView>
-      )}
+      {renderBody()}
     </SafeAreaView>
   );
 }

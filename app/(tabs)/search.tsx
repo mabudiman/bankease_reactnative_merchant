@@ -50,28 +50,24 @@ export default function SearchScreen() {
           title={ts("branch")}
           subtitle={ts("branchSubtitle")}
           illustration={illustrations.branch}
-          bgColor={CATEGORY_BG.branch}
           onPress={() => router.push("/search/branch" as any)}
         />
         <SearchCategoryCard
           title={ts("interestRate")}
           subtitle={ts("interestRateSubtitle")}
           illustration={illustrations.interestRate}
-          bgColor={CATEGORY_BG.interestRate}
           onPress={() => router.push("/search/interest-rate" as any)}
         />
         <SearchCategoryCard
           title={ts("exchangeRate")}
           subtitle={ts("exchangeRateSubtitle")}
           illustration={illustrations.exchangeRate}
-          bgColor={CATEGORY_BG.exchangeRate}
           onPress={() => router.push("/search/exchange-rate" as any)}
         />
         <SearchCategoryCard
           title={ts("exchange")}
           subtitle={ts("exchangeSubtitle")}
           illustration={illustrations.exchange}
-          bgColor={CATEGORY_BG.exchange}
           onPress={handleComingSoon}
         />
       </ScrollView>

@@ -16,9 +16,9 @@ export function I18nProvider({
   translations,
   defaultLocale = "en",
 }: {
-  children: React.ReactNode;
-  translations: TranslationsByLocale;
-  defaultLocale?: Locale;
+  readonly children: React.ReactNode;
+  readonly translations: TranslationsByLocale;
+  readonly defaultLocale?: Locale;
 }) {
   const [locale, setLocale] = useState<Locale>(defaultLocale);
   const value = useMemo(

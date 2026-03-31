@@ -7,10 +7,10 @@ import { Colors, Fonts, Radius } from "@/constants/theme";
 type IconSymbolName = ComponentProps<typeof IconSymbol>["name"];
 
 type Props = {
-  focused: boolean;
-  color: string;
-  iconName: IconSymbolName;
-  label: string;
+  readonly focused: boolean;
+  readonly color: string;
+  readonly iconName: IconSymbolName;
+  readonly label: string;
 };
 
 export function FocusedTabIcon({ focused, color, iconName, label }: Props) {

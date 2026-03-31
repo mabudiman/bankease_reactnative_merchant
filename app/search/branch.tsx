@@ -101,6 +101,20 @@ export default function BranchScreen() {
     setDebouncedQuery("");
   }, []);
 
+  function renderBranchList() {
+    if (isLoading) return <LoadingState />;
+    if (isError) return <ErrorState message={t("common.error")} onRetry={refetch} recoverable />;
+    return (
+      <FlatList
+        data={data}
+        keyExtractor={(item: Branch) => item.id}
+        renderItem={({ item }) => <BranchRow item={item} />}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -160,19 +174,7 @@ export default function BranchScreen() {
           </View>
         </GestureDetector>
 
-        {isLoading ? (
-          <LoadingState />
-        ) : isError ? (
-          <ErrorState message={t("common.error")} onRetry={refetch} recoverable />
-        ) : (
-          <FlatList
-            data={data}
-            keyExtractor={(item: Branch) => item.id}
-            renderItem={({ item }) => <BranchRow item={item} />}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          />
-        )}
+        {renderBranchList()}
       </Animated.View>
     </View>
     </View>

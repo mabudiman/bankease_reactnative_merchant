@@ -15,18 +15,36 @@ export default function InterestRateScreen() {
   const ts = (key: string) => t(`searchScreen.${key}`);
   const { data, isLoading, isError, refetch } = useInterestRates();
 
-  function renderRow({ item }: { item: InterestRate }) {
-    const kindLabel =
-      item.kind === "individual"
-        ? ts("individualCustomers")
-        : ts("corporateCustomers");
-    const rateLabel = `${item.rate.toFixed(2)}%`;
+  function renderContent() {
+    if (isLoading) return <LoadingState />;
+    if (isError) return <ErrorState message={t("common.error")} onRetry={refetch} recoverable />;
     return (
-      <View style={styles.row}>
-        <ThemedText style={styles.kindText}>{kindLabel}</ThemedText>
-        <ThemedText style={styles.depositText}>{item.deposit}</ThemedText>
-        <ThemedText style={styles.rateText}>{rateLabel}</ThemedText>
-      </View>
+      <>
+        <View style={styles.columnHeader}>
+          <ThemedText style={styles.columnKind}>{ts("interestKindColumn")}</ThemedText>
+          <ThemedText style={styles.columnDeposit}>{ts("depositColumn")}</ThemedText>
+          <ThemedText style={styles.columnRate}>{ts("rateColumn")}</ThemedText>
+        </View>
+        <FlatList
+          data={data}
+          keyExtractor={(item: InterestRate) => item.id}
+          renderItem={({ item }) => {
+            const kindLabel =
+              item.kind === "individual"
+                ? ts("individualCustomers")
+                : ts("corporateCustomers");
+            const rateLabel = `${item.rate.toFixed(2)}%`;
+            return (
+              <View style={styles.row}>
+                <ThemedText style={styles.kindText}>{kindLabel}</ThemedText>
+                <ThemedText style={styles.depositText}>{item.deposit}</ThemedText>
+                <ThemedText style={styles.rateText}>{rateLabel}</ThemedText>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+      </>
     );
   }
 
@@ -44,25 +62,7 @@ export default function InterestRateScreen() {
         <ThemedText style={styles.headerTitle}>{ts("interestRateTitle")}</ThemedText>
       </View>
 
-      {isLoading ? (
-        <LoadingState />
-      ) : isError ? (
-        <ErrorState message={t("common.error")} onRetry={refetch} recoverable />
-      ) : (
-        <>
-          <View style={styles.columnHeader}>
-            <ThemedText style={styles.columnKind}>{ts("interestKindColumn")}</ThemedText>
-            <ThemedText style={styles.columnDeposit}>{ts("depositColumn")}</ThemedText>
-            <ThemedText style={styles.columnRate}>{ts("rateColumn")}</ThemedText>
-          </View>
-          <FlatList
-            data={data}
-            keyExtractor={(item: InterestRate) => item.id}
-            renderItem={renderRow}
-            showsVerticalScrollIndicator={false}
-          />
-        </>
-      )}
+      {renderContent()}
     </SafeAreaView>
   );
 }

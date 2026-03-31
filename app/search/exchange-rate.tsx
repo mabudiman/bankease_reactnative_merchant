@@ -16,6 +16,27 @@ export default function ExchangeRateScreen() {
   const ts = (key: string) => t(`searchScreen.${key}`);
   const { data, isLoading, isError, refetch } = useExchangeRates();
 
+  function renderContent() {
+    if (isLoading) return <LoadingState />;
+    if (isError) return <ErrorState message={t("common.error")} onRetry={refetch} recoverable />;
+    return (
+      <>
+        <View style={styles.columnHeader}>
+          <View style={styles.flagPlaceholder} />
+          <ThemedText style={styles.columnCountry}>{ts("countryColumn")}</ThemedText>
+          <ThemedText style={styles.columnValue}>{ts("buyColumn")}</ThemedText>
+          <ThemedText style={styles.columnValue}>{ts("sellColumn")}</ThemedText>
+        </View>
+        <FlatList
+          data={data}
+          keyExtractor={(item: ExchangeRate) => item.id}
+          renderItem={({ item }) => <ExchangeRateRow item={item} />}
+          showsVerticalScrollIndicator={false}
+        />
+      </>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -30,26 +51,7 @@ export default function ExchangeRateScreen() {
         <ThemedText style={styles.headerTitle}>{ts("exchangeRateTitle")}</ThemedText>
       </View>
 
-      {isLoading ? (
-        <LoadingState />
-      ) : isError ? (
-        <ErrorState message={t("common.error")} onRetry={refetch} recoverable />
-      ) : (
-        <>
-          <View style={styles.columnHeader}>
-            <View style={styles.flagPlaceholder} />
-            <ThemedText style={styles.columnCountry}>{ts("countryColumn")}</ThemedText>
-            <ThemedText style={styles.columnValue}>{ts("buyColumn")}</ThemedText>
-            <ThemedText style={styles.columnValue}>{ts("sellColumn")}</ThemedText>
-          </View>
-          <FlatList
-            data={data}
-            keyExtractor={(item: ExchangeRate) => item.id}
-            renderItem={({ item }) => <ExchangeRateRow item={item} />}
-            showsVerticalScrollIndicator={false}
-          />
-        </>
-      )}
+      {renderContent()}
     </SafeAreaView>
   );
 }

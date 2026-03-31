@@ -1,4 +1,3 @@
-import { validateIBAN } from "./iban";
 import { log } from "./log";
 
 /**
@@ -25,7 +24,7 @@ export function convertAmountToMinorUnits(amount: string): number {
   const normalizedAmount = normalizeAmount(amount);
   const numAmount = Number(normalizedAmount);
 
-  if (isNaN(numAmount) || numAmount <= 0) {
+  if (Number.isNaN(numAmount) || numAmount <= 0) {
     log("MONEY", "INVALID_AMOUNT", { amount });
     return 0;
   }
@@ -37,7 +36,7 @@ export function convertAmountToMinorUnits(amount: string): number {
  * Normalize an amount.
  */
 export function normalizeAmount(amount: string) {
-  return amount.replace(/,/g, "");
+  return amount.replaceAll(",", "");
 }
 
 /**
@@ -46,16 +45,18 @@ export function normalizeAmount(amount: string) {
 export function formatAmountInput(value: string): string {
   if (!value) return "";
 
-  let cleaned = value.replace(/[^\d.,]/g, "");
+  let cleaned = value.replaceAll(/[^\d.,]/g, "");
 
   const commaIndex = cleaned.indexOf(",");
   const dotIndex = cleaned.indexOf(".");
-  const separatorIndex =
-    commaIndex !== -1 && dotIndex !== -1
-      ? Math.min(commaIndex, dotIndex)
-      : commaIndex !== -1
-        ? commaIndex
-        : dotIndex;
+  let separatorIndex: number;
+  if (commaIndex >= 0 && dotIndex >= 0) {
+    separatorIndex = Math.min(commaIndex, dotIndex);
+  } else if (commaIndex >= 0) {
+    separatorIndex = commaIndex;
+  } else {
+    separatorIndex = dotIndex;
+  }
 
   let integerPart = "";
   let decimalPart = "";
@@ -64,7 +65,7 @@ export function formatAmountInput(value: string): string {
     integerPart = cleaned;
   } else {
     integerPart = cleaned.substring(0, separatorIndex);
-    decimalPart = cleaned.substring(separatorIndex + 1).replace(/[.,]/g, "");
+    decimalPart = cleaned.substring(separatorIndex + 1).replaceAll(/[.,]/g, "");
     if (decimalPart.length > 2) {
       decimalPart = decimalPart.substring(0, 2);
     }
