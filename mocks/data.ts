@@ -54,3 +54,31 @@ export const MOCK_BRANCHES: Branch[] = [
   { id: "14", name: "BRI KCP Penjaringan",       distance: "6,0 km", latitude: -6.1228, longitude: 106.7952 },
   { id: "15", name: "BRI KC Pluit",              distance: "7,5 km", latitude: -6.1154, longitude: 106.8013 },
 ];
+
+/** Raw server response shape for profile API */
+export const MOCK_PROFILE_API_RESPONSE = {
+  id: "da08ecfe-de3b-42b1-b1ce-018e144198f5",
+  bank: "BRI",
+  branch: "Jakarta Pusat",
+  name: "Demo Merchant",
+  card_number: "1234567890123456",
+  card_provider: "VISA",
+  balance: 1500,
+  currency: "IDR",
+  accountType: "REGULAR",
+  image: undefined as string | undefined,
+};
+
+/** Mapped UserProfile (after mapResponseToProfile) */
+export const MOCK_USER_PROFILE = {
+  accountId: "da08ecfe-de3b-42b1-b1ce-018e144198f5",
+  bankName: "BRI",
+  branchName: "Jakarta Pusat",
+  transactionName: "Demo Merchant",
+  cardNumber: "1234567890123456",
+  cardProvider: "VISA",
+  balance: 150000,   // 1500 * 100 (minor units)
+  currency: "IDR",
+  accountType: "REGULAR",
+  image: undefined as string | undefined,
+};

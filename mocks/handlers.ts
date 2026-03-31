@@ -1,11 +1,18 @@
 import { http, HttpResponse } from "msw";
 import type { RequestHandler } from "msw";
 import { API_BASE_URL } from "@/constants";
-import { MOCK_BRANCHES, MOCK_EXCHANGE_RATES, MOCK_INTEREST_RATES } from "./data";
-
-// TODO: Add profile API stubs here when backend is live.
+import { MOCK_BRANCHES, MOCK_EXCHANGE_RATES, MOCK_INTEREST_RATES, MOCK_PROFILE_API_RESPONSE } from "./data";
 
 export const handlers: RequestHandler[] = [
+  http.get(`${API_BASE_URL}/api/profile/:accountId`, () => {
+    return HttpResponse.json(MOCK_PROFILE_API_RESPONSE);
+  }),
+
+  http.put(`${API_BASE_URL}/api/profile/:accountId`, async ({ request }) => {
+    const body = await request.json() as Record<string, unknown>;
+    return HttpResponse.json({ ...MOCK_PROFILE_API_RESPONSE, ...body });
+  }),
+
   http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
     return HttpResponse.json(MOCK_EXCHANGE_RATES);
   }),
