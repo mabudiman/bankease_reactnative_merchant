@@ -4,7 +4,7 @@ export interface Message {
   preview: string;
   date: string; // ISO date string
   iconColor: string; // hex colour for the icon background
-  iconName: string; // Ionicons icon name
+  iconKey: "alert" | "bank" | "paypal" | "person" | "withdraw";
 }
 
 export interface ThreadMessage {

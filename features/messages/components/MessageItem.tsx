@@ -1,10 +1,17 @@
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/ui/themed-text";
 import { Colors, Fonts, Radius, Spacing } from "@/constants/theme";
 import { formatMessageDate } from "@/utils/date";
 import type { Message } from "../types";
+
+const ICON_MAP = {
+  alert:    require("@/assets/images/icons/icon-alert-white.png"),
+  bank:     require("@/assets/images/icons/icon-bank-white.png"),
+  paypal:   require("@/assets/images/icons/icon-paypal-white.png"),
+  person:   require("@/assets/images/icons/icon-person-white.png"),
+  withdraw: require("@/assets/images/icons/icon-withdraw-white.png"),
+} as const;
 
 interface Props {
   item: Message;
@@ -23,10 +30,10 @@ export function MessageItem({ item, todayLabel, onPress }: Props) {
       accessibilityLabel={item.title}
     >
       <View style={[styles.iconWrapper, { backgroundColor: item.iconColor }]}>
-        <Ionicons
-          name={item.iconName as keyof typeof Ionicons.glyphMap}
-          size={22}
-          color="#FFFFFF"
+        <Image
+          source={ICON_MAP[item.iconKey]}
+          style={styles.iconImage}
+          resizeMode="contain"
         />
       </View>
 
@@ -65,17 +72,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: Spacing.md,
   },
+  iconImage: {
+    width: 24,
+    height: 24,
+  },
   textBlock: {
     flex: 1,
-    gap: 4,
     marginRight: Spacing.sm,
   },
   title: {
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.medium,
     fontSize: 14,
     color: Colors.textBlack,
   },
   preview: {
+    fontFamily: Fonts.semiBold,
     fontSize: 12,
     color: Colors.textMuted,
   },

@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     marginRight: Spacing.sm,
   },
   headerTitle: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.semiBold,
     fontSize: 18,
     color: Colors.textBlack,
     flex: 1,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     fontSize: 14,
     color: "#333333",
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "#FFFFFF",
   },
   sendButton: {
     width: 44,

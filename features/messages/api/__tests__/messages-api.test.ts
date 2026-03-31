@@ -16,7 +16,7 @@ describe("getMessages", () => {
         preview: expect.any(String),
         date: expect.any(String),
         iconColor: expect.any(String),
-        iconName: expect.any(String),
+        iconKey: expect.any(String),
       });
     }
   });

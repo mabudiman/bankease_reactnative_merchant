@@ -48,23 +48,22 @@ const styles = StyleSheet.create({
   bubbleReceived: {
     backgroundColor: "#F0F0F5",
     borderRadius: 12,
-    borderTopLeftRadius: 0,
+    minWidth: 60,
   },
   bubbleSent: {
     backgroundColor: "#3629B7",
     borderRadius: 12,
-    borderTopRightRadius: 0,
     minWidth: 60,
   },
   text: {
     fontSize: 14,
     lineHeight: 20,
+    fontFamily: Fonts.medium,
   },
   textReceived: {
     color: "#222222",
   },
   textSent: {
     color: "#FFFFFF",
-    fontFamily: Fonts.medium,
   },
 });

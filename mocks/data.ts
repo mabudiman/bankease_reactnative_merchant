@@ -57,11 +57,11 @@ export const MOCK_BRANCHES: Branch[] = [
 ];
 
 export const MOCK_MESSAGES: Message[] = [
-  { id: "1", title: "Bank of America", preview: "Bank of America : 256486 is the au...", date: new Date().toISOString(), iconColor: "#1A2B5F", iconName: "business" },
-  { id: "2", title: "Account",         preview: "Your account is limited. Please foll...", date: "2025-10-12T08:00:00.000Z", iconColor: "#E53935", iconName: "person" },
-  { id: "3", title: "Alert",           preview: "Your statement is ready for you to...", date: "2025-10-11T08:00:00.000Z", iconColor: "#1E88E5", iconName: "refresh" },
-  { id: "4", title: "Paypal",          preview: "Your account has been locked. Ple...", date: "2025-11-10T08:00:00.000Z", iconColor: "#F6A800", iconName: "logo-paypal" },
-  { id: "5", title: "Withdraw",        preview: "Dear customer, 2987456 is your co...", date: "2025-12-10T08:00:00.000Z", iconColor: "#26C6DA", iconName: "stats-chart" },
+  { id: "1", title: "Bank of America", preview: "Bank of America : 256486 is the au...", date: new Date().toISOString(), iconColor: "#3629B7", iconKey: "bank" },
+  { id: "2", title: "Account",         preview: "Your account is limited. Please foll...", date: "2025-10-12T08:00:00.000Z", iconColor: "#E53935", iconKey: "person" },
+  { id: "3", title: "Alert",           preview: "Your statement is ready for you to...", date: "2025-10-11T08:00:00.000Z", iconColor: "#1E88E5", iconKey: "alert" },
+  { id: "4", title: "Paypal",          preview: "Your account has been locked. Ple...", date: "2025-11-10T08:00:00.000Z", iconColor: "#F6A800", iconKey: "paypal" },
+  { id: "5", title: "Withdraw",        preview: "Dear customer, 2987456 is your co...", date: "2025-12-10T08:00:00.000Z", iconColor: "#52D5BA", iconKey: "withdraw" },
 ];
 
 export const MOCK_MESSAGE_THREADS: MessageThread[] = [
