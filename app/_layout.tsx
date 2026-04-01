@@ -10,6 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
@@ -54,6 +55,7 @@ function RootNavigator() {
       <Stack.Screen name="change-password-success" />
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="search" />
+      <Stack.Screen name="transfer" />
       <Stack.Screen name="withdraw" />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
     </Stack>
@@ -94,6 +96,7 @@ export default function RootLayout() {
   }
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <I18nProvider translations={translations}>
@@ -106,5 +109,6 @@ export default function RootLayout() {
         </I18nProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

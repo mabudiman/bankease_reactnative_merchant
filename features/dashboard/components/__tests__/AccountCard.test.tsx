@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { AccountCard } from '../AccountCard';
+import { AccountCardCarousel } from '../AccountCardCarousel';
 import { createWrapper } from '@/test-utils/createWrapper';
 import type { PaymentCard } from '../../types';
 
@@ -26,6 +27,11 @@ const SAMPLE_MASTERCARD: PaymentCard = {
   maskedNumber: '5281  ••••  ••••  4471',
   gradientColors: ['#2D1B69', '#5B2D8E', '#8E4EC6'],
 };
+
+// Aliases for AccountCardCarousel tests (with distinct holder names)
+const VISA_CARD = { ...SAMPLE_VISA, id: 'visa-1', holderName: 'John Doe' };
+const MC_CARD = { ...SAMPLE_MASTERCARD, id: 'mc-1', holderName: 'Jane Doe' };
+const { Wrapper } = createWrapper();
 
 describe('AccountCard', () => {
   it('renders holder name', () => {
@@ -83,3 +89,24 @@ describe('AccountCard', () => {
     ).not.toThrow();
   });
 });
+
+describe("AccountCardCarousel", () => {
+  it("renders a single card", () => {
+    render(<AccountCardCarousel cards={[VISA_CARD]} />, { wrapper: Wrapper });
+    expect(screen.getAllByText("John Doe").length).toBeGreaterThan(0);
+  });
+
+  it("renders multiple cards", () => {
+    render(<AccountCardCarousel cards={[VISA_CARD, MC_CARD]} />, {
+      wrapper: Wrapper,
+    });
+    expect(screen.getAllByText("John Doe").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Jane Doe").length).toBeGreaterThan(0);
+  });
+
+  it("renders empty without crashing", () => {
+    render(<AccountCardCarousel cards={[]} />, { wrapper: Wrapper });
+    expect(screen.queryByText("John Smith")).not.toBeOnTheScreen();
+  });
+});
+    render(<AccountCardCarousel cards={[]} />, { wrapper: Wrapper });

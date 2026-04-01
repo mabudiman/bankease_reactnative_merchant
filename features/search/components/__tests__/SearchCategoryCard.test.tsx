@@ -82,7 +82,6 @@ describe("SearchCategoryCard", () => {
         title="Test Card"
         subtitle="With bg color"
         illustration={MOCK_ILLUSTRATION}
-        bgColor="#e8f0ff"
       />,
       { wrapper: Wrapper }
     );

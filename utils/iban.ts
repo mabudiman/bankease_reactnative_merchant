@@ -2,13 +2,13 @@
  * Validate an IBAN.
  */
 export function validateIBAN(iban: string): boolean {
-  const cleaned = iban.replace(/\s/g, "").toUpperCase();
+  const cleaned = iban.replaceAll(/\s/g, "").toUpperCase();
 
   if (cleaned.length < 15 || cleaned.length > 34) {
     return false;
   }
 
-  if (!/^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/.test(cleaned)) {
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(cleaned)) {
     return false;
   }
 

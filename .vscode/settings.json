@@ -28,5 +28,9 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "https-sonarqube-4-194-42-173-sslip-io",
+    "projectKey": "bankease-reactnative-merchant"
   }
 }

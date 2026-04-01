@@ -11,6 +11,10 @@ import dashboardEn from "@/features/dashboard/locales/en.json";
 import dashboardId from "@/features/dashboard/locales/id.json";
 import profileEn from "@/features/profile/locales/en.json";
 import profileId from "@/features/profile/locales/id.json";
+import messagesEn from "@/features/messages/locales/en.json";
+import messagesId from "@/features/messages/locales/id.json";
+import transferEn from "@/features/transfer/locales/en.json";
+import transferId from "@/features/transfer/locales/id.json";
 import mobilePrepaidEn from "@/features/mobile-prepaid/locales/en.json";
 import mobilePrepaidId from "@/features/mobile-prepaid/locales/id.json";
 
@@ -30,6 +34,8 @@ export const translations: TranslationsByLocale = {
     flattenWithPrefix(authEn as Record<string, string>, "auth"),
     flattenWithPrefix(dashboardEn as Record<string, string>, "dashboard"),
     flattenWithPrefix(profileEn as Record<string, string>, "profile"),
+    flattenWithPrefix(messagesEn as Record<string, string>, "messages"),
+    flattenWithPrefix(transferEn as Record<string, string>, "transfer"),
     flattenWithPrefix(mobilePrepaidEn as Record<string, string>, "mobilePrepaid"),
   ),
   id: merge(
@@ -39,6 +45,8 @@ export const translations: TranslationsByLocale = {
     flattenWithPrefix(authId as Record<string, string>, "auth"),
     flattenWithPrefix(dashboardId as Record<string, string>, "dashboard"),
     flattenWithPrefix(profileId as Record<string, string>, "profile"),
+    flattenWithPrefix(messagesId as Record<string, string>, "messages"),
+    flattenWithPrefix(transferId as Record<string, string>, "transfer"),
     flattenWithPrefix(mobilePrepaidId as Record<string, string>, "mobilePrepaid"),
   ),
 };

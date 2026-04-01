@@ -1,10 +1,9 @@
 /**
  * Format a date string to a readable date string.
  */
-export function formatDate(dateString: string, locale?: string): string {
+export function formatDate(dateString: string, locale = "en-GB"): string {
   const date = new Date(dateString);
-  const localeTag = locale ?? "en-GB";
-  return new Intl.DateTimeFormat(localeTag, {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
   }).format(date);
 }
@@ -42,4 +41,21 @@ export function getDateRangeForFilter(
     dateFrom: rangeStart.toISOString(),
     dateTo: todayEnd.toISOString(),
   };
+}
+
+/**
+ * Format a date string for message list display.
+ * Returns todayLabel when the date is today, otherwise returns DD/MM (zero-padded).
+ */
+export function formatMessageDate(isoDate: string, todayLabel: string): string {
+  const date = new Date(isoDate);
+  const today = new Date();
+  const isToday =
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate();
+  if (isToday) return todayLabel;
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  return `${dd}/${mm}`;
 }

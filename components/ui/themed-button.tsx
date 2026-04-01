@@ -53,12 +53,19 @@ export function ThemedButton({
           variantStyles.push(styles.secondary);
         }
 
+        let opacity: number;
+        if (pressed) {
+          opacity = 0.7;
+        } else if (isDisabled) {
+          opacity = 0.5;
+        } else {
+          opacity = 1;
+        }
+
         return [
           styles.base,
           ...variantStyles,
-          {
-            opacity: pressed ? 0.7 : isDisabled ? 0.5 : 1,
-          },
+          { opacity },
           style,
         ];
       }}
