@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { View, StyleSheet, Alert, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui/themed-text';
 import { useTranslation } from '@/core/i18n';
@@ -11,8 +12,13 @@ interface MenuGridItemProps {
 
 function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
   const { t } = useTranslation();
+  const router = useRouter();
 
   function handlePress() {
+    if (privilege.title.toLowerCase() === 'transfer') {
+      router.push('/transfer' as never);
+      return;
+    }
     Alert.alert(
       t('dashboard.comingSoon.title'),
       t('dashboard.comingSoon.message'),

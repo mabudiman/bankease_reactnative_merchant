@@ -1,5 +1,6 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
 import type { Message, MessageThread } from "@/features/messages/types";
+import type { TransferCard, Beneficiary, BankItem, BranchItem } from "@/features/transfer/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
@@ -116,4 +117,76 @@ export const MOCK_MESSAGE_THREADS: MessageThread[] = [
       { id: "m8", text: "Dear customer, 2987456 is your code for the withdrawal.", type: "received", date: "2025-12-10T08:00:00.000Z" },
     ],
   },
+];
+
+// ─── Transfer mock data ──────────────────────────────────────────────────────
+
+export const MOCK_TRANSFER_CARDS: TransferCard[] = [
+  {
+    id: "card-001",
+    brand: "VISA",
+    maskedNumber: "VISA **** **** **** 1234",
+    balance: 1000000, // 10,000.00 in minor units
+    currency: "USD",
+    holderName: "Demo Merchant",
+  },
+  {
+    id: "card-002",
+    brand: "MASTERCARD",
+    maskedNumber: "MC **** **** **** 5678",
+    balance: 500000,
+    currency: "USD",
+    holderName: "Demo Merchant",
+  },
+];
+
+export const MOCK_BENEFICIARIES: Beneficiary[] = [
+  {
+    id: "ben-001",
+    name: "Emma",
+    avatarUrl: "https://i.pravatar.cc/80?img=47",
+    cardNumber: "0123456789101",
+    accountNumber: "1234567890",
+  },
+  {
+    id: "ben-002",
+    name: "Justin",
+    avatarUrl: "https://i.pravatar.cc/80?img=51",
+    cardNumber: "9876543210987",
+    accountNumber: "0987654321",
+  },
+  {
+    id: "ben-003",
+    name: "Sophie",
+    avatarUrl: "https://i.pravatar.cc/80?img=45",
+    cardNumber: "1122334455667",
+    accountNumber: "1122334455",
+  },
+];
+
+export const MOCK_BANKS: BankItem[] = [
+  { id: "bank-01", name: "Fifth Third" },
+  { id: "bank-02", name: "Bank of the West" },
+  { id: "bank-03", name: "Wells Fargo" },
+  { id: "bank-04", name: "JP Morgan Chase" },
+  { id: "bank-05", name: "US Bank" },
+  { id: "bank-06", name: "HSBS Bank" },
+  { id: "bank-07", name: "Citibank" },
+  { id: "bank-08", name: "Amex Express" },
+];
+
+export const MOCK_BANK_BRANCHES: BranchItem[] = [
+  { id: "branch-01", bankId: "bank-07", name: "New York" },
+  { id: "branch-02", bankId: "bank-07", name: "Chicago" },
+  { id: "branch-03", bankId: "bank-07", name: "Los Angeles" },
+  { id: "branch-04", bankId: "bank-03", name: "San Francisco" },
+  { id: "branch-05", bankId: "bank-03", name: "Seattle" },
+  { id: "branch-06", bankId: "bank-04", name: "New York" },
+  { id: "branch-07", bankId: "bank-04", name: "Houston" },
+  { id: "branch-08", bankId: "bank-05", name: "Minneapolis" },
+  { id: "branch-09", bankId: "bank-05", name: "Denver" },
+  { id: "branch-10", bankId: "bank-01", name: "Cincinnati" },
+  { id: "branch-11", bankId: "bank-02", name: "Oakland" },
+  { id: "branch-12", bankId: "bank-06", name: "New York" },
+  { id: "branch-13", bankId: "bank-08", name: "Phoenix" },
 ];

@@ -54,6 +54,7 @@ function RootNavigator() {
       <Stack.Screen name="change-password-success" />
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="search" />
+      <Stack.Screen name="transfer" />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
     </Stack>
   );
