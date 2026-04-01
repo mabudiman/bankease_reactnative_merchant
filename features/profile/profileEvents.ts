@@ -19,6 +19,8 @@ export const profileEvents = {
 
   /** Notify all registered listeners that the profile was saved. */
   emitProfileSaved(): void {
-    listeners.forEach((fn) => fn());
+    for (const fn of listeners) {
+      fn();
+    }
   },
 };

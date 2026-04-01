@@ -23,7 +23,7 @@ function normalizeTitle(title: string): string {
   return title.toUpperCase().replaceAll(/\s+/g, '_');
 }
 
-function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
+function MenuGridItemComponent({ privilege }: Readonly<MenuGridItemProps>) {
   const { t } = useTranslation();
   const router = useRouter();
 

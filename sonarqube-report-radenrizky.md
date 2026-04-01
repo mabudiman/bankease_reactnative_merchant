@@ -2,6 +2,57 @@
 
 **Project:** bankease-reactnative-merchant
 **SonarQube Host:** https://sonarqube.4.194.42.173.sslip.io
+**Author Filter:** `radenrizky27@gmail.com`
+
+---
+
+## Riwayat Versi
+
+| Versi | Tanggal Scan  | Issues OPEN | Status                       |
+| ----- | ------------- | ----------- | ---------------------------- |
+| V2    | 1 April 2026  | 0           | ✅ 1 issue ditemukan & difix |
+| V1    | 31 Maret 2026 | 0           | ✅ Semua issues sudah difix  |
+
+---
+
+## V2 — Scan 1 April 2026
+
+**Tanggal Scan:** 1 April 2026
+**SCM Revision:** `36be22b` (branch: `kiky`)
+**Total Issues by radenrizky:** 5 (1 OPEN → difix, 4 CLOSED)
+**Status:** ✅ Issue ditemukan dan langsung difix
+
+### Ringkasan V2
+
+| Severity  | Ditemukan | Difix |
+| --------- | --------- | ----- |
+| 🟡 MINOR  | 1         | 1     |
+| **Total** | **1**     | **1** |
+
+### Issues OPEN (Ditemukan & Difix)
+
+| #   | File                                | Line | Rule  | Severity | Fix                                                                       |
+| --- | ----------------------------------- | ---- | ----- | -------- | ------------------------------------------------------------------------- |
+| 1   | `features/profile/profileEvents.ts` | L22  | S7728 | 🟡 MINOR | `listeners.forEach(fn => fn())` → `for (const fn of listeners) { fn(); }` |
+
+### Issues CLOSED by radenrizky (tetap resolved dari V1)
+
+| #   | File                                          | Line | Rule  | Fix                                         |
+| --- | --------------------------------------------- | ---- | ----- | ------------------------------------------- |
+| 1   | `features/auth/api/index.ts`                  | L2   | S7787 | `export {}` dihapus, file punya real export |
+| 2   | `core/api/token-manager.ts`                   | L14  | S7735 | Negated condition dibalik ke positif        |
+| 3   | `features/auth/components/sign-up-screen.tsx` | L84  | S7735 | Negated condition dibalik ke positif        |
+| 4   | `features/auth/components/sign-up-screen.tsx` | L81  | S7781 | `replace()` → `replaceAll()`                |
+
+### Status Uncommitted Changes
+
+Branch `kiky` — **working tree clean**, tidak ada perubahan uncommitted.
+Sumber issue baru: commit `03748fe` (1 Apr 2026) — auth username field + terkait profileEvents belum di-scan sebelumnya.
+
+---
+
+## V1 — Scan 31 Maret 2026
+
 **Tanggal Scan:** 31 Maret 2026
 **Total Issues:** 19 → **0** (semua sudah difix)
 **Status:** ✅ Semua issues sudah difix
