@@ -1,19 +1,15 @@
 import { http, HttpResponse, passthrough } from "msw";
 import type { RequestHandler } from "msw";
 import { API_BASE_URL } from "@/constants";
-import { MOCK_BRANCHES, MOCK_EXCHANGE_RATES, MOCK_INTEREST_RATES, MOCK_PROFILE_API_RESPONSE } from "./data";
+import {
+  MOCK_BENEFICIARIES,
+  MOCK_BRANCHES,
+  MOCK_EXCHANGE_RATES,
+  MOCK_INTEREST_RATES, MOCK_PROFILE_API_RESPONSE,
+} from "./data";
 
 // ─── Test-only handlers (full mocks for Jest) ────────────────────────────────
 export const handlers: RequestHandler[] = [
-  http.get(`${API_BASE_URL}/api/profile`, () => {
-    return HttpResponse.json(MOCK_PROFILE_API_RESPONSE);
-  }),
-
-  http.put(`${API_BASE_URL}/api/profile/:accountId`, async ({ request }) => {
-    const body = await request.json() as Record<string, unknown>;
-    return HttpResponse.json({ ...MOCK_PROFILE_API_RESPONSE, ...body });
-  }),
-
   http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
     return HttpResponse.json(MOCK_EXCHANGE_RATES);
   }),
@@ -29,6 +25,42 @@ export const handlers: RequestHandler[] = [
       ? MOCK_BRANCHES.filter((b) => b.name.toLowerCase().includes(q))
       : MOCK_BRANCHES;
     return HttpResponse.json(results);
+  }),
+
+  // ─── Mobile Prepaid ────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/mobile-prepaid/beneficiaries`, () => {
+    return HttpResponse.json(MOCK_BENEFICIARIES);
+  }),
+
+  http.post(`${API_BASE_URL}/api/mobile-prepaid/pay`, async ({ request }) => {
+    const body = (await request.json()) as {
+      cardId?: string;
+      phone?: string;
+      amount?: number;
+    };
+
+    if (!body.cardId || !body.phone || !body.amount || body.amount <= 0) {
+      return HttpResponse.json(
+        { code: "VALIDATION_ERROR", message: "Invalid request" },
+        { status: 400 },
+      );
+    }
+
+    if (body.phone === "+0000000000") {
+      return HttpResponse.json({
+        id: `txn-${Date.now()}`,
+        status: "FAILED",
+        message: "Invalid phone number",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return HttpResponse.json({
+      id: `txn-${Date.now()}`,
+      status: "SUCCESS",
+      message: "Payment successful",
+      timestamp: new Date().toISOString(),
+    });
   }),
 ];
 
@@ -55,5 +87,41 @@ export const runtimeHandlers: RequestHandler[] = [
       ? MOCK_BRANCHES.filter((b) => b.name.toLowerCase().includes(q))
       : MOCK_BRANCHES;
     return HttpResponse.json(results);
+  }),
+
+  // ─── Mobile Prepaid ────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/mobile-prepaid/beneficiaries`, () => {
+    return HttpResponse.json(MOCK_BENEFICIARIES);
+  }),
+
+  http.post(`${API_BASE_URL}/api/mobile-prepaid/pay`, async ({ request }) => {
+    const body = (await request.json()) as {
+      cardId?: string;
+      phone?: string;
+      amount?: number;
+    };
+
+    if (!body.cardId || !body.phone || !body.amount || body.amount <= 0) {
+      return HttpResponse.json(
+        { code: "VALIDATION_ERROR", message: "Invalid request" },
+        { status: 400 },
+      );
+    }
+
+    if (body.phone === "+0000000000") {
+      return HttpResponse.json({
+        id: `txn-${Date.now()}`,
+        status: "FAILED",
+        message: "Invalid phone number",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return HttpResponse.json({
+      id: `txn-${Date.now()}`,
+      status: "SUCCESS",
+      message: "Payment successful",
+      timestamp: new Date().toISOString(),
+    });
   }),
 ];

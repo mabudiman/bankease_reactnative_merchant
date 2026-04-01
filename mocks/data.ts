@@ -1,4 +1,5 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
+import type { Beneficiary } from "@/features/mobile-prepaid/types";
 import type { MockAccount } from "@/features/withdraw/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
