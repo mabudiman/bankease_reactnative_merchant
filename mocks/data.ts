@@ -190,6 +190,8 @@ export const MOCK_BANK_BRANCHES: BranchItem[] = [
   { id: "branch-11", bankId: "bank-02", name: "Oakland" },
   { id: "branch-12", bankId: "bank-06", name: "New York" },
   { id: "branch-13", bankId: "bank-08", name: "Phoenix" },
+];
+
 /** Raw server response shape for profile API */
 export const MOCK_PROFILE_API_RESPONSE = {
   id: "da08ecfe-de3b-42b1-b1ce-018e144198f5",

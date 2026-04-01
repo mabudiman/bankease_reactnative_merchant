@@ -45,6 +45,21 @@ export const handlers: RequestHandler[] = [
     return HttpResponse.json(thread);
   }),
 
+  // ─── Profile handlers (test mocks) ───────────────────────────────────────
+
+  http.get(`${API_BASE_URL}/api/profile`, () => {
+    return HttpResponse.json(MOCK_PROFILE_API_RESPONSE);
+  }),
+
+  http.get(`${API_BASE_URL}/api/profile/:accountId`, () => {
+    return HttpResponse.json(MOCK_PROFILE_API_RESPONSE);
+  }),
+
+  http.put(`${API_BASE_URL}/api/profile/:accountId`, async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json({ ...MOCK_PROFILE_API_RESPONSE, ...body });
+  }),
+
   // ─── Transfer handlers ────────────────────────────────────────────────────
 
   http.get(`${API_BASE_URL}/api/cards`, () => {
@@ -70,6 +85,11 @@ export const handlers: RequestHandler[] = [
     return HttpResponse.json({
       id: `txn-${Date.now()}`,
       status: "success",
+      message: "Transfer successful",
+      timestamp: new Date().toISOString(),
+    });
+  }),
+
   // ─── Mobile Prepaid ────────────────────────────────────────────────────
   http.get(`${API_BASE_URL}/api/mobile-prepaid/beneficiaries`, () => {
     return HttpResponse.json(MOCK_BENEFICIARIES);
