@@ -1,5 +1,9 @@
 module.exports = {
   preset: "jest-expo",
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "/.github/skills/",
+  ],
   moduleNameMapper: {
     "^msw/node$": "<rootDir>/node_modules/msw/lib/node/index.js",
     "\\.svg$": "<rootDir>/__mocks__/svgMock.js",
