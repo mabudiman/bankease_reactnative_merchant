@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ui/themed-text";
-import { Colors } from "@/constants/theme";
+import { Colors, Radius } from "@/constants/theme";
 import { formatCurrency } from "@/utils/money";
 import { authService } from "@/features/auth/services/auth-service";
 import { useMobilePrepaid } from "../hooks/useMobilePrepaid";
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   confirmButton: {
     width: "100%",
     paddingVertical: 16,
-    borderRadius: 28,
+    borderRadius: Radius.md,
     backgroundColor: Colors.primary,
     alignItems: "center",
     marginTop: 16,
