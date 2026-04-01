@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { authService } from '@/features/auth/services/auth-service';
 import { profileService } from '../services/profile-service';
+import { profileEvents } from '../profileEvents';
 import type { UserProfile, UserProfileInput } from '../types';
 import type { LocalAuthAccount } from '@/features/auth/types';
 
@@ -45,24 +46,30 @@ export function useProfile(): UseProfileResult {
 
   const saveProfile = useCallback(
     async (data: UserProfileInput): Promise<boolean> => {
-      const accountId = state.user?.id;
+      // Use profile's own ID (from GET /api/profile response), NOT the auth user ID
+      const accountId = state.profile?.accountId;
       if (!accountId) return false;
 
+      console.log('[useProfile] saving profile with accountId (profile ID):', accountId);
       setState((prev) => ({ ...prev, isSaving: true }));
       try {
-        await profileService.saveProfile(accountId, data);
-        // Do NOT update profile state here — updating it would re-trigger
-        // useEffect([profile]) in the screen and overwrite the form fields.
-        setState((prev) => ({ ...prev, isSaving: false }));
+        const updated = await profileService.saveProfile(accountId, data);
+        console.log('[useProfile] saveProfile success, updated:', JSON.stringify(updated, null, 2));
+        setState((prev) => ({ ...prev, profile: updated, isSaving: false }));
+        // Signal dashboard (and any other subscriber) to reload immediately
+        console.log('[useProfile] emitting profileSaved event...');
+        profileEvents.emitProfileSaved();
+        console.log('[useProfile] profileSaved event emitted');
         Alert.alert('Success', 'Profile updated successfully.');
         return true;
-      } catch {
+      } catch (err) {
+        console.error('[useProfile] saveProfile FAILED:', err);
         setState((prev) => ({ ...prev, isSaving: false }));
         Alert.alert('Failed', 'Failed to update profile. Please try again.');
         return false;
       }
     },
-    [state.user?.id],
+    [state.profile?.accountId],
   );
 
   return { ...state, saveProfile };

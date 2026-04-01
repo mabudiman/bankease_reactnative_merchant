@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, Pressable, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui/themed-text';
@@ -9,10 +8,10 @@ import { useTranslation } from '@/core/i18n';
 import NotificationIcon from '@/assets/svgs/icon_notification.svg';
 
 interface DashboardHeaderProps {
-  name: string;
-  notificationCount: number;
-  avatarUri?: string;
-  onAvatarPress?: () => void;
+  readonly name: string;
+  readonly notificationCount: number;
+  readonly avatarUri?: string;
+  readonly onAvatarPress?: () => void;
 }
 
 export function DashboardHeader({ name, notificationCount, avatarUri, onAvatarPress }: DashboardHeaderProps) {
@@ -20,12 +19,7 @@ export function DashboardHeader({ name, notificationCount, avatarUri, onAvatarPr
   const greeting = t('dashboard.header.greeting').replace('{{name}}', name);
 
   return (
-    <LinearGradient
-      colors={[Colors.primary, Colors.primaryLight]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.gradient}
-    >
+    <View style={styles.container}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View style={styles.row}>
           {/* Left: avatar + greeting */}
@@ -68,14 +62,15 @@ export function DashboardHeader({ name, notificationCount, avatarUri, onAvatarPr
           </Pressable>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+  container: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 24,
+    paddingBottom: 48,
   },
   safeArea: {
     backgroundColor: 'transparent',

@@ -4,6 +4,15 @@ import type { UserProfile } from '../../types';
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 
+jest.mock('@/core/api/token-manager', () => ({
+  tokenManager: {
+    getToken: jest.fn().mockReturnValue(null),
+    setToken: jest.fn().mockResolvedValue(undefined),
+    clearToken: jest.fn().mockResolvedValue(undefined),
+    loadToken: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
 jest.mock('../../api/profile-api');
 
 const mockGetProfile = profileApi.getProfile as jest.Mock;
@@ -36,18 +45,18 @@ describe('profileService', () => {
   // ── loadProfile ───────────────────────────────────────────────────────────
 
   describe('loadProfile', () => {
-    it('resolves demo-001 to its UUID and calls the API', async () => {
+    it('passes accountId directly to the API', async () => {
       const apiResult = makeApiProfile();
       mockGetProfile.mockResolvedValue(apiResult);
 
       const profile = await profileService.loadProfile('demo-001');
 
-      expect(mockGetProfile).toHaveBeenCalledWith('da08ecfe-de3b-42b1-b1ce-018e144198f5');
+      expect(mockGetProfile).toHaveBeenCalledWith('demo-001');
       expect(profile.bankName).toBe('BRI');
       expect(profile.transactionName).toBe('Jane Doe');
     });
 
-    it('passes non-demo accountId directly to the API (sign-up UUID)', async () => {
+    it('passes any accountId (sign-up UUID) directly to the API', async () => {
       const uuid = 'some-new-user-uuid';
       const apiResult = makeApiProfile({ accountId: uuid });
       mockGetProfile.mockResolvedValue(apiResult);
@@ -92,13 +101,13 @@ describe('profileService', () => {
       currency: 'SGD',
     };
 
-    it('resolves demo-001 to its UUID when calling updateProfile', async () => {
+    it('passes accountId directly to updateProfile', async () => {
       mockUpdateProfile.mockResolvedValue(makeApiProfile({ ...INPUT }));
 
       await profileService.saveProfile('demo-001', INPUT);
 
       expect(mockUpdateProfile).toHaveBeenCalledWith(
-        'da08ecfe-de3b-42b1-b1ce-018e144198f5',
+        'demo-001',
         INPUT,
       );
     });

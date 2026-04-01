@@ -4,7 +4,7 @@ import { MenuGridItem } from "./MenuGridItem";
 import type { Privilege } from "../types";
 
 interface FeatureMenuGridProps {
-  privileges: Privilege[];
+  readonly privileges: Privilege[];
 }
 
 export function FeatureMenuGrid({ privileges }: FeatureMenuGridProps) {

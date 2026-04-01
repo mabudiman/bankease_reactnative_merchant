@@ -1,22 +1,22 @@
-import React, { memo } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedText } from '@/components/ui/themed-text';
-import { Colors } from '@/constants/theme';
-import { formatCurrency } from '@/utils/money';
-import type { PaymentCard } from '../types';
-import VisaLogo from '@/assets/svgs/icon_visa.svg';
+import React, { memo } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Colors } from "@/constants/theme";
+import { formatCurrency } from "@/utils/money";
+import type { PaymentCard } from "../types";
+import VisaLogo from "@/assets/svgs/icon_visa.svg";
 
 interface AccountCardProps {
-  card: PaymentCard;
+  readonly card: PaymentCard;
 }
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 export const CARD_WIDTH = SCREEN_WIDTH - 48;
 export const CARD_HEIGHT = 190;
 
-function BrandLogo({ brand }: { brand: PaymentCard['brand'] }) {
-  if (brand === 'VISA') {
+function BrandLogo({ brand }: { readonly brand: PaymentCard["brand"] }) {
+  if (brand === "VISA") {
     return <VisaLogo width={58} height={20} />;
   }
   // MASTERCARD: two overlapping circles
@@ -36,32 +36,22 @@ function AccountCardComponent({ card }: AccountCardProps) {
       end={{ x: 1, y: 0.5 }}
       style={styles.card}
     >
-      {/* Decorative blobs */}
       <View style={styles.blobRight} />
       <View style={styles.blobRightOuter} />
 
-      {/* Top row: holder name + NFC icon */}
-      <View style={styles.topRow}>
+      <View style={styles.content}>
         <ThemedText style={styles.holderName}>{card.holderName}</ThemedText>
-        <View style={styles.nfcIcon}>
-          <View style={[styles.nfcArc, { width: 8, height: 14, borderRadius: 7 }]} />
-          <View style={[styles.nfcArc, { width: 14, height: 20, borderRadius: 10 }]} />
-          <View style={[styles.nfcArc, { width: 20, height: 26, borderRadius: 13 }]} />
+
+        <ThemedText style={styles.cardLabel}>{card.cardLabel}</ThemedText>
+
+        <ThemedText style={styles.maskedNumber}>{card.maskedNumber}</ThemedText>
+
+        <View style={styles.bottomRow}>
+          <ThemedText style={styles.balance}>
+            {formatCurrency(card.balance, card.currency)}
+          </ThemedText>
+          <BrandLogo brand={card.brand} />
         </View>
-      </View>
-
-      {/* Card label */}
-      <ThemedText style={styles.cardLabel}>{card.cardLabel}</ThemedText>
-
-      {/* Masked number */}
-      <ThemedText style={styles.maskedNumber}>{card.maskedNumber}</ThemedText>
-
-      {/* Bottom row: balance + brand logo */}
-      <View style={styles.bottomRow}>
-        <ThemedText style={styles.balance}>
-          {formatCurrency(card.balance, card.currency)}
-        </ThemedText>
-        <BrandLogo brand={card.brand} />
       </View>
     </LinearGradient>
   );
@@ -74,8 +64,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: CARD_HEIGHT,
     borderRadius: 20,
-    padding: 20,
-    justifyContent: 'space-between',
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
@@ -83,7 +71,46 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 10,
   },
-  // Decorative blobs (large semi-transparent circles on the right)
+
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 18,
+  },
+
+  holderName: {
+    color: Colors.white,
+    fontSize: 20,
+  },
+
+  cardLabel: {
+    color: Colors.white,
+    fontSize: 14,
+    marginTop: 30,
+  },
+
+  maskedNumber: {
+    color: Colors.white,
+    fontSize: 15,
+    fontWeight: '500',
+    letterSpacing: 1.2,
+    marginTop: 6,
+  },
+
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+
+  balance: {
+    color: Colors.white,
+    fontSize: 22,
+    fontWeight: '700',
+  },
+
   blobRight: {
     position: 'absolute',
     width: 160,
@@ -94,6 +121,7 @@ const styles = StyleSheet.create({
     top: '50%',
     marginTop: -80,
   },
+
   blobRightOuter: {
     position: 'absolute',
     width: 200,
@@ -104,67 +132,25 @@ const styles = StyleSheet.create({
     top: '50%',
     marginTop: -100,
   },
-  topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  holderName: {
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  // NFC arcs (contactless symbol)
-  nfcIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-  },
-  nfcArc: {
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.7)',
-    borderLeftColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderTopColor: 'transparent',
-  },
-  cardLabel: {
-    color: 'rgba(255,255,255,0.72)',
-    fontSize: 12,
-    marginTop: 2,
-  },
-  maskedNumber: {
-    color: Colors.white,
-    fontSize: 15,
-    fontWeight: '500',
-    letterSpacing: 2,
-    marginTop: 6,
-  },
-  bottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  balance: {
-    color: Colors.white,
-    fontSize: 22,
-    fontWeight: '700',
-  },
-  // MASTERCARD logo
+
   mcWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   mcCircle: {
     width: 28,
     height: 28,
     borderRadius: 14,
     opacity: 0.9,
   },
+
   mcRed: {
     backgroundColor: '#EB001B',
     marginRight: -10,
     zIndex: 1,
   },
+
   mcOrange: {
     backgroundColor: '#F79E1B',
   },

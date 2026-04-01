@@ -10,7 +10,10 @@ module.exports = {
   collectCoverageFrom: [
     "app/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
+    "features/**/*.{ts,tsx}",
+    "utils/**/*.{ts,tsx}",
     "!**/*.d.ts",
     "!**/node_modules/**",
+    "!**/__tests__/**",
   ],
 };

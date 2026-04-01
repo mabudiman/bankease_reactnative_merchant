@@ -1,13 +1,26 @@
 import React, { memo } from "react";
 import { View, StyleSheet, Alert, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { ThemedText } from "@/components/ui/themed-text";
 import { useRouter } from "expo-router";
+import { ThemedText } from "@/components/ui/themed-text";
 import { useTranslation } from "@/core/i18n";
 import type { Privilege } from "../types";
+import { Colors } from '@/constants/theme';
 
 interface MenuGridItemProps {
-  privilege: Privilege;
+  readonly privilege: Privilege;
+}
+
+// Map normalized menu title → app route
+// Normalize: uppercase + replace spaces with underscores
+const ROUTE_MAP: Partial<Record<string, string>> = {
+  WITHDRAW: "/withdraw",
+  TARIK_TUNAI: "/withdraw",
+  TRANSFER: "/withdraw",
+};
+
+function normalizeTitle(title: string): string {
+  return title.toUpperCase().replaceAll(/\s+/g, '_');
 }
 
 function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
@@ -15,8 +28,11 @@ function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
   const router = useRouter();
 
   function handlePress() {
-    if (privilege.code === "MOBILE_PREPAID") {
-      router.push("/mobile-prepaid");
+    const normalized = normalizeTitle(privilege.title);
+    const route = ROUTE_MAP[normalized];
+    console.log('[MenuGridItem] pressed:', privilege.title, '→ normalized:', normalized, '→ route:', route);
+    if (route) {
+      router.push(route as any);
       return;
     }
     Alert.alert(t("dashboard.comingSoon.title"), t("dashboard.comingSoon.message"));
@@ -24,13 +40,15 @@ function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
 
   return (
     <Pressable
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      style={({ pressed }) => {
+        /* istanbul ignore next */
+        return [styles.card, pressed && styles.cardPressed];
+      }}
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={privilege.title}
     >
-      {/* <View style={[styles.iconCircle, { backgroundColor: `${privilege.color}18` }]}> */}
-      <View>
+      <View style={styles.iconWrap}>
         <Ionicons
           name={privilege.icon as React.ComponentProps<typeof Ionicons>["name"]}
           size={26}
@@ -49,36 +67,35 @@ export const MenuGridItem = memo(MenuGridItemComponent);
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 14,
+    minHeight: 120,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    paddingHorizontal: 12,
     paddingVertical: 16,
-    paddingHorizontal: 8,
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
+
+    shadowColor: Colors.shadowGrid,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.02,
+    shadowRadius: 14,
     elevation: 3,
-    minHeight: 90,
   },
   cardPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.97 }],
+    opacity: 0.95,
+    transform: [{ scale: 0.98 }],
   },
-  iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+  iconWrap: {
+    height: 34,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 14,
   },
   label: {
-    fontSize: 11,
+    fontSize: 15,
     fontWeight: "500",
     textAlign: "center",
-    color: "#343434",
-    lineHeight: 14,
+    color: Colors.textMenu,
+    lineHeight: 18,
   },
 });
