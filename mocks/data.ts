@@ -1,6 +1,7 @@
 import type { Branch, ExchangeRate, InterestRate } from "@/features/search/types";
 import type { Message, MessageThread } from "@/features/messages/types";
 import type { TransferCard, Beneficiary, BankItem, BranchItem } from "@/features/transfer/types";
+import type { MockAccount } from "@/features/withdraw/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
@@ -189,4 +190,39 @@ export const MOCK_BANK_BRANCHES: BranchItem[] = [
   { id: "branch-11", bankId: "bank-02", name: "Oakland" },
   { id: "branch-12", bankId: "bank-06", name: "New York" },
   { id: "branch-13", bankId: "bank-08", name: "Phoenix" },
+/** Raw server response shape for profile API */
+export const MOCK_PROFILE_API_RESPONSE = {
+  id: "da08ecfe-de3b-42b1-b1ce-018e144198f5",
+  bank: "BRI",
+  branch: "Jakarta Pusat",
+  name: "Demo Merchant",
+  card_number: "1234567890123456",
+  card_provider: "VISA",
+  balance: 1500,
+  currency: "IDR",
+  accountType: "REGULAR",
+  image: undefined as string | undefined,
+};
+
+/** Mapped UserProfile (after mapResponseToProfile) */
+export const MOCK_USER_PROFILE = {
+  accountId: "da08ecfe-de3b-42b1-b1ce-018e144198f5",
+  bankName: "BRI",
+  branchName: "Jakarta Pusat",
+  transactionName: "Demo Merchant",
+  cardNumber: "1234567890123456",
+  cardProvider: "VISA",
+  balance: 150000,   // 1500 * 100 (minor units)
+  currency: "IDR",
+  accountType: "REGULAR",
+  image: undefined as string | undefined,
+};
+
+/** Mock accounts for withdraw/transfer flows */
+export const MOCK_WITHDRAW_ACCOUNTS: MockAccount[] = [
+  { id: "1", label: "1900 8988 5456" },
+  { id: "2", label: "1900 8112 5222" },
+  { id: "3", label: "4411 0000 1234" },
+  { id: "4", label: "1900 8988 5457" },
+  { id: "5", label: "1900 8988 5458" },
 ];

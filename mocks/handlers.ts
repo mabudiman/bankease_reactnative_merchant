@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, passthrough } from "msw";
 import type { RequestHandler } from "msw";
 import { API_BASE_URL } from "@/constants";
 import {
@@ -11,10 +11,10 @@ import {
   MOCK_BENEFICIARIES,
   MOCK_BANKS,
   MOCK_BANK_BRANCHES,
+  MOCK_PROFILE_API_RESPONSE,
 } from "./data";
 
-// TODO: Add profile API stubs here when backend is live.
-
+// ─── Test-only handlers (full mocks for Jest) ────────────────────────────────
 export const handlers: RequestHandler[] = [
   http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
     return HttpResponse.json(MOCK_EXCHANGE_RATES);
@@ -70,6 +70,101 @@ export const handlers: RequestHandler[] = [
     return HttpResponse.json({
       id: `txn-${Date.now()}`,
       status: "success",
+  // ─── Mobile Prepaid ────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/mobile-prepaid/beneficiaries`, () => {
+    return HttpResponse.json(MOCK_BENEFICIARIES);
+  }),
+
+  http.post(`${API_BASE_URL}/api/mobile-prepaid/pay`, async ({ request }) => {
+    const body = (await request.json()) as {
+      cardId?: string;
+      phone?: string;
+      amount?: number;
+    };
+
+    if (!body.cardId || !body.phone || !body.amount || body.amount <= 0) {
+      return HttpResponse.json(
+        { code: "VALIDATION_ERROR", message: "Invalid request" },
+        { status: 400 },
+      );
+    }
+
+    if (body.phone === "+0000000000") {
+      return HttpResponse.json({
+        id: `txn-${Date.now()}`,
+        status: "FAILED",
+        message: "Invalid phone number",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return HttpResponse.json({
+      id: `txn-${Date.now()}`,
+      status: "SUCCESS",
+      message: "Payment successful",
+      timestamp: new Date().toISOString(),
+    });
+  }),
+];
+
+// ─── Runtime handlers (for dev builds — passthrough profile to real API) ──────
+export const runtimeHandlers: RequestHandler[] = [
+  // Let profile GET and PUT pass through to the real backend
+  http.get(`${API_BASE_URL}/api/profile`, () => passthrough()),
+  http.get(`${API_BASE_URL}/api/profile/:accountId`, () => passthrough()),
+  http.put(`${API_BASE_URL}/api/profile/:accountId`, () => passthrough()),
+
+  // Keep mocks for non-profile endpoints
+  http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
+    return HttpResponse.json(MOCK_EXCHANGE_RATES);
+  }),
+
+  http.get(`${API_BASE_URL}/api/interest-rates`, () => {
+    return HttpResponse.json(MOCK_INTEREST_RATES);
+  }),
+
+  http.get(`${API_BASE_URL}/api/branches`, ({ request }) => {
+    const url = new URL(request.url);
+    const q = url.searchParams.get("q")?.toLowerCase() ?? "";
+    const results = q
+      ? MOCK_BRANCHES.filter((b) => b.name.toLowerCase().includes(q))
+      : MOCK_BRANCHES;
+    return HttpResponse.json(results);
+  }),
+
+  // ─── Mobile Prepaid ────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/mobile-prepaid/beneficiaries`, () => {
+    return HttpResponse.json(MOCK_BENEFICIARIES);
+  }),
+
+  http.post(`${API_BASE_URL}/api/mobile-prepaid/pay`, async ({ request }) => {
+    const body = (await request.json()) as {
+      cardId?: string;
+      phone?: string;
+      amount?: number;
+    };
+
+    if (!body.cardId || !body.phone || !body.amount || body.amount <= 0) {
+      return HttpResponse.json(
+        { code: "VALIDATION_ERROR", message: "Invalid request" },
+        { status: 400 },
+      );
+    }
+
+    if (body.phone === "+0000000000") {
+      return HttpResponse.json({
+        id: `txn-${Date.now()}`,
+        status: "FAILED",
+        message: "Invalid phone number",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return HttpResponse.json({
+      id: `txn-${Date.now()}`,
+      status: "SUCCESS",
+      message: "Payment successful",
+      timestamp: new Date().toISOString(),
     });
   }),
 ];

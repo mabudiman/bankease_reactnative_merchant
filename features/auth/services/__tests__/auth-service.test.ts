@@ -13,6 +13,32 @@ jest.mock('expo-crypto', () => ({
   randomUUID: jest.fn(() => 'test-uuid-1234'),
 }));
 
+// Mock the real API layer so tests don't make network calls
+jest.mock('../../api', () => ({
+  authApi: {
+    signIn: jest.fn(),
+    signUp: jest.fn(),
+  },
+}));
+
+// Mock the token manager — we only want to verify calls, not hit AsyncStorage twice
+jest.mock('@/core/api/token-manager', () => ({
+  tokenManager: {
+    setToken: jest.fn().mockResolvedValue(undefined),
+    clearToken: jest.fn().mockResolvedValue(undefined),
+    getToken: jest.fn().mockReturnValue(null),
+    loadToken: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
+import { authApi } from '../../api';
+import { tokenManager } from '@/core/api/token-manager';
+
+const mockAuthApiSignIn = authApi.signIn as jest.Mock;
+const mockAuthApiSignUp = authApi.signUp as jest.Mock;
+const mockTokenManagerSetToken = tokenManager.setToken as jest.Mock;
+const mockTokenManagerClearToken = tokenManager.clearToken as jest.Mock;
+
 const mockGetItem = AsyncStorage.getItem as jest.Mock;
 const mockSetItem = AsyncStorage.setItem as jest.Mock;
 const mockRemoveItem = AsyncStorage.removeItem as jest.Mock;
@@ -25,109 +51,86 @@ function setupEmptyStorage() {
   mockRemoveItem.mockResolvedValue(undefined);
 }
 
-function setupStorageWithAccounts(accounts: object[]) {
-  mockGetItem.mockImplementation(async (key: string) => {
-    if (key === '@auth:accounts') return JSON.stringify(accounts);
-    return null;
-  });
-  mockSetItem.mockResolvedValue(undefined);
-  mockRemoveItem.mockResolvedValue(undefined);
-}
-
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
 describe('authService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    setupEmptyStorage();
   });
 
   // ── signIn ────────────────────────────────────────────────────────────────
 
   describe('signIn', () => {
-    it('returns account for valid demo-001 credentials', async () => {
-      setupEmptyStorage();
-      const account = await authService.signIn('081234567890', 'demo1234');
-      expect(account.id).toBe('demo-001');
-      expect(account.name).toBe('Demo Merchant');
+    it('resolves when API returns a token', async () => {
+      mockAuthApiSignIn.mockResolvedValueOnce({ token: 'fake-jwt-token', user_id: 'user-123' });
+      await expect(authService.signIn('merchant01', 'pass123')).resolves.toBeUndefined();
     });
 
-    it('returns account for valid demo-002 credentials', async () => {
-      setupEmptyStorage();
-      const account = await authService.signIn('089876543210', 'premium1234');
-      expect(account.id).toBe('demo-002');
-      expect(account.name).toBe('Premium Merchant');
+    it('stores the token via tokenManager on success', async () => {
+      mockAuthApiSignIn.mockResolvedValueOnce({ token: 'abc.def.ghi', user_id: 'user-456' });
+      await authService.signIn('merchant01', 'pass123');
+      expect(mockTokenManagerSetToken).toHaveBeenCalledWith('abc.def.ghi');
     });
 
-    it('throws INVALID_CREDENTIALS for wrong password', async () => {
-      setupEmptyStorage();
-      await expect(
-        authService.signIn('081234567890', 'wrongpassword'),
-      ).rejects.toThrow('INVALID_CREDENTIALS');
-    });
-
-    it('throws INVALID_CREDENTIALS for wrong phone', async () => {
-      setupEmptyStorage();
-      await expect(
-        authService.signIn('099999999999', 'demo1234'),
-      ).rejects.toThrow('INVALID_CREDENTIALS');
-    });
-
-    it('trims whitespace from phone and password before comparing', async () => {
-      setupEmptyStorage();
-      const account = await authService.signIn(' 081234567890 ', '  demo1234  ');
-      expect(account.id).toBe('demo-001');
-    });
-
-    it('stores session after successful sign in', async () => {
-      setupEmptyStorage();
-      await authService.signIn('081234567890', 'demo1234');
-      const sessionCall = mockSetItem.mock.calls.find(
-        ([key]) => key === '@auth:session',
-      );
+    it('stores session with user_id as accountId in AsyncStorage on success', async () => {
+      mockAuthApiSignIn.mockResolvedValueOnce({ token: 'tok', user_id: 'user-789' });
+      await authService.signIn('merchant01', 'pass123');
+      const sessionCall = mockSetItem.mock.calls.find(([key]) => key === '@auth:session');
       expect(sessionCall).toBeDefined();
       const stored = JSON.parse(sessionCall[1]);
-      expect(stored.accountId).toBe('demo-001');
+      expect(stored.accountId).toBe('user-789');
     });
-  });
+
+    it('trims username and password before sending to API', async () => {
+      mockAuthApiSignIn.mockResolvedValueOnce({ token: 'tok', user_id: 'u1' });
+      await authService.signIn('  user  ', '  pass  ');
+      expect(mockAuthApiSignIn).toHaveBeenCalledWith({ username: 'user', password: 'pass' });
+    });
+
+    it('throws INVALID_CREDENTIALS when API throws INVALID_CREDENTIALS', async () => {
+      mockAuthApiSignIn.mockRejectedValueOnce(new Error('INVALID_CREDENTIALS'));
+      await expect(authService.signIn('user', 'wrongpass')).rejects.toThrow('INVALID_CREDENTIALS');
+    });
+
+    it('throws NETWORK_ERROR when API throws NETWORK_ERROR', async () => {
+      mockAuthApiSignIn.mockRejectedValueOnce(new Error('NETWORK_ERROR'));
+      await expect(authService.signIn('user', 'pass')).rejects.toThrow('NETWORK_ERROR');
+    });
+
+    it('does not store token or session when API fails', async () => {
+      mockAuthApiSignIn.mockRejectedValueOnce(new Error('INVALID_CREDENTIALS'));
+      await authService.signIn('user', 'bad').catch(() => {});
+      expect(mockTokenManagerSetToken).not.toHaveBeenCalled();
+      expect(mockSetItem).not.toHaveBeenCalledWith('@auth:session', expect.anything());
+    });  });
 
   // ── signUp ────────────────────────────────────────────────────────────────
 
   describe('signUp', () => {
-    it('creates a new account for a new phone number', async () => {
-      setupEmptyStorage();
-      const account = await authService.signUp('Alice', '082111222333', 'mypassword');
-      expect(account.id).toBe('test-uuid-1234');
-      expect(account.name).toBe('Alice');
-      expect(account.phone).toBe('082111222333');
+    it('resolves without error on successful API call', async () => {
+      mockAuthApiSignUp.mockResolvedValueOnce({ message: 'created' });
+      await expect(authService.signUp('Alice', '082111222333', 'mypassword')).resolves.toBeUndefined();
     });
 
-    it('throws PHONE_TAKEN when phone already exists', async () => {
-      setupEmptyStorage();
-      await expect(
-        authService.signUp('New User', '081234567890', 'password123'),
-      ).rejects.toThrow('PHONE_TAKEN');
+    it('passes trimmed values to the API', async () => {
+      mockAuthApiSignUp.mockResolvedValueOnce({});
+      await authService.signUp('  Bob  ', '  082999000111  ', '  pass123  ');
+      expect(mockAuthApiSignUp).toHaveBeenCalledWith({
+        username: 'Bob',
+        phone: '082999000111',
+        password: 'pass123',
+      });
     });
 
-    it('stores trimmed name and password', async () => {
-      setupEmptyStorage();
-      await authService.signUp('  Bob  ', '082999000111', '  pass123  ');
-      // Find the LAST setItem call for @auth:accounts (the signUp write, not the seed write)
-      const accountsCalls = mockSetItem.mock.calls.filter(
-        ([key]) => key === '@auth:accounts',
-      );
-      expect(accountsCalls.length).toBeGreaterThanOrEqual(1);
-      const lastAccountsCall = accountsCalls[accountsCalls.length - 1];
-      const stored = JSON.parse(lastAccountsCall[1]);
-      const newAccount = stored.find((a: { id: string }) => a.id === 'test-uuid-1234');
-      expect(newAccount).toBeDefined();
-      expect(newAccount.name).toBe('Bob');
-      expect(newAccount.password).toBe('pass123');
+    it('throws PHONE_TAKEN when API throws PHONE_TAKEN', async () => {
+      mockAuthApiSignUp.mockRejectedValueOnce(new Error('PHONE_TAKEN'));
+      await expect(authService.signUp('User', '081234567890', 'pw')).rejects.toThrow('PHONE_TAKEN');
     });
 
-    it('stores trimmed phone number', async () => {
-      setupEmptyStorage();
-      const account = await authService.signUp('Charlie', '  082555666777  ', 'pw');
-      expect(account.phone).toBe('082555666777');
+    it('throws NETWORK_ERROR on network failure', async () => {
+      mockAuthApiSignUp.mockRejectedValueOnce(new Error('NETWORK_ERROR'));
+      await expect(authService.signUp('User', '082111000222', 'pw')).rejects.toThrow('NETWORK_ERROR');
     });
   });
 
@@ -135,37 +138,33 @@ describe('authService', () => {
 
   describe('getSession', () => {
     it('returns null when no session exists', async () => {
-      setupEmptyStorage();
       const session = await authService.getSession();
       expect(session).toBeNull();
     });
 
-    it('returns session after sign in', async () => {
-      setupEmptyStorage();
-      await authService.signIn('081234567890', 'demo1234');
-
-      // Re-mock getItem to return stored session
+    it('returns the stored session object', async () => {
+      const stored = { accountId: 'user-123', createdAt: '2026-01-01T00:00:00.000Z' };
       mockGetItem.mockImplementation(async (key: string) => {
-        if (key === '@auth:session') {
-          const call = mockSetItem.mock.calls.find(([k]) => k === '@auth:session');
-          return call ? call[1] : null;
-        }
+        if (key === '@auth:session') return JSON.stringify(stored);
         return null;
       });
-
       const session = await authService.getSession();
       expect(session).not.toBeNull();
-      expect(session?.accountId).toBe('demo-001');
+      expect(session?.accountId).toBe('user-123');
     });
   });
 
   // ── clearSession ──────────────────────────────────────────────────────────
 
   describe('clearSession', () => {
-    it('calls removeItem on the session key', async () => {
-      setupEmptyStorage();
+    it('removes session from AsyncStorage', async () => {
       await authService.clearSession();
       expect(mockRemoveItem).toHaveBeenCalledWith('@auth:session');
+    });
+
+    it('clears token via tokenManager', async () => {
+      await authService.clearSession();
+      expect(mockTokenManagerClearToken).toHaveBeenCalled();
     });
   });
 
@@ -173,38 +172,71 @@ describe('authService', () => {
 
   describe('getSessionAccount', () => {
     it('returns null when there is no session', async () => {
-      mockGetItem.mockResolvedValue(null);
-      mockSetItem.mockResolvedValue(undefined);
       const account = await authService.getSessionAccount();
       expect(account).toBeNull();
     });
 
-    it('returns the full account for an active session', async () => {
+    it('returns the seed account for a matching session accountId', async () => {
       const session = { accountId: 'demo-001', createdAt: '2026-01-01T00:00:00.000Z' };
       mockGetItem.mockImplementation(async (key: string) => {
         if (key === '@auth:session') return JSON.stringify(session);
         if (key === '@auth:accounts') return null; // triggers seed load
         return null;
       });
-      mockSetItem.mockResolvedValue(undefined);
-
       const account = await authService.getSessionAccount();
       expect(account).not.toBeNull();
       expect(account?.id).toBe('demo-001');
       expect(account?.name).toBe('Demo Merchant');
     });
 
-    it('returns null when session accountId does not match any account', async () => {
-      const session = { accountId: 'nonexistent-id', createdAt: '2026-01-01T00:00:00.000Z' };
+    it('returns synthetic account when session accountId is not in local accounts', async () => {
+      const session = { accountId: 'real-api-user-id', username: 'apiuser', createdAt: '2026-01-01T00:00:00.000Z' };
       mockGetItem.mockImplementation(async (key: string) => {
         if (key === '@auth:session') return JSON.stringify(session);
-        if (key === '@auth:accounts') return null;
+        if (key === '@auth:accounts') return null; // triggers seed load; seeds don't match real-api-user-id
         return null;
       });
-      mockSetItem.mockResolvedValue(undefined);
-
       const account = await authService.getSessionAccount();
-      expect(account).toBeNull();
+      // Returns synthetic account — not null — for real API users not in local list
+      expect(account).not.toBeNull();
+      expect(account?.id).toBe('real-api-user-id');
+      expect(account?.name).toBe('apiuser');
+      expect(account?.phone).toBe('');
+      expect(account?.password).toBe('');
+    });
+
+    it('upserts missing seed accounts when storage has some accounts', async () => {
+      // Storage has a custom account but is missing both seed accounts
+      const existingAccounts = [
+        { id: 'custom-001', name: 'Custom User', phone: '0811111111', password: 'pass', createdAt: '2026-01-01T00:00:00.000Z' },
+      ];
+      const session = { accountId: 'custom-001', createdAt: '2026-01-01T00:00:00.000Z' };
+      mockGetItem.mockImplementation(async (key: string) => {
+        if (key === '@auth:session') return JSON.stringify(session);
+        if (key === '@auth:accounts') return JSON.stringify(existingAccounts);
+        return null;
+      });
+      const account = await authService.getSessionAccount();
+      expect(account?.id).toBe('custom-001');
+      // setItem called to persist upserted seed accounts
+      expect(mockSetItem).toHaveBeenCalledWith('@auth:accounts', expect.stringContaining('demo-001'));
+    });
+
+    it('does not update storage when all seed accounts are already present', async () => {
+      const seedAccounts = [
+        { id: 'demo-001', name: 'Demo Merchant', phone: '081234567890', password: 'demo1234', createdAt: '2026-01-01T00:00:00.000Z' },
+        { id: 'demo-002', name: 'Premium Merchant', phone: '089876543210', password: 'premium1234', createdAt: '2026-01-01T00:00:00.000Z' },
+      ];
+      const session = { accountId: 'demo-001', createdAt: '2026-01-01T00:00:00.000Z' };
+      mockGetItem.mockImplementation(async (key: string) => {
+        if (key === '@auth:session') return JSON.stringify(session);
+        if (key === '@auth:accounts') return JSON.stringify(seedAccounts);
+        return null;
+      });
+      await authService.getSessionAccount();
+      // No upsert needed — setItem must NOT be called for accounts key
+      expect(mockSetItem).not.toHaveBeenCalledWith('@auth:accounts', expect.anything());
     });
   });
 });
+

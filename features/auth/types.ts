@@ -21,6 +21,7 @@ export interface LocalAuthAccount {
 
 export interface LocalAuthSession {
   accountId: string;
+  username?: string;
   createdAt: string;
 }
 
@@ -37,4 +38,31 @@ export interface ChangePasswordRequest {
   token: string;
   newPassword: string;
   confirmPassword: string;
+}
+
+export interface SignUpRequest {
+  username: string;
+  phone: string;
+  password: string;
+}
+
+export interface SignUpResponse {
+  id?: string;
+  email?: string;
+  full_name?: string;
+  phone?: string;
+  message?: string;
+}
+
+export interface SignInRequest {
+  username: string;
+  password: string;
+}
+
+export interface SignInResponse {
+  token: string;
+  user_id: string;
+  id: string;
+  username?: string;
+  message?: string;
 }

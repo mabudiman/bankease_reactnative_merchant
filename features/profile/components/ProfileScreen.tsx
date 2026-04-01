@@ -33,14 +33,15 @@ interface FieldProps {
   readonly placeholder?: string;
   readonly keyboardType?: 'default' | 'numeric' | 'email-address';
   readonly autoCapitalize?: 'none' | 'sentences' | 'words';
+  readonly error?: string | null;
 }
 
-function FormField({ label, value, onChangeText, placeholder, keyboardType = 'default', autoCapitalize = 'words' }: FieldProps) {
+function FormField({ label, value, onChangeText, placeholder, keyboardType = 'default', autoCapitalize = 'words', error }: FieldProps) {
   return (
     <View style={styles.fieldWrapper}>
       <ThemedText style={styles.fieldLabel}>{label}</ThemedText>
       <TextInput
-        style={styles.fieldInput}
+        style={[styles.fieldInput, !!error && styles.fieldInputError]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder ?? label}
@@ -49,6 +50,9 @@ function FormField({ label, value, onChangeText, placeholder, keyboardType = 'de
         autoCapitalize={autoCapitalize}
         autoCorrect={false}
       />
+      {!!error && (
+        <ThemedText style={styles.fieldError}>{error}</ThemedText>
+      )}
     </View>
   );
 }
@@ -63,6 +67,9 @@ export function ProfileScreen() {
   const [transactionName, setTransactionName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [displayName, setDisplayName] = useState('');
+
+  // Per-field validation errors (shown inline)
+  const [cardNumberError, setCardNumberError] = useState<string | null>(null);
 
   // Snapshot of the last confirmed-good values — used to revert on failure
   const snapshot = useRef({ bankName: '', branchName: '', transactionName: '', cardNumber: '' });
@@ -91,7 +98,22 @@ export function ProfileScreen() {
     bankName.trim().length > 0 &&
     branchName.trim().length > 0 &&
     transactionName.trim().length > 0 &&
-    cardNumber.trim().length > 0;
+    cardNumber.trim().length > 0 &&
+    cardNumberError === null;
+
+  /** Card number: allow digits and spaces only (no letters or symbols) */
+  function handleCardNumberChange(v: string) {
+    // Strip anything that is not a digit or space
+    const cleaned = v.replaceAll(/[^\d\s]/g, '');
+    setCardNumber(cleaned);
+    if (v !== cleaned) {
+      setCardNumberError('Card number may only contain digits');
+    } else if (cleaned.replaceAll(/\s/g, '').length > 0 && cleaned.replaceAll(/\s/g, '').length < 4) {
+      setCardNumberError('Card number is too short');
+    } else {
+      setCardNumberError(null);
+    }
+  }
 
   async function handleConfirm() {
     if (isSaving || !isAllFilled) return;
@@ -207,9 +229,10 @@ export function ProfileScreen() {
               <FormField
                 label="Card number"
                 value={cardNumber}
-                onChangeText={setCardNumber}
+                onChangeText={handleCardNumberChange}
                 keyboardType="numeric"
                 autoCapitalize="none"
+                error={cardNumberError}
               />
 
               {/* Confirm button */}
@@ -305,8 +328,6 @@ const styles = StyleSheet.create({
     height: AVATAR_SIZE,
     borderRadius: AVATAR_HALF,
     backgroundColor: Colors.white,
-    borderWidth: 3,
-    borderColor: Colors.primaryLavender,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -352,6 +373,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 15,
     color: Colors.textBlack,
+  },
+  fieldInputError: {
+    borderColor: '#FF3B30',
+  },
+  fieldError: {
+    fontSize: 11,
+    color: '#FF3B30',
+    marginTop: 4,
   },
   // ── Confirm button ──
   confirmButton: {

@@ -12,10 +12,23 @@ const PEEK = 14;
 // How many px each back layer is inset horizontally (makes it look narrower/behind)
 const INSET_PER_LAYER = 10;
 
+// Preset gradients for ghost layers (layer 1 = middle, layer 2 = back)
+const GHOST_GRADIENTS: [string, string, string][] = [
+  ['#FF4267', '#FF4267', '#FF4267'], // card kedua — middle layer
+  ['#5655B9', '#5655B9', '#5655B9'], // card ketiga — back layer
+];
+
 export function AccountCardCarousel({ cards }: AccountCardCarouselProps) {
-  // Show at most 3 layers
-  const layers = cards.slice(0, 3);
-  const depth = layers.length; // 1, 2, or 3
+  // Always show 3 stacked layers for visual depth; pad with ghost copies if needed
+  const front = cards[0];
+  const layers: PaymentCard[] = front
+    ? [
+        front,
+        cards[1] ?? { ...front, id: `${front.id}-ghost-1`, gradientColors: GHOST_GRADIENTS[0] },
+        cards[2] ?? { ...front, id: `${front.id}-ghost-2`, gradientColors: GHOST_GRADIENTS[1] },
+      ]
+    : [];
+  const depth = layers.length; // 0 or 3
   const containerHeight = CARD_HEIGHT + (depth - 1) * PEEK;
 
   return (
@@ -27,6 +40,7 @@ export function AccountCardCarousel({ cards }: AccountCardCarouselProps) {
         const topOffset = logicalIdx * PEEK;
         const zIndex = depth - logicalIdx; // front = highest z
         const LAYER_OPACITY = [1, 0.82, 0.62];
+        /* istanbul ignore next -- logicalIdx is always 0/1/2 so fallback is unreachable */
         const opacity = LAYER_OPACITY[logicalIdx] ?? 0.62;
 
         return (

@@ -23,6 +23,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { I18nProvider } from "@/core/i18n";
 import { translations } from "@/core/i18n/translations";
 import { LogBox } from "react-native";
+import { tokenManager } from "@/core/api/token-manager";
 
 // Keep the splash screen visible while we load resources
 SplashScreen.preventAutoHideAsync();
@@ -55,6 +56,7 @@ function RootNavigator() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="search" />
       <Stack.Screen name="transfer" />
+      <Stack.Screen name="withdraw" />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
     </Stack>
   );
@@ -77,6 +79,7 @@ export default function RootLayout() {
   // Hide splash screen once everything is ready
   useEffect(() => {
     if (isReady) {
+      tokenManager.loadToken().catch(() => { /* ignore — token simply stays null */ });
       SplashScreen.hideAsync().catch((e) => {
         if (__DEV__) console.warn('[RootLayout] SplashScreen.hideAsync failed:', e);
       });

@@ -33,13 +33,14 @@ export const Colors = {
   inputText: '#FFFFFF',
   bottomSheet: '#FFFFFF',
   buttonDisabled: '#D4D1E5',
-  buttonDisabledText: '#A5A2B8',
+  buttonDisabledText: '#FFF',
   // Light background input/card tokens (for forgot password & change password screens)
   inputBorderLight: '#E5E7EB',
   cardBackground: '#F9FAFB',
   signUpLink: '#5B4FCF',
   signUpText: '#8E8BA2',
   textBlack: '#343434',
+  textMenu: '#8C8C8C',
   textMuted: '#A5A2B8',
   textDark: '#2D2B55',
   decorRed: 'rgba(255, 90, 101, 0.7)',
@@ -48,6 +49,8 @@ export const Colors = {
   decorBlue: 'rgba(17, 138, 178, 0.7)',
   heroCircle: 'rgba(196, 184, 255, 0.35)',
   heroSubititle: 'rgba(255,255,255,0.55)',
+  shadow: '#989898',
+  shadowGrid: '#979797',
 };
 
 export const Fonts = {

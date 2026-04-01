@@ -5,6 +5,7 @@ import {
     NetworkError,
     ServiceUnavailableError
 } from "./errors"
+import { tokenManager } from "./token-manager"
 
 // manage specific domain errors
 function parseError(response: Response): ApiError {
@@ -51,16 +52,26 @@ export async function request<T>(
     options?: RequestInit
 ): Promise<T> {
 
+    const token = tokenManager.getToken();
+    const method = options?.method ?? 'GET';
+    console.log(`[api] ${method} ${API_BASE_URL}${endpoint}`);
+    console.log(`[api] Bearer: ${token ?? '(none)'}`);
+
     const response = await fetchWithTimeout(
         `${API_BASE_URL}${endpoint}`,
         {
             ...options,
             headers: {
                 "Content-Type": "application/json",
-                ...options?.headers,
+                ...(options?.headers),
+                ...(token
+                    ? { Authorization: `Bearer ${token}` }
+                    : undefined),
             },
         }
     )
+
+    console.log(`[api] response status: ${response.status}`);
 
     if (!response.ok) {
         throw parseError(response)

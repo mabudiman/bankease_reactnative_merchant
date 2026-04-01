@@ -1,0 +1,42 @@
+{
+  "servers": {
+    "sonarqube": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "SONARQUBE_TOKEN",
+        // "-e",
+        // "SONARQUBE_ORG",
+        "-e",
+        "SONARQUBE_CLOUD_URL",
+        // "-e",
+        // "SONARQUBE_IDE_PORT",
+        "mcp/sonarqube"
+      ],
+      "env": {
+        "SONARQUBE_ORG": "drakemd",
+        "SONARQUBE_CLOUD_URL": "https://sonarqube.4.194.42.173.sslip.io",
+        "SONARQUBE_TOKEN": "squ_487273e26d0503f2f4181ca27b90209abd431026",
+        "SONARQUBE_IDE_PORT": "64125"
+      },
+      "type": "stdio"
+    }
+  },
+  "inputs": [
+    {
+      "id": "SONARQUBE_TOKEN",
+      "type": "promptString",
+      "description": "SonarQube Cloud Token",
+      "password": true
+    },
+    {
+      "id": "SONARQUBE_ORG",
+      "type": "promptString",
+      "description": "SonarQube Cloud Organization Key",
+      "password": false
+    }
+  ]
+}
