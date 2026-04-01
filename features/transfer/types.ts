@@ -1,8 +1,8 @@
-export type TransferType = 'CARD_NUMBER' | 'SAME_BANK' | 'ANOTHER_BANK';
+export type TransferType = "CARD_NUMBER" | "SAME_BANK" | "ANOTHER_BANK";
 
 export interface TransferCard {
   id: string;
-  brand: 'VISA' | 'MASTERCARD';
+  brand: "VISA" | "MASTERCARD";
   maskedNumber: string;
   balance: number; // minor units
   currency: string;
@@ -13,8 +13,10 @@ export interface Beneficiary {
   id: string;
   name: string;
   avatarUrl: string;
+  avatar?: string;
   cardNumber?: string;
   accountNumber?: string;
+  phone?: string;
 }
 
 export interface BankItem {
@@ -64,5 +66,5 @@ export interface TransferPayload {
 
 export interface TransferResult {
   id: string;
-  status: 'success' | 'failed';
+  status: "success" | "failed";
 }
