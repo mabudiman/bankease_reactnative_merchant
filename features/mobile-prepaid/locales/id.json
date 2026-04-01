@@ -1,0 +1,16 @@
+{
+  "screen.title": "Pulsa prabayar",
+  "card.placeholder": "Pilih akun / kartu",
+  "card.balance": "Saldo tersedia : {{balance}}",
+  "card.selectTitle": "Pilih kartu",
+  "directory.title": "Direktori",
+  "directory.findBeneficiary": "Cari penerima",
+  "phone.label": "Nomor telepon",
+  "phone.placeholder": "Nomor telepon",
+  "amount.title": "Pilih nominal",
+  "confirm": "Konfirmasi",
+  "success.title": "Pembayaran berhasil!",
+  "success.message": "Anda berhasil membayar pulsa prabayar!",
+  "error.failed": "Gagal",
+  "comingSoon": "Segera Hadir"
+}

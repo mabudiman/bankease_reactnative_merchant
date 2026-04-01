@@ -5,6 +5,7 @@ import type {
   InterestRate,
 } from "@/features/search/types";
 import type { Provider, InternetBillDetail } from "@/features/payTheBill/types";
+import type { Beneficiary } from "@/features/mobile-prepaid/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   { id: "1",  country: "Vietnam",  currency: "VND", countryCode: "VN", buy: 1.403, sell: 1.746  },
@@ -94,4 +95,12 @@ export const MOCK_PROVIDERS: Provider[] = [
   { id: "4", name: "XL Home" },
   { id: "5", name: "CBN" },
   { id: "6", name: "First Media" },
+];
+
+export const MOCK_BENEFICIARIES: Beneficiary[] = [
+  { id: "1", name: "Alice Johnson",  phone: "+1 234 567 8901" },
+  { id: "2", name: "Bob Smith",      phone: "+1 234 567 8902" },
+  { id: "3", name: "Carol White",    phone: "+1 234 567 8903" },
+  { id: "4", name: "David Brown",    phone: "+1 234 567 8904" },
+  { id: "5", name: "Eve Davis",      phone: "+1 234 567 8905" },
 ];

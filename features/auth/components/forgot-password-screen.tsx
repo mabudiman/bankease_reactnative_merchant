@@ -79,15 +79,21 @@ export function ForgotPasswordScreen() {
               </ThemedText>
 
               <ThemedText style={styles.expiryText}>{t("otpExpiry")}</ThemedText>
-            </View>
 
-            {/* Change Password Button */}
-            <PrimaryButton
-              title={t("changePassword")}
-              disabled={!isCodeValid}
-              onPress={handleChangePassword}
-              accessibilityLabel="Change password"
-            />
+              {/* Change Password Button */}
+              <ThemedButton
+                title={t("changePassword")}
+                variant="primary"
+                disabled={!isCodeValid}
+                onPress={handleChangePassword}
+                style={styles.submitButton}
+                lightColor={isCodeValid ? Colors.primary : Colors.buttonDisabled}
+                darkColor={isCodeValid ? Colors.primary : Colors.buttonDisabled}
+                lightTextColor={isCodeValid ? Colors.white : Colors.buttonDisabledText}
+                darkTextColor={isCodeValid ? Colors.white : Colors.buttonDisabledText}
+                accessibilityLabel="Change password"
+              />
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -98,7 +104,7 @@ export function ForgotPasswordScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.cardBackground,
   },
   flex: {
     flex: 1,
@@ -110,10 +116,15 @@ const styles = StyleSheet.create({
 
   // Card
   card: {
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.white,
     borderRadius: Radius.md,
     padding: Spacing.lg,
     marginTop: Spacing.sm,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
   },
   label: {
     fontSize: 12,
@@ -130,7 +141,7 @@ const styles = StyleSheet.create({
   },
   codeInput: {
     flex: 1,
-    height: 52,
+    height: 48,
     borderWidth: 1,
     borderColor: Colors.inputBorderLight,
     borderRadius: Radius.sm,
@@ -138,15 +149,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.regular,
     color: Colors.textBlack,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.cardBackground,
   },
   resendButton: {
     backgroundColor: Colors.primary,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.md,
     paddingHorizontal: Spacing.lg,
     alignItems: "center",
     justifyContent: "center",
-    height: 52,
+    height: 48,
   },
   resendText: {
     fontSize: 14,
@@ -173,4 +184,15 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     lineHeight: 20,
   },
+<<<<<<< HEAD
+=======
+
+  // Button
+  submitButton: {
+    width: "100%",
+    borderRadius: Radius.md,
+    minHeight: 52,
+    marginTop: Spacing.lg,
+  },
+>>>>>>> origin/main
 });

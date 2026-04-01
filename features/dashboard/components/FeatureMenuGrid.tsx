@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { MenuGridItem } from './MenuGridItem';
-import type { Privilege } from '../types';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { MenuGridItem } from "./MenuGridItem";
+import type { Privilege } from "../types";
 
 interface FeatureMenuGridProps {
   privileges: Privilege[];
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginBottom: 12,
   },
@@ -50,4 +50,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
