@@ -1,17 +1,36 @@
+import { useState } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "@/core/i18n";
 import { ScreenHeader } from "@/components/ui/screen-header";
 import { ThemedText } from "@/components/ui/themed-text";
 import { Card } from "@/components/ui/card";
+import { LabeledInput } from "@/components/ui/labeled-input";
+import { SelectorInput } from "@/components/ui/selector-input";
+import { PrimaryButton } from "@/components/ui/primary-button";
+import { ThemedButton } from "@/components/ui/themed-button";
 import { Colors, Fonts, Spacing } from "@/constants/theme";
-import { INTERNET_BILL_DETAIL } from "@/mocks/data";
+import { INTERNET_BILL_DETAIL, MOCK_PAYMENT_CARDS } from "@/mocks/data";
+import type { BillCategory } from "@/features/payTheBill/types";
 
 const HERO = require("@/assets/images/illustrations/pay-the-bill-illustration.png");
+const TITLE_KEY: Record<BillCategory, string> = {
+  electric: "electricBill",
+  water: "waterBill",
+  mobile: "mobileBill",
+  internet: "internetBill",
+};
 
-export default function InternetBillScreen() {
+export default function BillDetailScreen() {
   const { t } = useTranslation();
   const tb = (key: string) => t(`billScreen.${key}`);
+
+  const { category = "internet" } = useLocalSearchParams<{ category: BillCategory }>();
+  const billCategory = category;
+
+  const [selectedCardId, setSelectedCardId] = useState(MOCK_PAYMENT_CARDS[0].id);
+  const [otp, setOtp] = useState("");
 
   const bill = INTERNET_BILL_DETAIL;
 
@@ -29,7 +48,7 @@ export default function InternetBillScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScreenHeader title={tb("internetBillTitle")} />
+      <ScreenHeader title={tb(TITLE_KEY[billCategory])} />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -72,6 +91,53 @@ export default function InternetBillScreen() {
             </View>
           ))}
         </Card>
+
+        {/* Choose Account */}
+        <SelectorInput
+          style={{ marginVertical: Spacing.lg }}
+          selectedOption={selectedCardId}
+          placeholder={tb("chooseAccount")}
+          options={MOCK_PAYMENT_CARDS.map((c) => c.id)}
+          optionLabels={MOCK_PAYMENT_CARDS.map(
+            (c) => `${c.cardLabel} • ${c.maskedNumber.slice(-4)}`,
+          )}
+          onSelectOption={setSelectedCardId}
+          modalTitle={tb("chooseAccount")}
+        />
+        {/* OTP */}
+        <View style={styles.otpRow}>
+          <View style={styles.otpInputWrapper}>
+            <LabeledInput
+              label={tb("otpCode")}
+              value={otp}
+              onChangeText={setOtp}
+              placeholder="OTP"
+              keyboardType="number-pad"
+              maxLength={6}
+            />
+          </View>
+          <ThemedButton
+            title={tb("getOTP")}
+            variant="primary"
+            lightColor={Colors.primary}
+            darkColor={Colors.primary}
+            onPress={() => {}}
+            style={styles.otpButton}
+          />
+        </View>
+
+        <PrimaryButton
+          title={tb("payBillButton")}
+          onPress={() => {
+            router.push({
+              pathname: "/payTheBill/payment-success",
+              params: { category: billCategory },
+            } as any);
+          }}
+          disabled={otp.trim().length < 6}
+          marginTop={Spacing.xxl}
+          marginBottom={Spacing.sm}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -148,5 +214,35 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.medium,
     fontSize: 16,
     color: Colors.primary,
+  },
+  sectionTitle: {
+    fontFamily: Fonts.semiBold,
+    fontSize: 16,
+    color: Colors.textBlack,
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.md,
+  },
+  accountCard: {
+    marginTop: Spacing.lg,
+    padding: Spacing.lg,
+  },
+  otpCard: {
+    marginTop: Spacing.md,
+    padding: Spacing.lg,
+  },
+  otpRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  otpInputWrapper: {
+    flex: 1,
+  },
+  otpButton: {
+    borderRadius: 12,
+    paddingHorizontal: Spacing.md,
+    height: 48,
+    marginBottom: 2,
   },
 });

@@ -32,6 +32,7 @@ export const Colors = {
   inputBackground: "rgba(255,255,255,0.06)",
   placeholderText: "#CACACA",
   buttonDisabled: "#F2F1F9",
+  buttonDisabledText: "#ffffff",
   // Light background input/card tokens (for forgot password & change password screens)
   inputBorderLight: "#E5E7EB",
   dividerDashed: "#CBCBCB",

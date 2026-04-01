@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProviders, getInternetBillDetail } from "../api";
+import type { BillCategory } from "../types";
 
-export function useProviders() {
+export function useProviders(category?: BillCategory) {
   return useQuery({
-    queryKey: ["pay-the-bill-providers"],
-    queryFn: getProviders,
+    queryKey: ["pay-the-bill-providers", category],
+    queryFn: () => getProviders(category),
   });
 }
 

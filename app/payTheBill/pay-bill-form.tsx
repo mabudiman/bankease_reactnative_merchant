@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "@/core/i18n";
 import { ScreenHeader } from "@/components/ui/screen-header";
 import { ThemedText } from "@/components/ui/themed-text";
@@ -10,37 +11,54 @@ import { LabeledInput } from "@/components/ui/labeled-input";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { router } from "expo-router";
 import { useProviders } from "@/features/payTheBill/hooks";
+import type { BillCategory } from "@/features/payTheBill/types";
 import { Colors, Fonts, Spacing } from "@/constants/theme";
 
-export default function InternetBillFormScreen() {
+const TITLE_KEY: Record<BillCategory, string> = {
+  electric: "payElectricBill",
+  water: "payWaterBill",
+  mobile: "payMobileBill",
+  internet: "payInternetBill",
+};
+
+const LABEL_KEY: Record<BillCategory, string> = {
+  electric: "typeElectricBillCode",
+  water: "typeWaterBillCode",
+  mobile: "typeMobileBillCode",
+  internet: "typeInternetBillCode",
+};
+
+export default function PayBillFormScreen() {
   const { t } = useTranslation();
   const tb = (key: string) => t(`billScreen.${key}`);
 
+  const { category = "internet" } = useLocalSearchParams<{ category: BillCategory }>();
+  const billCategory = category as BillCategory;
+
   const [selectedProviderId, setSelectedProviderId] = useState("");
   const [billCode, setBillCode] = useState("");
-  const [submitted, setSubmitted] = useState(false);
 
-  const { data: providers = [] } = useProviders();
+  const { data: providers = [] } = useProviders(billCategory);
   const selectedProvider = providers.find((p) => p.id === selectedProviderId);
 
   const handleCheck = () => {
-    setSubmitted(true);
-    router.push("/payTheBill/internet-bill" as any);
+    router.push({
+      pathname: "/payTheBill/bill-detail",
+      params: { category: billCategory },
+    } as any);
   };
 
   const handleBillCodeChange = (text: string) => {
     setBillCode(text);
-    setSubmitted(false);
   };
 
   const handleProviderSelect = (providerId: string) => {
     setSelectedProviderId(providerId);
-    setSubmitted(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScreenHeader title={tb("internetBill")} />
+      <ScreenHeader title={tb(TITLE_KEY[billCategory])} />
 
       <Card style={styles.card}>
         <SelectorInput
@@ -52,7 +70,7 @@ export default function InternetBillFormScreen() {
           modalTitle={tb("selectProvider")}
         />
         <LabeledInput
-          label={tb("typeBillCode")}
+          label={tb(LABEL_KEY[billCategory])}
           value={billCode}
           onChangeText={handleBillCodeChange}
           placeholder={tb("billCodePlaceholder")}

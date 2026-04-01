@@ -27,6 +27,11 @@ describe("getProviders", () => {
       name: MOCK_PROVIDERS[0].name,
     });
   });
+
+  it("returns providers when a category is specified", async () => {
+    const result = await getProviders("internet");
+    expect(result).toHaveLength(MOCK_PROVIDERS.length);
+  });
 });
 
 describe("getInternetBillDetail", () => {

@@ -30,7 +30,7 @@ export const handlers: RequestHandler[] = [
     return HttpResponse.json(results);
   }),
 
-  // ─── Pay The Bill ───────────────────────────────────────────────────────
+  // ─── Pay The Bill ──────────────────────────────────────────────────────
   http.get(`${API_BASE_URL}/api/pay-the-bill/providers`, () => {
     return HttpResponse.json(MOCK_PROVIDERS);
   }),

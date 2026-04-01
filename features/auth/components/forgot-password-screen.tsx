@@ -81,16 +81,10 @@ export function ForgotPasswordScreen() {
               <ThemedText style={styles.expiryText}>{t("otpExpiry")}</ThemedText>
 
               {/* Change Password Button */}
-              <ThemedButton
+              <PrimaryButton
                 title={t("changePassword")}
-                variant="primary"
                 disabled={!isCodeValid}
                 onPress={handleChangePassword}
-                style={styles.submitButton}
-                lightColor={isCodeValid ? Colors.primary : Colors.buttonDisabled}
-                darkColor={isCodeValid ? Colors.primary : Colors.buttonDisabled}
-                lightTextColor={isCodeValid ? Colors.white : Colors.buttonDisabledText}
-                darkTextColor={isCodeValid ? Colors.white : Colors.buttonDisabledText}
                 accessibilityLabel="Change password"
               />
             </View>
@@ -184,15 +178,4 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     lineHeight: 20,
   },
-<<<<<<< HEAD
-=======
-
-  // Button
-  submitButton: {
-    width: "100%",
-    borderRadius: Radius.md,
-    minHeight: 52,
-    marginTop: Spacing.lg,
-  },
->>>>>>> origin/main
 });

@@ -1,8 +1,9 @@
 import { request } from "@/core/api/client";
-import type { InternetBillDetail, Provider } from "../types";
+import type { BillCategory, InternetBillDetail, Provider } from "../types";
 
-export async function getProviders(): Promise<Provider[]> {
-  return request<Provider[]>("/api/pay-the-bill/providers");
+export async function getProviders(category?: BillCategory): Promise<Provider[]> {
+  const query = category ? `?category=${category}` : "";
+  return request<Provider[]>(`/api/pay-the-bill/providers${query}`);
 }
 
 export async function getInternetBillDetail(): Promise<InternetBillDetail> {

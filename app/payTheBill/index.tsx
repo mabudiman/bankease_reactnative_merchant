@@ -1,73 +1,63 @@
-import { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 import { useTranslation } from "@/core/i18n";
 import { ScreenHeader } from "@/components/ui/screen-header";
-import { ThemedText } from "@/components/ui/themed-text";
-import { Card } from "@/components/ui/card";
-import { SelectorInput } from "@/components/ui/selector-input";
-import { LabeledInput } from "@/components/ui/labeled-input";
-import { PrimaryButton } from "@/components/ui/primary-button";
-import { router } from "expo-router";
-import { useProviders } from "@/features/payTheBill/hooks";
-import { Colors, Fonts, Spacing } from "@/constants/theme";
+import { SearchCategoryCard } from "@/features/search/components/SearchCategoryCard";
+import { Colors, Spacing } from "@/constants/theme";
+import type { BillCategory } from "@/features/payTheBill/types";
+
+const illustrations = {
+  electric: require("@/assets/images/illustrations/pay-bill-electric.png"),
+  water: require("@/assets/images/illustrations/pay-bill-water.png"),
+  mobile: require("@/assets/images/illustrations/pay-bill-mobile.png"),
+  internet: require("@/assets/images/illustrations/pay-bill-internet.png"),
+};
 
 export default function PayBillScreen() {
   const { t } = useTranslation();
   const tb = (key: string) => t(`billScreen.${key}`);
 
-  const [selectedProviderId, setSelectedProviderId] = useState("");
-  const [billCode, setBillCode] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const { data: providers = [] } = useProviders();
-  const selectedProvider = providers.find((p) => p.id === selectedProviderId);
-
-  const handleCheck = () => {
-    setSubmitted(true);
-    router.push("/payTheBill/internet-bill" as any);
-  };
-
-  const handleBillCodeChange = (text: string) => {
-    setBillCode(text);
-    setSubmitted(false);
-  };
-
-  const handleProviderSelect = (providerId: string) => {
-    setSelectedProviderId(providerId);
-    setSubmitted(false);
+  const handleNavigate = (category: BillCategory) => {
+    router.push({
+      pathname: "/payTheBill/pay-bill-form",
+      params: { category },
+    } as any);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScreenHeader title={tb("title")} />
 
-      <Card style={styles.card}>
-        <SelectorInput
-          selectedOption={selectedProviderId}
-          placeholder={tb("chooseCompany")}
-          options={providers.map((p) => p.id)}
-          optionLabels={providers.map((p) => p.name)}
-          onSelectOption={handleProviderSelect}
-          modalTitle={tb("selectProvider")}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <SearchCategoryCard
+          title={tb("electricBill")}
+          subtitle={tb("electricBillSubtitle")}
+          illustration={illustrations.electric}
+          onPress={() => handleNavigate("electric")}
         />
-        <LabeledInput
-          label={tb("typeBillCode")}
-          value={billCode}
-          onChangeText={handleBillCodeChange}
-          placeholder={tb("billCodePlaceholder")}
+        <SearchCategoryCard
+          title={tb("waterBill")}
+          subtitle={tb("waterBillSubtitle")}
+          illustration={illustrations.water}
+          onPress={() => handleNavigate("water")}
         />
-
-        <ThemedText style={styles.helperText}>{tb("billCodeHelper")}</ThemedText>
-
-        <PrimaryButton
-          title={tb("checkButton")}
-          onPress={handleCheck}
-          disabled={billCode.trim().length === 0}
-          marginTop={Spacing.lg}
-          marginBottom={0}
+        <SearchCategoryCard
+          title={tb("mobileBill")}
+          subtitle={tb("mobileBillSubtitle")}
+          illustration={illustrations.mobile}
+          onPress={() => handleNavigate("mobile")}
         />
-      </Card>
+        <SearchCategoryCard
+          title={tb("internetBill")}
+          subtitle={tb("internetBillSubtitle")}
+          illustration={illustrations.internet}
+          onPress={() => handleNavigate("internet")}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -78,20 +68,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     paddingHorizontal: Spacing.lg,
   },
-  card: {
-    marginTop: Spacing.lg,
-    padding: Spacing.lg,
-    gap: Spacing.md,
-  },
-  fieldLabel: {
-    fontFamily: Fonts.semiBold,
-    fontSize: 12,
-    color: Colors.labelText,
-  },
-  helperText: {
-    fontFamily: Fonts.medium,
-    fontSize: 14,
-    color: Colors.labelText,
-    marginTop: Spacing.lg - 2,
+  content: {
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.xl,
   },
 });

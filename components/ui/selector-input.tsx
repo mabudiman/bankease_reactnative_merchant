@@ -1,5 +1,12 @@
 import React, { useRef, useState } from "react";
-import { View, Pressable, StyleSheet, type LayoutRectangle } from "react-native";
+import {
+  View,
+  Pressable,
+  StyleSheet,
+  type LayoutRectangle,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ui/themed-text";
 import { ModalPopover } from "@/components/ui/modal-popover";
@@ -20,6 +27,7 @@ type SelectorInputProps = {
   onSelectOption: (option: string) => void;
   /** Optional title shown at the top of the modal */
   modalTitle?: string;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function SelectorInput({
@@ -30,6 +38,7 @@ export function SelectorInput({
   optionLabels,
   onSelectOption,
   modalTitle,
+  style,
 }: SelectorInputProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [anchor, setAnchor] = useState<LayoutRectangle | null>(null);
@@ -50,25 +59,27 @@ export function SelectorInput({
 
   return (
     <>
-      {label ? <ThemedText style={styles.fieldLabel}>{label}</ThemedText> : null}
-      <Pressable
-        ref={triggerRef}
-        style={styles.selector}
-        onPress={openModal}
-        accessibilityRole="button"
-        accessibilityLabel={`Select, current: ${selectedOption}`}
-      >
-        <ThemedText
-          style={[styles.selectorText, !selectedOption && styles.selectorPlaceholder]}
+      <View style={style}>
+        {label ? <ThemedText style={styles.fieldLabel}>{label}</ThemedText> : null}
+        <Pressable
+          ref={triggerRef}
+          style={styles.selector}
+          onPress={openModal}
+          accessibilityRole="button"
+          accessibilityLabel={`Select, current: ${selectedOption}`}
         >
-          {displayText || placeholder}
-        </ThemedText>
-        <Ionicons
-          name={modalVisible ? "chevron-up" : "chevron-down"}
-          size={14}
-          color={Colors.textMuted}
-        />
-      </Pressable>
+          <ThemedText
+            style={[styles.selectorText, !selectedOption && styles.selectorPlaceholder]}
+          >
+            {displayText || placeholder}
+          </ThemedText>
+          <Ionicons
+            name={modalVisible ? "chevron-up" : "chevron-down"}
+            size={14}
+            color={Colors.textMuted}
+          />
+        </Pressable>
+      </View>
 
       <ModalPopover
         visible={modalVisible}

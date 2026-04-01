@@ -1,3 +1,5 @@
+export type BillCategory = "electric" | "water" | "mobile" | "internet";
+
 export type Provider = {
   id: string;
   name: string;

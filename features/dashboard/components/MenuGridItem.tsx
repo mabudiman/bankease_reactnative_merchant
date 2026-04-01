@@ -19,6 +19,10 @@ function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
       router.push("/mobile-prepaid");
       return;
     }
+    if (privilege.title === "Pay the Bill") {
+      router.push("/payTheBill");
+      return;
+    }
     Alert.alert(t("dashboard.comingSoon.title"), t("dashboard.comingSoon.message"));
   }
 
