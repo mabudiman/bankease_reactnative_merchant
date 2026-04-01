@@ -1,5 +1,8 @@
 import { profileApi } from '../profile-api';
 import { MOCK_PROFILE_API_RESPONSE } from '@/mocks/data';
+import { server } from '@/mocks/server.node';
+import { http, HttpResponse } from 'msw';
+import { API_BASE_URL } from '@/constants';
 
 // token-manager imports AsyncStorage — mock it to prevent native module errors
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -83,5 +86,43 @@ describe('profileApi.updateProfile', () => {
     for (const field of requiredFields) {
       expect(result).toHaveProperty(field);
     }
+  });
+});
+
+describe('profileApi - fallback branches in mapResponseToProfile', () => {
+  it('uses fallback values when optional response fields are missing', async () => {
+    // Override MSW to return a minimal response — triggers all ?? fallbacks
+    server.use(
+      http.get(`${API_BASE_URL}/api/profile`, () =>
+        HttpResponse.json({
+          // id missing → falls back to accountId argument
+          currency: 'IDR',
+          // bank, branch, name, card_number, card_provider, balance, account_type, accountType all missing
+        })
+      )
+    );
+
+    const result = await profileApi.getProfile('fallback-id');
+
+    expect(result.accountId).toBe('fallback-id');   // res.id ?? accountId
+    expect(result.bankName).toBe('');                // res.bank ?? ''
+    expect(result.branchName).toBe('');              // res.branch ?? ''
+    expect(result.transactionName).toBe('');         // res.name ?? ''
+    expect(result.cardNumber).toBe('xxx');            // res.card_number ?? 'xxx'
+    expect(result.cardProvider).toBe('');             // res.card_provider ?? res.bank ?? ''
+    expect(result.balance).toBe(0);                  // (res.balance ?? 0) * 100
+    expect(result.accountType).toBe('');              // res.account_type ?? res.accountType ?? ''
+  });
+
+  it('uses res.bank as cardProvider fallback when card_provider is missing', async () => {
+    server.use(
+      http.get(`${API_BASE_URL}/api/profile`, () =>
+        HttpResponse.json({ id: 'acc-1', bank: 'BRI', branch: 'Jakarta', name: 'Test', currency: 'IDR' })
+      )
+    );
+
+    const result = await profileApi.getProfile('acc-1');
+
+    expect(result.cardProvider).toBe('BRI'); // res.card_provider ?? res.bank ?? ''
   });
 });

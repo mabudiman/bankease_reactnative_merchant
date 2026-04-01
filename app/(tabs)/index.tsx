@@ -31,22 +31,24 @@ export default function HomeScreen() {
         avatarUri={profileImage}
         onAvatarPress={() => router.push('/(tabs)/settings')}
       />
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.contentCard}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
         {/* Card carousel */}
         <AccountCardCarousel cards={cards} />
 
         {/* Feature menu */}
         <View style={styles.menuSection}>
-          <ThemedText style={styles.sectionTitle}>
+          {/* <ThemedText style={styles.sectionTitle}>
             {t('dashboard.section.menu')}
-          </ThemedText>
+          </ThemedText> */}
           <FeatureMenuGrid privileges={privileges} />
         </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -54,7 +56,15 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
+    backgroundColor: Colors.primary,
+  },
+  contentCard: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    marginTop: -24,
+    overflow: 'hidden',
   },
   loadingContainer: {
     flex: 1,

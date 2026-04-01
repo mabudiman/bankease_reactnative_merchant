@@ -21,6 +21,7 @@ export interface LocalAuthAccount {
 
 export interface LocalAuthSession {
   accountId: string;
+  username?: string;
   createdAt: string;
 }
 
@@ -61,6 +62,7 @@ export interface SignInRequest {
 export interface SignInResponse {
   token: string;
   user_id: string;
+  id: string;
   username?: string;
   message?: string;
 }

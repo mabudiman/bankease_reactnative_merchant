@@ -189,15 +189,53 @@ describe('authService', () => {
       expect(account?.name).toBe('Demo Merchant');
     });
 
-    it('returns null when session accountId does not match any account', async () => {
-      const session = { accountId: 'nonexistent-id', createdAt: '2026-01-01T00:00:00.000Z' };
+    it('returns synthetic account when session accountId is not in local accounts', async () => {
+      const session = { accountId: 'real-api-user-id', username: 'apiuser', createdAt: '2026-01-01T00:00:00.000Z' };
       mockGetItem.mockImplementation(async (key: string) => {
         if (key === '@auth:session') return JSON.stringify(session);
-        if (key === '@auth:accounts') return null;
+        if (key === '@auth:accounts') return null; // triggers seed load; seeds don't match real-api-user-id
         return null;
       });
       const account = await authService.getSessionAccount();
-      expect(account).toBeNull();
+      // Returns synthetic account — not null — for real API users not in local list
+      expect(account).not.toBeNull();
+      expect(account?.id).toBe('real-api-user-id');
+      expect(account?.name).toBe('apiuser');
+      expect(account?.phone).toBe('');
+      expect(account?.password).toBe('');
+    });
+
+    it('upserts missing seed accounts when storage has some accounts', async () => {
+      // Storage has a custom account but is missing both seed accounts
+      const existingAccounts = [
+        { id: 'custom-001', name: 'Custom User', phone: '0811111111', password: 'pass', createdAt: '2026-01-01T00:00:00.000Z' },
+      ];
+      const session = { accountId: 'custom-001', createdAt: '2026-01-01T00:00:00.000Z' };
+      mockGetItem.mockImplementation(async (key: string) => {
+        if (key === '@auth:session') return JSON.stringify(session);
+        if (key === '@auth:accounts') return JSON.stringify(existingAccounts);
+        return null;
+      });
+      const account = await authService.getSessionAccount();
+      expect(account?.id).toBe('custom-001');
+      // setItem called to persist upserted seed accounts
+      expect(mockSetItem).toHaveBeenCalledWith('@auth:accounts', expect.stringContaining('demo-001'));
+    });
+
+    it('does not update storage when all seed accounts are already present', async () => {
+      const seedAccounts = [
+        { id: 'demo-001', name: 'Demo Merchant', phone: '081234567890', password: 'demo1234', createdAt: '2026-01-01T00:00:00.000Z' },
+        { id: 'demo-002', name: 'Premium Merchant', phone: '089876543210', password: 'premium1234', createdAt: '2026-01-01T00:00:00.000Z' },
+      ];
+      const session = { accountId: 'demo-001', createdAt: '2026-01-01T00:00:00.000Z' };
+      mockGetItem.mockImplementation(async (key: string) => {
+        if (key === '@auth:session') return JSON.stringify(session);
+        if (key === '@auth:accounts') return JSON.stringify(seedAccounts);
+        return null;
+      });
+      await authService.getSessionAccount();
+      // No upsert needed — setItem must NOT be called for accounts key
+      expect(mockSetItem).not.toHaveBeenCalledWith('@auth:accounts', expect.anything());
     });
   });
 });

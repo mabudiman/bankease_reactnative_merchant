@@ -40,6 +40,7 @@ export const Colors = {
   signUpLink: '#5B4FCF',
   signUpText: '#8E8BA2',
   textBlack: '#343434',
+  textMenu: '#8C8C8C',
   textMuted: '#A5A2B8',
   textDark: '#2D2B55',
   decorRed: 'rgba(255, 90, 101, 0.7)',
@@ -49,6 +50,7 @@ export const Colors = {
   heroCircle: 'rgba(196, 184, 255, 0.35)',
   heroSubititle: 'rgba(255,255,255,0.55)',
   shadow: '#989898',
+  shadowGrid: '#979797',
 };
 
 export const Fonts = {

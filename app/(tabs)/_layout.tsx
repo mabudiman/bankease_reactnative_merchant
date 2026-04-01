@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import * as Haptics from 'expo-haptics';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors } from '@/constants/theme';
 
@@ -31,8 +30,7 @@ const TAB_LABELS: Record<string, string> = {
   settings: 'Settings',
 };
 
-function FloatingTabBar({ state, navigation }: Readonly<BottomTabBarProps>) {
-  const insets = useSafeAreaInsets();
+function FloatingTabBar({ state, navigation, insets }: Readonly<BottomTabBarProps>) {
   const visibleRoutes = state.routes.filter((r) => TAB_LABELS[r.name]);
 
   return (

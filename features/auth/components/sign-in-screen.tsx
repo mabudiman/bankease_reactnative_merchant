@@ -217,17 +217,6 @@ export function SignInScreen() {
                   />
                 </TouchableOpacity>
 
-                {/* DEV SHORTCUT — remove before production */}
-                <Pressable
-                  onPress={() => router.push('/withdraw' as any)}
-                  accessibilityRole="button"
-                  accessibilityLabel="Go to Withdraw (dev)"
-                  style={styles.devButton}
-                >
-                  <ThemedText type="caption" style={styles.devButtonText}>
-                    [DEV] Try Withdraw →
-                  </ThemedText>
-                </Pressable>
 
                 {/* Footer */}
                 <View style={styles.footer}>

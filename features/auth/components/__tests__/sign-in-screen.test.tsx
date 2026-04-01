@@ -124,6 +124,17 @@ describe('SignInScreen', () => {
     });
   });
 
+  it('does not submit when username is filled but password is empty', async () => {
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+    fireEvent.changeText(screen.getByLabelText('Username input'), 'user');
+    // password left empty
+    fireEvent.press(screen.getByLabelText('Sign in'));
+    await waitFor(() => {
+      expect(mockSignIn).not.toHaveBeenCalled();
+    });
+  });
+
   it('toggles password visibility when eye icon is pressed', () => {
     const { Wrapper } = createWrapper();
     render(<SignInScreen />, { wrapper: Wrapper });
@@ -131,5 +142,102 @@ describe('SignInScreen', () => {
     expect(showPasswordButton).toBeOnTheScreen();
     fireEvent.press(showPasswordButton);
     expect(screen.getByLabelText('Hide password')).toBeOnTheScreen();
+  });
+
+  it('navigates to forgot-password when link is pressed', () => {
+    const mockPush = jest.fn();
+    jest.spyOn(require('expo-router'), 'useRouter').mockReturnValue({
+      replace: mockReplace, back: mockBack, push: mockPush,
+    });
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+    fireEvent.press(screen.getByText('Forgot your password?'));
+    expect(mockPush).toHaveBeenCalledWith('/forgot-password');
+  });
+
+  it('navigates to sign-up when sign-up link is pressed', () => {
+    const mockPush = jest.fn();
+    jest.spyOn(require('expo-router'), 'useRouter').mockReturnValue({
+      replace: mockReplace, back: mockBack, push: mockPush,
+    });
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+    fireEvent.press(screen.getByLabelText('Sign up'));
+    expect(mockPush).toHaveBeenCalledWith('/sign-up');
+  });
+
+  it('calls biometric handler without error when biometric button is pressed', () => {
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+    expect(() =>
+      fireEvent.press(screen.getByLabelText('Login with biometric'))
+    ).not.toThrow();
+  });
+
+  it('shows Profile Not Found alert and clears session on 404 ApiError from getProfile', async () => {
+    const { ApiError } = require('@/core/api/errors');
+    mockGetProfile.mockRejectedValueOnce(Object.assign(new ApiError('not_found', 'Not found', false, 404), { status: 404 }));
+    const alertMock = jest.spyOn(require('react-native').Alert, 'alert').mockImplementation(jest.fn());
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+
+    fireEvent.changeText(screen.getByLabelText('Username input'), 'user');
+    fireEvent.changeText(screen.getByLabelText('Password input'), 'pass');
+    fireEvent.press(screen.getByLabelText('Sign in'));
+
+    await waitFor(() => {
+      expect(mockClearSession).toHaveBeenCalled();
+      expect(alertMock).toHaveBeenCalledWith('Profile Not Found', expect.any(String));
+    });
+    alertMock.mockRestore();
+  });
+
+  it('clears session and shows generic alert when session is null after signIn', async () => {
+    mockGetSession.mockResolvedValueOnce(null);
+    const alertMock = jest.spyOn(require('react-native').Alert, 'alert').mockImplementation(jest.fn());
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+
+    fireEvent.changeText(screen.getByLabelText('Username input'), 'user');
+    fireEvent.changeText(screen.getByLabelText('Password input'), 'pass');
+    fireEvent.press(screen.getByLabelText('Sign in'));
+
+    await waitFor(() => {
+      expect(mockClearSession).toHaveBeenCalled();
+      expect(alertMock).toHaveBeenCalledWith('Failed', expect.any(String));
+    });
+    alertMock.mockRestore();
+  });
+
+  it('does not submit a second time when already loading (isLoading guard)', async () => {
+    // First press triggers load; second press while loading should be ignored
+    let signInResolve!: () => void;
+    mockSignIn.mockImplementationOnce(
+      () => new Promise<void>((res) => { signInResolve = res; })
+    );
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+
+    fireEvent.changeText(screen.getByLabelText('Username input'), 'user');
+    fireEvent.changeText(screen.getByLabelText('Password input'), 'pass');
+
+    fireEvent.press(screen.getByLabelText('Sign in')); // first press → isLoading = true
+    fireEvent.press(screen.getByLabelText('Sign in')); // second press → early return (isLoading)
+
+    // signIn called exactly once despite two presses
+    expect(mockSignIn).toHaveBeenCalledTimes(1);
+    signInResolve(); // clean up hanging promise
+  });
+
+  it('renders with android platform styles (covers Platform.OS !== ios branches)', () => {
+    const Platform = require('react-native').Platform;
+    const prevOS = Platform.OS;
+    Platform.OS = 'android';
+
+    const { Wrapper } = createWrapper();
+    render(<SignInScreen />, { wrapper: Wrapper });
+    expect(screen.getByLabelText('Sign in')).toBeOnTheScreen();
+
+    Platform.OS = prevOS;
   });
 });

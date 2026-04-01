@@ -4,6 +4,11 @@ import { MenuGridItem } from '../MenuGridItem';
 import { createWrapper } from '@/test-utils/createWrapper';
 import type { Privilege } from '../../types';
 
+const mockPush = jest.fn();
+jest.mock('expo-router', () => ({
+  useRouter: () => ({ push: mockPush, replace: jest.fn(), back: jest.fn() }),
+}));
+
 const SAMPLE: Privilege = {
   code: 'payment',
   title: 'Payment',
@@ -53,5 +58,13 @@ describe('MenuGridItem', () => {
     expect(() =>
       render(<MenuGridItem privilege={{ ...SAMPLE, code: 'xyz', title: 'Unknown' }} />, { wrapper: Wrapper })
     ).not.toThrow();
+  });
+
+  it('navigates via router.push when privilege maps to a known route', () => {
+    const { Wrapper } = createWrapper();
+    const withdraw: Privilege = { ...SAMPLE, code: 'withdraw', title: 'Withdraw' };
+    render(<MenuGridItem privilege={withdraw} />, { wrapper: Wrapper });
+    fireEvent.press(screen.getByRole('button'));
+    expect(mockPush).toHaveBeenCalledWith('/withdraw');
   });
 });

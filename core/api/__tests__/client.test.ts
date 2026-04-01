@@ -99,4 +99,26 @@ describe("request (fetchWithTimeout / NetworkError)", () => {
 
     await expect(request("/api/test")).rejects.toThrow(NetworkError);
   });
+
+  it("calls controller.abort and throws NetworkError when timeout fires", async () => {
+    jest.useFakeTimers();
+
+    jest.spyOn(global, "fetch").mockImplementation((_url, options) => {
+      return new Promise((_resolve, reject) => {
+        const signal = (options as RequestInit).signal!;
+        signal.addEventListener("abort", () => {
+          reject(new DOMException("The operation was aborted.", "AbortError"));
+        });
+      });
+    });
+
+    const promise = request("/api/test");
+
+    // Fire the timeout synchronously, then await the promise rejection
+    jest.runAllTimers();
+
+    await expect(promise).rejects.toBeInstanceOf(NetworkError);
+
+    jest.useRealTimers();
+  });
 });

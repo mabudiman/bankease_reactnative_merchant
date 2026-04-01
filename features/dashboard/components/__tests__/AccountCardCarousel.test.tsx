@@ -24,14 +24,17 @@ describe('AccountCardCarousel', () => {
   it('renders single card without error', () => {
     const { Wrapper } = createWrapper();
     render(<AccountCardCarousel cards={[makeCard('1')]} />, { wrapper: Wrapper });
-    expect(screen.getByText('Test User')).toBeOnTheScreen();
+    // Component always renders 3 stacked layers; single card → front + 2 ghost copies
+    const names = screen.getAllByText('Test User');
+    expect(names.length).toBe(3);
   });
 
   it('renders two stacked cards', () => {
     const { Wrapper } = createWrapper();
     render(<AccountCardCarousel cards={[makeCard('1'), makeCard('2')]} />, { wrapper: Wrapper });
+    // 3 layers: cards[0] (front) + cards[1] (middle) + ghost of cards[0] (back) → all 'Test User'
     const names = screen.getAllByText('Test User');
-    expect(names.length).toBe(2);
+    expect(names.length).toBe(3);
   });
 
   it('renders three stacked cards (max layers)', () => {
@@ -63,7 +66,8 @@ describe('AccountCardCarousel', () => {
       <AccountCardCarousel cards={[makeCard('5', 'MASTERCARD')]} />,
       { wrapper: Wrapper }
     );
-    expect(screen.getByText('Test User')).toBeOnTheScreen();
+    // Single card → 3 layers (front + 2 ghost copies)
+    expect(screen.getAllByText('Test User').length).toBe(3);
   });
 
   it('renders empty state without error when no cards', () => {

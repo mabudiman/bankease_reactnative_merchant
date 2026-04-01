@@ -62,7 +62,7 @@ describe('useProfile', () => {
     jest.clearAllMocks();
     mockGetSessionAccount.mockResolvedValue(MOCK_USER);
     mockLoadProfile.mockResolvedValue(MOCK_PROFILE);
-    mockSaveProfile.mockResolvedValue(undefined);
+    mockSaveProfile.mockResolvedValue(MOCK_PROFILE);
   });
 
   it('starts in loading state', () => {
@@ -100,7 +100,8 @@ describe('useProfile', () => {
     const { result } = renderHook(() => useProfile(), { wrapper: Wrapper });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     const success = await result.current.saveProfile(PROFILE_INPUT);
-    expect(mockSaveProfile).toHaveBeenCalledWith('demo-001', PROFILE_INPUT);
+    // Hook uses profile.accountId (from GET response), not the auth user's id
+    expect(mockSaveProfile).toHaveBeenCalledWith(MOCK_PROFILE.accountId, PROFILE_INPUT);
     expect(success).toBe(true);
   });
 
@@ -128,5 +129,70 @@ describe('useProfile', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     await result.current.saveProfile(PROFILE_INPUT);
     expect(result.current.isSaving).toBe(false);
+  });
+
+  it('cleanup cancels in-flight load (unmount before getSessionAccount resolves)', async () => {
+    // Simulate a slow getSessionAccount — hook unmounts before it resolves
+    let resolvePromise!: (v: typeof MOCK_USER | null) => void;
+    mockGetSessionAccount.mockImplementationOnce(
+      () => new Promise<typeof MOCK_USER | null>((res) => { resolvePromise = res; })
+    );
+    const { Wrapper } = createWrapper();
+    const { result, unmount } = renderHook(() => useProfile(), { wrapper: Wrapper });
+
+    // Immediately unmount before the async call resolves
+    unmount();
+
+    // Now resolve — the cancelled flag should prevent setState
+    resolvePromise(null);
+
+    // No crash; state stays as the initial (isLoading: true since cancelled)
+    expect(result.current.isLoading).toBe(true);
+  });
+
+  it('cleanup cancels setState when unmount happens while loadProfile is in-flight', async () => {
+    // getSessionAccount returns immediately, but loadProfile hangs
+    let resolveLoadProfile!: (v: typeof MOCK_PROFILE) => void;
+    mockGetSessionAccount.mockResolvedValueOnce(MOCK_USER);
+    mockLoadProfile.mockImplementationOnce(
+      () => new Promise<typeof MOCK_PROFILE>((res) => { resolveLoadProfile = res; })
+    );
+
+    const { Wrapper } = createWrapper();
+    const { result, unmount } = renderHook(() => useProfile(), { wrapper: Wrapper });
+
+    // Wait for getSessionAccount to complete but loadProfile still pending
+    await new Promise(process.nextTick);
+
+    // Unmount while loadProfile is still in-flight
+    unmount();
+
+    // Resolve loadProfile after unmount — cancelled flag prevents setState
+    resolveLoadProfile(MOCK_PROFILE);
+
+    // isLoading stays true since setState was prevented
+    expect(result.current.isLoading).toBe(true);
+  });
+});
+
+// ─── profileEvents coverage ───────────────────────────────────────────────────
+
+import { profileEvents } from '../../profileEvents';
+
+describe('profileEvents', () => {
+  it('calls listener when emitProfileSaved fires', () => {
+    const fn = jest.fn();
+    const unsub = profileEvents.onProfileSaved(fn);
+    profileEvents.emitProfileSaved();
+    expect(fn).toHaveBeenCalledTimes(1);
+    unsub();
+  });
+
+  it('unsubscribe prevents listener from being called', () => {
+    const fn = jest.fn();
+    const unsubscribe = profileEvents.onProfileSaved(fn);
+    unsubscribe(); // covers the returned () => listeners.delete(fn) function
+    profileEvents.emitProfileSaved();
+    expect(fn).not.toHaveBeenCalled();
   });
 });

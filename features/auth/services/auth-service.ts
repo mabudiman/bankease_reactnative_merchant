@@ -60,6 +60,7 @@ async function signIn(username: string, password: string): Promise<void> {
   // Persist a lightweight session record so the app knows who is logged in
   const session: LocalAuthSession = {
     accountId: response.user_id,
+    username: response.username,
     createdAt: new Date().toISOString(),
   };
   await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
@@ -92,7 +93,16 @@ async function getSessionAccount(): Promise<LocalAuthAccount | null> {
   const session = await getSession();
   if (!session) return null;
   const accounts = await loadAccounts();
-  return accounts.find((a) => a.id === session.accountId) ?? null;
+  const found = accounts.find((a) => a.id === session.accountId);
+  if (found) return found;
+  // Real API user — not in local accounts list; return a synthetic account
+  return {
+    id: session.accountId,
+    name: session.username ?? session.accountId,
+    phone: '',
+    password: '',
+    createdAt: session.createdAt,
+  };
 }
 
 export const authService = { signIn, signUp, getSession, clearSession, getSessionAccount };
