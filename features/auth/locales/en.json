@@ -6,6 +6,8 @@
   "signIn.passwordPlaceholder": "Password",
   "signIn.cta": "Sign in",
   "signIn.forgotPassword": "Forgot your password?",
+  "signIn.forgotPasswordTitle": "Forgot Password",
+  "signIn.usernameRequiredForOtp": "Please enter your username first so we can send you an OTP.",
   "signIn.noAccount": "Don't have an account?",
   "signIn.signUpLink": "Sign Up",
   "signIn.errorInvalid": "Phone number or password is incorrect.",
@@ -36,5 +38,10 @@
   "changePasswordSuccess": "Change password successfully!",
   "changePasswordSuccessDesc": "You have successfully change password. Please use the new password when Sign in.",
   "ok": "Ok",
-  "passwordsDoNotMatch": "Passwords do not match"
+  "passwordsDoNotMatch": "Passwords do not match",
+  "forgotPassword.errorTitle": "Error",
+  "forgotPassword.errorUserNotFound": "No account found with that username.",
+  "forgotPassword.errorNetwork": "Network error. Please check your connection.",
+  "forgotPassword.errorGeneric": "Failed to send OTP. Please try again.",
+  "forgotPassword.invalidCode": "The code you entered is incorrect. Please try again."
 }

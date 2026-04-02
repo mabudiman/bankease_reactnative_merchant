@@ -6,6 +6,8 @@
   "signIn.passwordPlaceholder": "Kata sandi",
   "signIn.cta": "Masuk",
   "signIn.forgotPassword": "Lupa kata sandi?",
+  "signIn.forgotPasswordTitle": "Lupa Kata Sandi",
+  "signIn.usernameRequiredForOtp": "Masukkan username Anda terlebih dahulu agar kami dapat mengirimkan OTP.",
   "signIn.noAccount": "Belum punya akun?",
   "signIn.signUpLink": "Daftar",
   "signIn.errorInvalid": "Nomor telepon atau kata sandi salah.",
@@ -36,5 +38,10 @@
   "changePasswordSuccess": "Kata sandi berhasil diubah!",
   "changePasswordSuccessDesc": "Anda telah berhasil mengubah kata sandi. Silakan gunakan kata sandi baru saat masuk.",
   "ok": "Ok",
-  "passwordsDoNotMatch": "Kata sandi tidak cocok"
+  "passwordsDoNotMatch": "Kata sandi tidak cocok",
+  "forgotPassword.errorTitle": "Error",
+  "forgotPassword.errorUserNotFound": "Tidak ada akun yang ditemukan dengan username tersebut.",
+  "forgotPassword.errorNetwork": "Kesalahan jaringan. Periksa koneksi Anda.",
+  "forgotPassword.errorGeneric": "Gagal mengirim OTP. Silakan coba lagi.",
+  "forgotPassword.invalidCode": "Kode yang Anda masukkan salah. Silakan coba lagi."
 }
