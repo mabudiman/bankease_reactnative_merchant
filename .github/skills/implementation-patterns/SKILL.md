@@ -192,6 +192,101 @@ argument-hint: 'Feature area or pattern name, e.g. "auth screen", "dashboard hom
 
 ---
 
+## useMutation Pattern (submit actions)
+
+Use `useMutation` from `@tanstack/react-query` for **any submit action** that calls an API (POST/PUT/PATCH/DELETE). Do **not** use `useState` + `useRef` + manual `try/catch/finally`.
+
+### Why useMutation, not manual state
+
+| Manual approach                                              | useMutation                                     |
+| ------------------------------------------------------------ | ----------------------------------------------- |
+| `[isSubmitting, setIsSubmitting]` useState + `submittingRef` | `isPending` — built-in, race-safe               |
+| `[isSuccess, setIsSuccess]` useState                         | `isSuccess` — built-in                          |
+| `async submit` + `try/catch/finally`                         | `onSuccess` / `onError` callbacks               |
+| Submit handler must be `async`, callers may need to await    | `submit` is sync, just calls `mutate()`         |
+| Double-submit guard needs manual `ref`                       | `mutate()` is a no-op while `isPending` is true |
+
+### Canonical Pattern
+
+```ts
+// In a ViewModel Hook (e.g. useMobilePrepaid.ts)
+import { useMutation } from "@tanstack/react-query";
+
+const {
+  mutate,
+  isPending: isSubmitting,
+  isSuccess,
+} = useMutation({
+  mutationFn: submitPrepaid, // the API function
+  onSuccess: (result) => {
+    // handle SOFT failures (API returned 200 but status !== "SUCCESS")
+    if (result.status !== "SUCCESS") {
+      Alert.alert("Failed", result.message);
+    }
+  },
+  onError: (error: unknown) => {
+    const message =
+      error instanceof Error ? error.message : "Network error. Please try again.";
+    Alert.alert("Failed", message);
+  },
+});
+
+// submit handler is now synchronous
+const submit = useCallback(() => {
+  if (!selectedCard || !phone || !selectedAmount) return;
+  mutate({
+    cardId: selectedCard.id,
+    phone,
+    amount: selectedAmount.value,
+    idempotencyKey: idempotencyKeyRef.current,
+  });
+}, [selectedCard, phone, selectedAmount, mutate]);
+```
+
+### Idempotency Key Integration
+
+Generate once per form session, reset after success:
+
+```ts
+const idempotencyKeyRef = useRef(Crypto.randomUUID()); // from expo-crypto
+
+// In reset() — called after success or on form clear:
+idempotencyKeyRef.current = Crypto.randomUUID();
+
+// Pass to mutate() payload and send as header in the API function:
+export function submitPrepaid(
+  payload: PrepaidPaymentRequest,
+): Promise<PrepaidPaymentResponse> {
+  return request<PrepaidPaymentResponse>("/api/mobile-prepaid/pay", {
+    method: "POST",
+    headers: { "Idempotency-Key": payload.idempotencyKey },
+    body: JSON.stringify(payload),
+  });
+}
+```
+
+### Exposing from the ViewModel Hook
+
+Flatten `isPending` / `isSuccess` — don't leak `UseMutationResult` to the component:
+
+```ts
+return {
+  // status flags
+  isSubmitting, // rename from isPending for UI readability
+  isSuccess,
+  // actions
+  submit,
+  reset,
+};
+```
+
+### On "SOFT failure" vs thrown error
+
+- **Thrown error** (`onError`): network failure, HTTP error status (4xx/5xx) — API layer throws
+- **Soft failure** (`onSuccess`): API returns 200 but `result.status === "FAILED"` — handle inside `onSuccess`, NOT `onError`
+
+---
+
 ## Component Conventions
 
 - Use `ThemedText` / `ThemedView` from `components/ui/` for automatic dark mode
@@ -250,7 +345,7 @@ return {
 
 - **Always use `useQuery` / `useMutation` for any async server data** — don't reach for `useState` + `useEffect` + manual fetch
 - `useQuery` handles caching, background refresh, `isLoading`/`isError` flags, and retries for free
-- `useMutation` handles `isSubmitting` / `isSuccess` / `isError` for submit actions — use its `onSuccess`/`onError` callbacks instead of manual `try/catch` state
+- `useMutation` handles `isPending` / `isSuccess` / `isError` for submit actions — use its `onSuccess`/`onError` callbacks instead of manual `try/catch` state. See **useMutation Pattern** section for canonical code.
 - Expose flattened flags (`isLoading`, `isSubmitting`, `isSuccess`) from the hook — don't leak `QueryResult` objects to the component
 - Exception: genuinely local-only state (selected chip, typed phone number) stays as `useState`
 
