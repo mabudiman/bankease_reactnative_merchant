@@ -16,6 +16,7 @@ export interface PrepaidPaymentRequest {
   cardId: string;
   phone: string;
   amount: number; // minor units
+  idempotencyKey: string;
 }
 
 export interface PrepaidPaymentResponse {
