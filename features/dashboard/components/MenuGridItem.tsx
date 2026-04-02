@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/ui/themed-text";
 import { useTranslation } from "@/core/i18n";
 import type { Privilege } from "../types";
-import { Colors } from '@/constants/theme';
+import { Colors } from "@/constants/theme";
 
 interface MenuGridItemProps {
   readonly privilege: Privilege;
@@ -17,10 +17,11 @@ const ROUTE_MAP: Partial<Record<string, string>> = {
   WITHDRAW: "/withdraw",
   TARIK_TUNAI: "/withdraw",
   TRANSFER: "/transfer",
+  MOBILE_PREPAID: "/mobile-prepaid",
 };
 
 function normalizeTitle(title: string): string {
-  return title.toUpperCase().replaceAll(/\s+/g, '_');
+  return title.toUpperCase().replaceAll(/\s+/g, "_");
 }
 
 function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
@@ -30,7 +31,14 @@ function MenuGridItemComponent({ privilege }: MenuGridItemProps) {
   function handlePress() {
     const normalized = normalizeTitle(privilege.title);
     const route = ROUTE_MAP[normalized];
-    console.log('[MenuGridItem] pressed:', privilege.title, '→ normalized:', normalized, '→ route:', route);
+    console.log(
+      "[MenuGridItem] pressed:",
+      privilege.title,
+      "→ normalized:",
+      normalized,
+      "→ route:",
+      route,
+    );
     if (route) {
       router.push(route as any);
       return;

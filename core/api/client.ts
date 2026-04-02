@@ -1,83 +1,78 @@
-import { API_BASE_URL, API_TIMEOUT_MS } from "@/constants/index"
+import { API_BASE_URL, API_TIMEOUT_MS } from "@/constants/index";
 import {
-    ApiError,
-    InsufficientFundsError,
-    NetworkError,
-    ServiceUnavailableError
-} from "./errors"
-import { tokenManager } from "./token-manager"
+  ApiError,
+  InsufficientFundsError,
+  NetworkError,
+  ServiceUnavailableError,
+} from "./errors";
+import { tokenManager } from "./token-manager";
 
 // manage specific domain errors
 function parseError(response: Response): ApiError {
+  if (response.status === 400) {
+    return new InsufficientFundsError();
+  }
 
-    if (response.status === 400) {
-        return new InsufficientFundsError();
-    }
+  if (response.status === 503) {
+    return new ServiceUnavailableError();
+  }
 
-    if (response.status === 503) {
-        return new ServiceUnavailableError();
-    }
-
-  return new ApiError("unknown_api_error", "An unknown error occurred. Please try again later.", true, response.status)
+  return new ApiError(
+    "unknown_api_error",
+    "An unknown error occurred. Please try again later.",
+    true,
+    response.status,
+  );
 }
 
 // add a timeout to the fetch request
-async function fetchWithTimeout(
-    url: string,
-    options?: RequestInit
-): Promise<Response> {
+async function fetchWithTimeout(url: string, options?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
 
-    const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, API_TIMEOUT_MS);
 
-    const timeout = setTimeout(() => {
-        controller.abort();
-    }, API_TIMEOUT_MS)
-
-    try {
-        const response = await fetch(url, {
-            ...options,
-            signal: controller.signal,
-        })
-        return response;
-    } catch {
-        throw new NetworkError();
-    } finally {
-        clearTimeout(timeout);
-    }
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    return response;
+  } catch {
+    throw new NetworkError();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 // make a request to the API
-export async function request<T>(
-    endpoint: string,
-    options?: RequestInit
-): Promise<T> {
-
-    const token = tokenManager.getToken();
-    const method = options?.method ?? 'GET';
+export async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const token = tokenManager.getToken();
+  const method = options?.method ?? "GET";
+  if (__DEV__) {
     console.log(`[api] ${method} ${API_BASE_URL}${endpoint}`);
-    console.log(`[api] Bearer: ${token ?? '(none)'}`);
+    console.log(`[api] Bearer: ${token ?? "(none)"}`);
+  }
 
-    const response = await fetchWithTimeout(
-        `${API_BASE_URL}${endpoint}`,
-        {
-            ...options,
-            headers: {
-                "Content-Type": "application/json",
-                ...(options?.headers),
-                ...(token
-                    ? { Authorization: `Bearer ${token}` }
-                    : undefined),
-            },
-        }
-    )
+  const response = await fetchWithTimeout(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+      ...(token ? { Authorization: `Bearer ${token}` } : undefined),
+    },
+  });
 
+  if (__DEV__) {
     console.log(`[api] response status: ${response.status}`);
+  }
 
-    if (!response.ok) {
-        throw parseError(response)
-    }
+  if (!response.ok) {
+    throw parseError(response);
+  }
 
-    const data = await response.json();
+  const data = await response.json();
 
-    return data as T;
+  return data as T;
 }

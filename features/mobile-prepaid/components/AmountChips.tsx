@@ -2,7 +2,7 @@
 import React, { memo } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
 import { ThemedText } from "@/components/ui/themed-text";
-import { Colors } from "@/constants/theme";
+import { Colors, Radius } from "@/constants/theme";
 import { AMOUNT_OPTIONS } from "../types";
 import type { AmountOption } from "../types";
 
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   chip: {
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 24,
+    borderRadius: Radius.md,
     borderWidth: 1,
     borderColor: "#E0E0E0",
     backgroundColor: "#FFFFFF",

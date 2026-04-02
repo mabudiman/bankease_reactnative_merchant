@@ -12,10 +12,24 @@ import {
   MOCK_BANKS,
   MOCK_BANK_BRANCHES,
   MOCK_PROFILE_API_RESPONSE,
+  MOCK_SIGN_IN_RESPONSE,
+  MOCK_MENU_ITEMS_REGULAR,
+  MOCK_MENU_ITEMS_PREMIUM,
 } from "./data";
+
+const AUTH_API_BASE = "http://4.193.104.245:3000";
 
 // ─── Test-only handlers (full mocks for Jest) ────────────────────────────────
 export const handlers: RequestHandler[] = [
+  // ─── Auth handlers ─────────────────────────────────────────────────────────
+  http.post(`${AUTH_API_BASE}/api/auth/signin`, async ({ request }) => {
+    const body = (await request.json()) as { username?: string; password?: string };
+    if (!body.username || !body.password) {
+      return HttpResponse.json({ message: "Missing credentials" }, { status: 400 });
+    }
+    return HttpResponse.json(MOCK_SIGN_IN_RESPONSE);
+  }),
+
   http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
     return HttpResponse.json({
       exchange_rates: MOCK_EXCHANGE_RATES.map(({ countryCode, ...rest }) => ({
@@ -175,6 +189,46 @@ export const runtimeHandlers: RequestHandler[] = [
 
   http.post(`${API_BASE_URL}/api/transfer`, async () => {
     await new Promise((resolve) => setTimeout(resolve, 600));
+    return HttpResponse.json({
+      id: `txn-${Date.now()}`,
+      status: "success",
+      message: "Transfer successful",
+      timestamp: new Date().toISOString(),
+    });
+  }),
+
+  // ─── Messages ─────────────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/messages`, () => {
+    return HttpResponse.json(MOCK_MESSAGES);
+  }),
+
+  http.get(`${API_BASE_URL}/api/messages/:id`, ({ params }) => {
+    const thread = MOCK_MESSAGE_THREADS.find((t) => t.id === params.id);
+    if (!thread) {
+      return HttpResponse.json({ message: "Not found" }, { status: 404 });
+    }
+    return HttpResponse.json(thread);
+  }),
+
+  // ─── Transfer ─────────────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/cards`, () => {
+    return HttpResponse.json(MOCK_TRANSFER_CARDS);
+  }),
+
+  http.get(`${API_BASE_URL}/api/beneficiaries`, () => {
+    return HttpResponse.json(MOCK_BENEFICIARIES);
+  }),
+
+  http.get(`${API_BASE_URL}/api/banks`, () => {
+    return HttpResponse.json(MOCK_BANKS);
+  }),
+
+  http.get(`${API_BASE_URL}/api/banks/:bankId/branches`, ({ params }) => {
+    const branches = MOCK_BANK_BRANCHES.filter((b) => b.bankId === params.bankId);
+    return HttpResponse.json(branches);
+  }),
+
+  http.post(`${API_BASE_URL}/api/transfer`, async () => {
     return HttpResponse.json({
       id: `txn-${Date.now()}`,
       status: "success",
