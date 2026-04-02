@@ -17,11 +17,16 @@ import {
 // ─── Test-only handlers (full mocks for Jest) ────────────────────────────────
 export const handlers: RequestHandler[] = [
   http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
-    return HttpResponse.json(MOCK_EXCHANGE_RATES);
+    return HttpResponse.json({
+      exchange_rates: MOCK_EXCHANGE_RATES.map(({ countryCode, ...rest }) => ({
+        ...rest,
+        country_code: countryCode,
+      })),
+    });
   }),
 
   http.get(`${API_BASE_URL}/api/interest-rates`, () => {
-    return HttpResponse.json(MOCK_INTEREST_RATES);
+    return HttpResponse.json({ interest_rates: MOCK_INTEREST_RATES });
   }),
 
   http.get(`${API_BASE_URL}/api/branches`, ({ request }) => {
@@ -30,7 +35,7 @@ export const handlers: RequestHandler[] = [
     const results = q
       ? MOCK_BRANCHES.filter((b) => b.name.toLowerCase().includes(q))
       : MOCK_BRANCHES;
-    return HttpResponse.json(results);
+    return HttpResponse.json({ branches: results });
   }),
 
   http.get(`${API_BASE_URL}/api/messages`, () => {
@@ -127,29 +132,55 @@ export const handlers: RequestHandler[] = [
   }),
 ];
 
-// ─── Runtime handlers (for dev builds — passthrough profile to real API) ──────
+// ─── Runtime handlers (for dev builds — passthrough to real API) ──────────────
 export const runtimeHandlers: RequestHandler[] = [
-  // Let profile GET and PUT pass through to the real backend
+  // Let profile, search endpoints pass through to the real backend
   http.get(`${API_BASE_URL}/api/profile`, () => passthrough()),
   http.get(`${API_BASE_URL}/api/profile/:accountId`, () => passthrough()),
   http.put(`${API_BASE_URL}/api/profile/:accountId`, () => passthrough()),
+  http.get(`${API_BASE_URL}/api/exchange-rates`, () => passthrough()),
+  http.get(`${API_BASE_URL}/api/interest-rates`, () => passthrough()),
+  http.get(`${API_BASE_URL}/api/branches`, () => passthrough()),
 
-  // Keep mocks for non-profile endpoints
-  http.get(`${API_BASE_URL}/api/exchange-rates`, () => {
-    return HttpResponse.json(MOCK_EXCHANGE_RATES);
+  // ─── Messages (mocked — not yet on real backend) ──────────────────────
+  http.get(`${API_BASE_URL}/api/messages`, () => {
+    return HttpResponse.json(MOCK_MESSAGES);
   }),
 
-  http.get(`${API_BASE_URL}/api/interest-rates`, () => {
-    return HttpResponse.json(MOCK_INTEREST_RATES);
+  http.get(`${API_BASE_URL}/api/messages/:id`, ({ params }) => {
+    const thread = MOCK_MESSAGE_THREADS.find((t) => t.id === params.id);
+    if (!thread) {
+      return HttpResponse.json({ message: "Not found" }, { status: 404 });
+    }
+    return HttpResponse.json(thread);
   }),
 
-  http.get(`${API_BASE_URL}/api/branches`, ({ request }) => {
-    const url = new URL(request.url);
-    const q = url.searchParams.get("q")?.toLowerCase() ?? "";
-    const results = q
-      ? MOCK_BRANCHES.filter((b) => b.name.toLowerCase().includes(q))
-      : MOCK_BRANCHES;
-    return HttpResponse.json(results);
+  // ─── Transfer (mocked — not yet on real backend) ──────────────────────
+  http.get(`${API_BASE_URL}/api/cards`, () => {
+    return HttpResponse.json(MOCK_TRANSFER_CARDS);
+  }),
+
+  http.get(`${API_BASE_URL}/api/beneficiaries`, () => {
+    return HttpResponse.json(MOCK_BENEFICIARIES);
+  }),
+
+  http.get(`${API_BASE_URL}/api/banks`, () => {
+    return HttpResponse.json(MOCK_BANKS);
+  }),
+
+  http.get(`${API_BASE_URL}/api/banks/:bankId/branches`, ({ params }) => {
+    const branches = MOCK_BANK_BRANCHES.filter((b) => b.bankId === params.bankId);
+    return HttpResponse.json(branches);
+  }),
+
+  http.post(`${API_BASE_URL}/api/transfer`, async () => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    return HttpResponse.json({
+      id: `txn-${Date.now()}`,
+      status: "success",
+      message: "Transfer successful",
+      timestamp: new Date().toISOString(),
+    });
   }),
 
   // ─── Mobile Prepaid ────────────────────────────────────────────────────
