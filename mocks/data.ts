@@ -7,6 +7,7 @@ import type {
   BranchItem,
 } from "@/features/transfer/types";
 import type { MockAccount } from "@/features/withdraw/types";
+import type { PaymentCard } from "@/features/dashboard/types";
 
 export const MOCK_EXCHANGE_RATES: ExchangeRate[] = [
   {
@@ -607,4 +608,31 @@ export const MOCK_WITHDRAW_ACCOUNTS: MockAccount[] = [
   { id: "3", label: "4411 0000 1234" },
   { id: "4", label: "1900 8988 5457" },
   { id: "5", label: "1900 8988 5458" },
+];
+
+// ─── Mobile Prepaid mock data ─────────────────────────────────────────────────
+
+export const MOCK_PREPAID_CARDS: PaymentCard[] = [
+  {
+    id: "card-31b7e101-4ce0-4ef0-bde4-37436ae94a62",
+    accountId: "1fc1e02d-4071-496f-913e-8e21515e476a",
+    holderName: "Demo Merchant [PRD]",
+    cardLabel: "Amazon Platinum",
+    maskedNumber: "4756  ••••  ••••  9018",
+    balance: 12300,
+    currency: "USD",
+    brand: "VISA",
+    gradientColors: ["#1A1563", "#1E2FA0", "#3B7ED4"],
+  },
+  {
+    id: "card-02124261-7525-42b3-bf86-47accc002b29",
+    accountId: "1fc1e02d-4071-496f-913e-8e21515e476a",
+    holderName: "Premium Merchant [PRD]",
+    cardLabel: "Platinum Business",
+    maskedNumber: "4539  ••••  ••••  8812",
+    balance: 33000,
+    currency: "USD",
+    brand: "VISA",
+    gradientColors: ["#0A3D2B", "#1A6B3C", "#27AE60"],
+  },
 ];

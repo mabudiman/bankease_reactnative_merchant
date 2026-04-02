@@ -15,6 +15,7 @@ import {
   MOCK_SIGN_IN_RESPONSE,
   MOCK_MENU_ITEMS_REGULAR,
   MOCK_MENU_ITEMS_PREMIUM,
+  MOCK_PREPAID_CARDS,
 } from "./data";
 
 const AUTH_API_BASE = "http://4.193.104.245:3000";
@@ -110,8 +111,17 @@ export const handlers: RequestHandler[] = [
   }),
 
   // ─── Mobile Prepaid ────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/mobile-prepaid/cards`, ({ request }) => {
+    const url = new URL(request.url);
+    const accountId = url.searchParams.get("accountId");
+    const cards = accountId
+      ? MOCK_PREPAID_CARDS.filter((c) => c.accountId === accountId)
+      : MOCK_PREPAID_CARDS;
+    return HttpResponse.json({ cards });
+  }),
+
   http.get(`${API_BASE_URL}/api/mobile-prepaid/beneficiaries`, () => {
-    return HttpResponse.json(MOCK_BENEFICIARIES);
+    return HttpResponse.json({ beneficiaries: MOCK_BENEFICIARIES });
   }),
 
   http.post(`${API_BASE_URL}/api/mobile-prepaid/pay`, async ({ request }) => {
@@ -238,8 +248,17 @@ export const runtimeHandlers: RequestHandler[] = [
   }),
 
   // ─── Mobile Prepaid ────────────────────────────────────────────────────
+  http.get(`${API_BASE_URL}/api/mobile-prepaid/cards`, ({ request }) => {
+    const url = new URL(request.url);
+    const accountId = url.searchParams.get("accountId");
+    const cards = accountId
+      ? MOCK_PREPAID_CARDS.filter((c) => c.accountId === accountId)
+      : MOCK_PREPAID_CARDS;
+    return HttpResponse.json({ cards });
+  }),
+
   http.get(`${API_BASE_URL}/api/mobile-prepaid/beneficiaries`, () => {
-    return HttpResponse.json(MOCK_BENEFICIARIES);
+    return HttpResponse.json({ beneficiaries: MOCK_BENEFICIARIES });
   }),
 
   http.post(`${API_BASE_URL}/api/mobile-prepaid/pay`, async ({ request }) => {
