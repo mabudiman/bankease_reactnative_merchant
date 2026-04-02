@@ -1,29 +1,18 @@
 // features/mobile-prepaid/hooks/useMobilePrepaid.ts
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Alert } from "react-native";
-import { useQuery } from "@tanstack/react-query";
-import { dashboardService } from "@/features/dashboard/services/dashboard-service";
-import { getBeneficiaries, submitPrepaid } from "../api";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import * as Crypto from "expo-crypto";
+import { getCards, getBeneficiaries, submitPrepaid } from "../api";
 import type { PaymentCard } from "@/features/dashboard/types";
 import type { AmountOption, Beneficiary } from "../types";
 
 export function useMobilePrepaid(accountId: string) {
   // ─── Data loading ───────────────────────────────────────────────────
-  const [cards, setCards] = useState<PaymentCard[]>([]);
-  const [cardsLoading, setCardsLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    dashboardService.loadCards(accountId).then((loaded) => {
-      if (!cancelled) {
-        setCards(loaded);
-        setCardsLoading(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [accountId]);
+  const { data: cards = [], isLoading: cardsLoading } = useQuery({
+    queryKey: ["mobile-prepaid", "cards", accountId],
+    queryFn: () => getCards(accountId),
+  });
 
   const { data: beneficiaries = [], isLoading: beneficiariesLoading } = useQuery({
     queryKey: ["mobile-prepaid", "beneficiaries", accountId],
@@ -39,50 +28,47 @@ export function useMobilePrepaid(accountId: string) {
   const [selectedBeneficiaryId, setSelectedBeneficiaryId] = useState<string | null>(null);
 
   // ─── Submit ─────────────────────────────────────────────────────────
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const submittingRef = useRef(false);
+  const idempotencyKeyRef = useRef(Crypto.randomUUID());
+
+  const {
+    mutate,
+    isPending: isSubmitting,
+    isSuccess,
+  } = useMutation({
+    mutationFn: submitPrepaid,
+    onSuccess: (result) => {
+      if (result.status !== "SUCCESS") {
+        Alert.alert("Failed", result.message);
+      }
+    },
+    onError: (error: unknown) => {
+      const message =
+        error instanceof Error ? error.message : "Network error. Please try again.";
+      Alert.alert("Failed", message);
+    },
+  });
 
   const selectBeneficiary = useCallback((b: Beneficiary) => {
     setPhone(b.phone);
     setSelectedBeneficiaryId(b.id);
   }, []);
 
-  const submit = useCallback(async () => {
-    if (submittingRef.current) return;
+  const submit = useCallback(() => {
     if (!selectedCard || !phone || !selectedAmount) return;
-
-    submittingRef.current = true;
-    setIsSubmitting(true);
-
-    try {
-      const result = await submitPrepaid({
-        cardId: selectedCard.id,
-        phone,
-        amount: selectedAmount.value,
-      });
-
-      if (result.status === "SUCCESS") {
-        setIsSuccess(true);
-      } else {
-        Alert.alert("Failed", result.message);
-      }
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "Network error. Please try again.";
-      Alert.alert("Failed", message);
-    } finally {
-      submittingRef.current = false;
-      setIsSubmitting(false);
-    }
-  }, [selectedCard, phone, selectedAmount]);
+    mutate({
+      cardId: selectedCard.id,
+      phone,
+      amount: selectedAmount.value,
+      idempotencyKey: idempotencyKeyRef.current,
+    });
+  }, [selectedCard, phone, selectedAmount, mutate]);
 
   const reset = useCallback(() => {
     setSelectedCard(null);
     setSelectedAmount(null);
     setPhone("");
     setSelectedBeneficiaryId(null);
-    setIsSuccess(false);
+    idempotencyKeyRef.current = Crypto.randomUUID();
   }, []);
 
   return {
