@@ -66,3 +66,11 @@ export interface SignInResponse {
   username?: string;
   message?: string;
 }
+
+export interface ValidateOtpRequest {
+  username: string;
+}
+
+export interface ValidateOtpResponse {
+  otp: number;
+}
