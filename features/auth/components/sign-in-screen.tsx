@@ -9,7 +9,7 @@ import {
   Platform,
   ScrollView,
   Pressable,
-  Alert
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -44,6 +44,16 @@ export function SignInScreen() {
 
   const isFormValid = username.trim().length > 0 && password.trim().length > 0;
 
+  function handleForgotPassword() {
+    if (username.trim().length === 0) {
+      Alert.alert(t("signIn.forgotPasswordTitle"), t("signIn.usernameRequiredForOtp"));
+      return;
+    }
+    router.push(
+      `/forgot-password?username=${encodeURIComponent(username.trim())}` as any,
+    );
+  }
+
   async function handleSignIn() {
     if (!isFormValid || isLoading) return;
     setIsLoading(true);
@@ -52,7 +62,7 @@ export function SignInScreen() {
 
       // Verify profile exists before entering the dashboard
       const session = await authService.getSession();
-      if (!session) throw new Error('SESSION_ERROR');
+      if (!session) throw new Error("SESSION_ERROR");
       await profileApi.getProfile(session.accountId);
 
       router.replace("/(tabs)");
@@ -60,14 +70,14 @@ export function SignInScreen() {
       if (err instanceof ApiError && err.status === 404) {
         await authService.clearSession();
         Alert.alert(
-          'Profile Not Found',
-          'Your profile was not found. Please contact support.',
+          "Profile Not Found",
+          "Your profile was not found. Please contact support.",
         );
-      } else if (err instanceof Error && err.message === 'INVALID_CREDENTIALS') {
-        Alert.alert('Failed', 'Username or password is incorrect.');
+      } else if (err instanceof Error && err.message === "INVALID_CREDENTIALS") {
+        Alert.alert("Failed", "Username or password is incorrect.");
       } else {
         await authService.clearSession();
-        Alert.alert('Failed', 'Something went wrong. Please try again.');
+        Alert.alert("Failed", "Something went wrong. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -95,18 +105,14 @@ export function SignInScreen() {
                     accessibilityRole="button"
                     accessibilityLabel="Go back"
                   >
-                    <Ionicons
-                      name="chevron-back"
-                      size={20}
-                      color={Colors.white}
-                    />
+                    <Ionicons name="chevron-back" size={20} color={Colors.white} />
                   </Pressable>
-                  <ThemedText type='title' style={styles.headerTitle}>
+                  <ThemedText type="title" style={styles.headerTitle}>
                     {t("signIn.title")}
                   </ThemedText>
                 </View>
                 <View style={styles.headerTextContainer}>
-                  <ThemedText type='caption' style={styles.headerSubtitle}>
+                  <ThemedText type="caption" style={styles.headerSubtitle}>
                     {t("signIn.subtitle")}
                   </ThemedText>
                 </View>
@@ -128,13 +134,13 @@ export function SignInScreen() {
                     style={styles.purpleInput}
                     placeholder={t("signIn.usernamePlaceholder")}
                     placeholderTextColor={Colors.placeholderText}
-                    keyboardType='default'
-                    autoCapitalize='none'
+                    keyboardType="default"
+                    autoCapitalize="none"
                     autoCorrect={false}
                     value={username}
                     onChangeText={setUsername}
-                    accessibilityLabel='Username input'
-                    returnKeyType='next'
+                    accessibilityLabel="Username input"
+                    returnKeyType="next"
                   />
                 </View>
                 <View style={styles.passwordFloating}>
@@ -152,7 +158,7 @@ export function SignInScreen() {
                       secureTextEntry={!showPassword}
                       value={password}
                       onChangeText={setPassword}
-                      autoCapitalize='none'
+                      autoCapitalize="none"
                       autoCorrect={false}
                       accessibilityLabel="Password input"
                       returnKeyType="done"
@@ -181,7 +187,7 @@ export function SignInScreen() {
                 {/* Forgot password */}
                 <TouchableOpacity
                   style={styles.forgotPassword}
-                  onPress={() => router.push("/forgot-password" as any)}
+                  onPress={handleForgotPassword}
                 >
                   <ThemedText type="caption" style={styles.forgotText}>
                     {t("signIn.forgotPassword")}
@@ -216,7 +222,6 @@ export function SignInScreen() {
                     accessibilityLabel="Fingerprint icon"
                   />
                 </TouchableOpacity>
-
 
                 {/* Footer */}
                 <View style={styles.footer}>
@@ -323,7 +328,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.inputBackground,
     height: 52,
     justifyContent: "center",
-    paddingHorizontal: Spacing.md
+    paddingHorizontal: Spacing.md,
   },
   purpleInput: {
     color: Colors.placeholderText,
@@ -446,14 +451,14 @@ const styles = StyleSheet.create({
   },
 
   devButton: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: Spacing.md,
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: Colors.primary,
     borderRadius: 6,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
   },
   devButtonText: {
     color: Colors.primary,

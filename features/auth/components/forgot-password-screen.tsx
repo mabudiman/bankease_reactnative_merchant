@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -7,28 +7,67 @@ import {
   Platform,
   ScrollView,
   Pressable,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedButton } from "@/components/ui/themed-button";
 import { Colors, Spacing, Radius, Fonts } from "@/constants/theme";
 import { useTranslation } from "@/core/i18n";
-
-function handleResend() {
-  // TODO: re-trigger OTP SMS API
-}
+import { authApi } from "../api";
 
 export function ForgotPasswordScreen() {
   const router = useRouter();
   const { t } = useTranslation("auth");
-  const [code, setCode] = useState("");
+  const { username } = useLocalSearchParams<{ username: string }>();
 
-  const isCodeValid = code.trim().length >= 4;
+  const [code, setCode] = useState("");
+  const [isLoadingOtp, setIsLoadingOtp] = useState(false);
+  const expectedOtp = useRef<number | null>(null);
+
+  const isCodeValid =
+    code.trim().length > 0 &&
+    expectedOtp.current !== null &&
+    parseInt(code.trim(), 10) === expectedOtp.current;
+
+  async function requestOtp() {
+    if (!username) return;
+    setIsLoadingOtp(true);
+    try {
+      const result = await authApi.validateOtp({ username });
+      expectedOtp.current = result.otp;
+    } catch (err) {
+      const message =
+        err instanceof Error && err.message === "USER_NOT_FOUND"
+          ? t("forgotPassword.errorUserNotFound")
+          : err instanceof Error && err.message === "NETWORK_ERROR"
+            ? t("forgotPassword.errorNetwork")
+            : t("forgotPassword.errorGeneric");
+      Alert.alert(t("forgotPassword.errorTitle"), message);
+    } finally {
+      setIsLoadingOtp(false);
+    }
+  }
+
+  useEffect(() => {
+    requestOtp();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function handleResend() {
+    setCode("");
+    expectedOtp.current = null;
+    requestOtp();
+  }
 
   function handleChangePassword() {
-    if (!isCodeValid) return;
+    if (!isCodeValid) {
+      Alert.alert(t("forgotPassword.errorTitle"), t("forgotPassword.invalidCode"));
+      return;
+    }
     router.push("/change-password");
   }
 
@@ -72,20 +111,29 @@ export function ForgotPasswordScreen() {
                   onChangeText={setCode}
                   accessibilityLabel="OTP code input"
                   returnKeyType="done"
+                  editable={!isLoadingOtp}
                 />
                 <Pressable
-                  style={styles.resendButton}
+                  style={[
+                    styles.resendButton,
+                    isLoadingOtp && styles.resendButtonDisabled,
+                  ]}
                   onPress={handleResend}
+                  disabled={isLoadingOtp}
                   accessibilityRole="button"
                   accessibilityLabel="Resend code"
                 >
-                  <ThemedText style={styles.resendText}>{t("resend")}</ThemedText>
+                  {isLoadingOtp ? (
+                    <ActivityIndicator size="small" color={Colors.white} />
+                  ) : (
+                    <ThemedText style={styles.resendText}>{t("resend")}</ThemedText>
+                  )}
                 </Pressable>
               </View>
 
               <ThemedText style={styles.helperText}>
                 {t("otpHelperPrefix")}
-                <ThemedText style={styles.phoneHighlight}>(+84) 0398829xxx</ThemedText>
+                <ThemedText style={styles.usernameHighlight}>{username}</ThemedText>
               </ThemedText>
 
               <ThemedText style={styles.expiryText}>{t("otpExpiry")}</ThemedText>
@@ -94,7 +142,7 @@ export function ForgotPasswordScreen() {
               <ThemedButton
                 title={t("changePassword")}
                 variant="primary"
-                disabled={!isCodeValid}
+                disabled={!isCodeValid || isLoadingOtp}
                 onPress={handleChangePassword}
                 style={styles.submitButton}
                 lightColor={isCodeValid ? Colors.primary : Colors.buttonDisabled}
@@ -188,6 +236,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 48,
   },
+  resendButtonDisabled: {
+    opacity: 0.6,
+  },
   resendText: {
     fontSize: 14,
     fontFamily: Fonts.medium,
@@ -202,7 +253,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: Spacing.sm,
   },
-  phoneHighlight: {
+  usernameHighlight: {
     color: Colors.primary,
     fontFamily: Fonts.semiBold,
     fontSize: 13,

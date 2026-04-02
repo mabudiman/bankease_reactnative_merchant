@@ -3,6 +3,8 @@ import type {
   SignUpResponse,
   SignInRequest,
   SignInResponse,
+  ValidateOtpRequest,
+  ValidateOtpResponse,
 } from "../types";
 
 const AUTH_API_BASE = "http://4.193.104.245:3000";
@@ -71,4 +73,27 @@ async function signUp(payload: SignUpRequest): Promise<SignUpResponse> {
   return response.json() as Promise<SignUpResponse>;
 }
 
-export const authApi = { signIn, signUp };
+async function validateOtp(payload: ValidateOtpRequest): Promise<ValidateOtpResponse> {
+  if (__DEV__) console.log(`[api] POST ${AUTH_API_BASE}/api/auth/validate-otp`);
+  let response: Response;
+  try {
+    response = await fetch(`${AUTH_API_BASE}/api/auth/validate-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: payload.username }),
+    });
+  } catch {
+    throw new Error("NETWORK_ERROR");
+  }
+
+  if (!response.ok) {
+    if (response.status === 404) throw new Error("USER_NOT_FOUND");
+    throw new Error("GENERIC_ERROR");
+  }
+
+  const data = (await response.json()) as ValidateOtpResponse;
+  if (__DEV__) console.log("[api] validate-otp response:", JSON.stringify(data));
+  return data;
+}
+
+export const authApi = { signIn, signUp, validateOtp };
